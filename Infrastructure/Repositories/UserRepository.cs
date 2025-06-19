@@ -1,10 +1,11 @@
-﻿using Domain.Interfaces;
+﻿using Domain.Entities;
+using Domain.Interfaces;
 
 namespace Infrastructure.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        public Task AddAsync()
+        public void AddAsync(ApplicationUser applicationUser)
         {
             throw new NotImplementedException();
         }
