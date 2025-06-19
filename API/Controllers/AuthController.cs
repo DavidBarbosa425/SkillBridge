@@ -14,10 +14,10 @@ namespace API.Controllers
         {
             _authService = authService;
         }
-        [HttpPost("register")]
-        public IActionResult Register([FromBody] RegisterDto dto)
+        [HttpPost("registerUser")]
+        public IActionResult RegisterUser([FromBody] RegisterUserDto dto)
         {
-            var result = _authService.RegisterAsync(dto);
+            var result = _authService.RegisterUserAsync(dto);
 
             return Ok(result);
         }
