@@ -1,13 +1,24 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces;
+using Microsoft.AspNetCore.Identity;
 
 namespace Infrastructure.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        public void AddAsync(ApplicationUser applicationUser)
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public UserRepository(UserManager<ApplicationUser> userManager)
         {
-            throw new NotImplementedException();
+            _userManager = userManager;
+        }
+        public async Task<string> AddAsync(string name, string email, string password)
+        {
+            var applicationUser = new ApplicationUser(name, email);
+
+            var creationResult = await _userManager.CreateAsync(applicationUser, password);
+
+            return "teste";
         }
     }
 }
