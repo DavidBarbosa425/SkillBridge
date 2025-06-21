@@ -15,9 +15,9 @@ namespace API.Controllers
             _authService = authService;
         }
         [HttpPost("registerUser")]
-        public IActionResult RegisterUser([FromBody] RegisterUserDto dto)
+        public async Task<IActionResult> RegisterUser([FromBody] RegisterUserDto dto)
         {
-            var result = _authService.RegisterUserAsync(dto);
+            var result = await _authService.RegisterUserAsync(dto);
 
             return Ok(result);
         }
