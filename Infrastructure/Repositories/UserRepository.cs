@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Domain.Common;
+using Domain.Entities;
 using Domain.Interfaces;
 using Microsoft.AspNetCore.Identity;
 
@@ -12,13 +13,19 @@ namespace Infrastructure.Repositories
         {
             _userManager = userManager;
         }
-        public async Task<string> AddAsync(string name, string email, string password)
+        public async Task<Result<string>> AddAsync(string name, string email, string password)
         {
             var applicationUser = new ApplicationUser(name, email);
 
             var creationResult = await _userManager.CreateAsync(applicationUser, password);
 
-            return "teste";
+            if (!creationResult.Succeeded)
+            {
+                var errors = creationResult.Errors.Select(e => e.Description).ToList();
+                return Result<string>.Failure(errors);
+            }
+
+            return Result<string>.Ok(applicationUser.Id);
         }
     }
 }

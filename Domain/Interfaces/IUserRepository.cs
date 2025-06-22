@@ -1,9 +1,9 @@
-﻿using Domain.Entities;
+﻿using Domain.Common;
 
 namespace Domain.Interfaces
 {
     public interface IUserRepository
     {
-        Task<string> AddAsync(string name, string email, string password);
+        Task<Result<string>> AddAsync(string name, string email, string password);
     }
 }
