@@ -2,6 +2,6 @@
 {
     public interface IEmailService
     {
-        void SendRegistrationConfirmationAsync(string name, string email);
+        Task SendRegistrationConfirmationAsync(string name, string email);
     }
 }

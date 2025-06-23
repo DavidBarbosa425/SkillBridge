@@ -28,9 +28,9 @@ namespace Application.Services
 
             if(!creationResult.Success) return Result<string>.Failure("Erro ao criar Usuário, tente novamente mais tarde");
 
-            _emailService.SendRegistrationConfirmationAsync(dto.Name, dto.Email);
+            await _emailService.SendRegistrationConfirmationAsync(dto.Name, dto.Email);
 
-            return Result<string>.Ok("Usuário criado com sucesso");
+            return Result<string>.Ok("Usuário criado com sucesso. Um E-mail de Confirmação foi enviado para sua caixa de entrada.");
 
         }
     }
