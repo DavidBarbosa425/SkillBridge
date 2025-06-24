@@ -1,7 +1,9 @@
-﻿namespace Domain.Interfaces
+﻿using Domain.Common;
+
+namespace Domain.Interfaces
 {
     public interface IEmailService
     {
-        Task SendRegistrationConfirmationAsync(string name, string email);
+        Task SendEmailAsync(string email, string subject, string body);
     }
 }
