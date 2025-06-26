@@ -1,10 +1,6 @@
-﻿using Domain.Common;
-using Domain.Constants;
-using Domain.Entities;
-using Domain.Interfaces;
+﻿using Domain.Interfaces;
 using Infrastructure.Configurations;
 using MailKit.Net.Smtp;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using MimeKit;
 

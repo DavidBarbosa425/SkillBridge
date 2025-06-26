@@ -34,14 +34,23 @@ namespace Application.Services
 
             if(!creationResult.Success) return Result<string>.Failure("Erro ao criar Usuário, tente novamente mais tarde");
 
-            var resultEmailBody = await GenerateEmailConfirmationBodyAsync(new ApplicationUser(dto.Name, dto.Email));
+            var result = await SendEmailConfirmationAsync(new ApplicationUser(dto.Name, dto.Email));
 
-            if(!resultEmailBody.Success) return Result<string>.Failure(resultEmailBody.Message);
-
-            await _emailService.SendEmailAsync(dto.Email, EmailSubjects.Confirmation, resultEmailBody.Data);
+            if(!result.Success) return Result<string>.Failure(result.Message);
 
             return Result<string>.Ok("Usuário criado com sucesso. Um E-mail de Confirmação foi enviado para sua caixa de entrada.");
 
+        }
+
+        private async Task<Result<string>> SendEmailConfirmationAsync(ApplicationUser applicationUser)
+        {
+            var resultEmailBody = await GenerateEmailConfirmationBodyAsync(applicationUser);
+
+            if (!resultEmailBody.Success) return Result<string>.Failure(resultEmailBody.Message);
+
+            await _emailService.SendEmailAsync(applicationUser.Email, EmailSubjects.Confirmation, resultEmailBody.Data);
+
+            return Result<string>.Ok("E-mail enviado com sucesso!");
         }
 
         private async Task<Result<string>> GenerateEmailConfirmationBodyAsync(ApplicationUser user)
@@ -50,7 +59,7 @@ namespace Application.Services
 
             if (!confirmationLinkResult.Success) return Result<string>.Failure(confirmationLinkResult.Message);
 
-            var htmlBody = EmailTemplateFactory.CreateConfirmationEmail(user.UserName, confirmationLinkResult.Data);
+            var htmlBody = EmailTemplateFactory.GenerateConfirmationEmailHtml(user.UserName, confirmationLinkResult.Data);
 
             return Result<string>.Ok(htmlBody);
             

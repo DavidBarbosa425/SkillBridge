@@ -8,7 +8,7 @@ namespace Application.Templates
 {
     public static class EmailTemplateFactory
     {
-        public static string CreateConfirmationEmail(string userName, string confirmationLink)
+        public static string GenerateConfirmationEmailHtml(string userName, string confirmationLink)
         {
             return $@"
             <p>Olá {userName},</p>
