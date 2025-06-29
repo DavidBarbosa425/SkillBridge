@@ -11,12 +11,5 @@
 
         public EmailConfirmationToken() { }
 
-        public EmailConfirmationToken(ApplicationUser user, string token)
-        {
-            UserId = user.Id;
-            Name = string.IsNullOrEmpty(user.UserName) ? "" : user.UserName;
-            Email = string.IsNullOrEmpty(user.Email) ? "" : user.Email;
-            Token = token;
-        }
     }
 }

@@ -1,11 +1,10 @@
-﻿using Domain.Entities;
-
-namespace Domain.Interfaces
+﻿namespace Domain.Interfaces
 {
     public interface IEmailRepository
     {
-        Task<bool> SaveTokenEmailConfirmationAsync(EmailConfirmationToken emailConfirmationToken);
-        Task<string> GenerateEmailConfirmationTokenAsync(ApplicationUser user);
-        Task<string> GeneratePasswordResetTokenAsync(ApplicationUser user);
+        Task<bool> SaveTokenEmailConfirmationAsync(string email, string token);
+        Task<string> GenerateEmailConfirmationTokenAsync(string email);
+        Task<string> GeneratePasswordResetTokenAsync(string email);
+        Task<Guid> GetTokenEmailConfirmationIdAsync(string email);
     }
 }

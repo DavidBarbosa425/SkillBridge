@@ -1,14 +1,13 @@
 using Application.Interfaces;
 using Application.Services;
-using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Configurations;
 using Infrastructure.Data;
+using Infrastructure.Identity.Models;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 var builder = WebApplication.CreateBuilder(args);
 

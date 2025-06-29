@@ -1,6 +1,7 @@
 ﻿using Domain.Common;
 using Domain.Entities;
 using Domain.Interfaces;
+using Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace Infrastructure.Repositories

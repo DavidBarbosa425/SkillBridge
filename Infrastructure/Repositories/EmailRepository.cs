@@ -1,7 +1,9 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Data;
+using Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
@@ -17,8 +19,20 @@ namespace Infrastructure.Repositories
             _context = context;
             _userManager = userManager;
         }
-        public async Task<bool> SaveTokenEmailConfirmationAsync(EmailConfirmationToken emailConfirmationToken)
+        public async Task<bool> SaveTokenEmailConfirmationAsync(string email, string token)
         {
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user == null) return false;
+
+            var emailConfirmationToken = new EmailConfirmationToken
+            {
+                UserId = user.Id,
+                Name = user.UserName,
+                Email = user.Email,
+                Token = token
+            };
+
             _context.EmailConfirmationTokens.Add(emailConfirmationToken);
 
             var result = await _context.SaveChangesAsync();
@@ -26,14 +40,22 @@ namespace Infrastructure.Repositories
             return result > 0;
         }
 
-        public async Task<string> GenerateEmailConfirmationTokenAsync(ApplicationUser user)
+        public async Task<Guid> GetTokenEmailConfirmationIdAsync(string email)
         {
+            var result = await _context.EmailConfirmationTokens.FirstOrDefaultAsync(t => t.Email.Contains(email));
+            return result.Id;
+        }
+
+        public async Task<string> GenerateEmailConfirmationTokenAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
             return token;
         }
-        public async Task<string> GeneratePasswordResetTokenAsync(ApplicationUser user)
+        public async Task<string> GeneratePasswordResetTokenAsync(string email)
         {
+            var user = await _userManager.FindByEmailAsync(email);
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
             return token;
