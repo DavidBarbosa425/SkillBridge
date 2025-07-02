@@ -4,7 +4,6 @@ using Application.Templates;
 using Domain.Common;
 using Domain.Constants;
 using Domain.Interfaces;
-using Microsoft.AspNetCore.Http;
 
 namespace Application.Services
 
@@ -27,7 +26,9 @@ namespace Application.Services
 
         public async Task<Result<string>> RegisterUserAsync(RegisterUserDto dto)
         {
-            var creationResult = await _userRepository.AddAsync(dto.Name, dto.Email, dto.Password);
+            var user = ApplicationUserMapper.ToUser(dto);
+
+            var creationResult = await _userRepository.AddAsync(user);
 
             if(!creationResult.Success) return Result<string>.Failure("Erro ao criar Usuário, tente novamente mais tarde");
 
