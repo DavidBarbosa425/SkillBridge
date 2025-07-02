@@ -1,6 +1,9 @@
 using Application.Interfaces;
 using Application.Services;
+using Application.Validators;
 using Domain.Interfaces;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Infrastructure.Configurations;
 using Infrastructure.Data;
 using Infrastructure.Identity.Models;
@@ -16,6 +19,9 @@ builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Emai
 
 
 builder.Services.AddControllers();
+
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<RegisterUserDtoValidator>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
