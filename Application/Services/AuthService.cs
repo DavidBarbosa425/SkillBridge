@@ -14,18 +14,15 @@ namespace Application.Services
         private readonly IUserRepository _userRepository;
         private readonly IEmailService _emailService;
         private readonly IEmailRepository _emailRepository;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public AuthService(
             IUserRepository userRepository,
             IEmailService emailService,
-            IEmailRepository emailRepository,
-            IHttpContextAccessor httpContextAccessor)
+            IEmailRepository emailRepository)
         {
             _userRepository = userRepository;
             _emailService = emailService;
             _emailRepository = emailRepository;
-            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<Result<string>> RegisterUserAsync(RegisterUserDto dto)
@@ -66,9 +63,6 @@ namespace Application.Services
         }
         private async Task<Result<string>> GenerateLinkConfirmationAsync(string name, string email)
         {
-            var request = _httpContextAccessor.HttpContext?.Request;
-            var scheme = request?.Scheme ?? "https";
-            var host = request?.Host.ToString() ?? "localhost";
 
             var token = await _emailRepository.GenerateEmailConfirmationTokenAsync(email);
 
@@ -82,7 +76,7 @@ namespace Application.Services
 
             if (idToken == null) return Result<string>.Failure("Erro ao buscar token de confirmação de e-mail.");
 
-            var confirmationLink = $"{scheme}://{host}/api/auth/confirmationUserEmail?id={idToken.ToString()}";
+            var confirmationLink = _emailService.GenerateLinkEndPoint("auth", "confirmationUserEmail", idToken.ToString());
 
             return Result<string>.Ok(confirmationLink);
         }
