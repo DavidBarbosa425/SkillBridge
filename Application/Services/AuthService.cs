@@ -6,26 +6,31 @@ using Domain.Constants;
 using Domain.Interfaces;
 
 namespace Application.Services
-
 {
     public class AuthService : IAuthService
     {
         private readonly IUserRepository _userRepository;
         private readonly IEmailService _emailService;
         private readonly IEmailRepository _emailRepository;
+        private readonly IValidatorService _validationRules;
 
         public AuthService(
             IUserRepository userRepository,
             IEmailService emailService,
-            IEmailRepository emailRepository)
+            IEmailRepository emailRepository,
+            IValidatorService validationRules
+            )
         {
             _userRepository = userRepository;
             _emailService = emailService;
             _emailRepository = emailRepository;
+            _validationRules = validationRules;
         }
 
         public async Task<Result<string>> RegisterUserAsync(RegisterUserDto dto)
         {
+            await _validationRules.ValidateAsync(dto);
+
             var user = ApplicationUserMapper.ToUser(dto);
 
             var creationResult = await _userRepository.AddAsync(user);
@@ -82,5 +87,9 @@ namespace Application.Services
             return Result<string>.Ok(confirmationLink);
         }
 
+        public async Task LoginAsync(LoginDto dto)
+        {
+            await _validationRules.ValidateAsync(dto);
+        }
     }
 }

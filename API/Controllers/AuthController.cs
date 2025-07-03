@@ -17,13 +17,18 @@ namespace API.Controllers
         [HttpPost("registerUser")]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterUserDto dto)
         {
-            if (!ModelState.IsValid)    
-            {
-                return BadRequest(ModelState);
-            }
+
             var result = await _authService.RegisterUserAsync(dto);
 
             return Ok(result);
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginDto dto)
+        {
+            await _authService.LoginAsync(dto);
+
+            return Ok("result");
         }
     }
 }

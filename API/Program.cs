@@ -1,9 +1,9 @@
 using Application.Interfaces;
 using Application.Services;
 using Application.Validators;
+using Application.Validators.Models;
 using Domain.Interfaces;
 using FluentValidation;
-using FluentValidation.AspNetCore;
 using Infrastructure.Configurations;
 using Infrastructure.Data;
 using Infrastructure.Identity.Models;
@@ -20,7 +20,6 @@ builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Emai
 
 builder.Services.AddControllers();
 
-builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<RegisterUserDtoValidator>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(opt =>
@@ -34,6 +33,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IEmailRepository, EmailRepository>();
+builder.Services.AddScoped<IValidatorService, ValidatorService>();
 builder.Services.AddSwaggerGen(); 
 
 builder.Services.AddOpenApi();
