@@ -1,22 +1,14 @@
-using Application.Interfaces;
-using Application.Services;
-using Application.Validators;
+using API.Extensions;
+using Application.Extensions;
 using Application.Validators.Models;
-using Domain.Interfaces;
 using FluentValidation;
-using Infrastructure.Configurations;
 using Infrastructure.Data;
+using Infrastructure.Extensions;
 using Infrastructure.Identity.Models;
-using Infrastructure.Repositories;
-using Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("Smtp"));
-builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Email"));
-
 
 builder.Services.AddControllers();
 
@@ -29,11 +21,10 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IEmailService, EmailService>();
-builder.Services.AddScoped<IEmailRepository, EmailRepository>();
-builder.Services.AddScoped<IValidatorService, ValidatorService>();
+builder.Services.AddApplicationServices();
+builder.Services.AddInfrastructureServices();
+builder.Services.AddCustomConfigurations(builder.Configuration);
+
 builder.Services.AddSwaggerGen(); 
 
 builder.Services.AddOpenApi();
@@ -43,10 +34,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-}
 
-if (app.Environment.IsDevelopment())
-{
     app.UseSwagger(); 
     app.UseSwaggerUI(c => {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "SkillBridge v1");
