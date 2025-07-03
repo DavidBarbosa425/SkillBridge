@@ -1,4 +1,8 @@
 ﻿using Infrastructure.Configurations;
+using Infrastructure.Data;
+using Infrastructure.Identity.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Extensions
 {
@@ -8,6 +12,22 @@ namespace API.Extensions
         {
             services.Configure<SmtpSettings>(configuration.GetSection("Smtp"));
             services.Configure<EmailSettings>(configuration.GetSection("Email"));
+            return services;
+        }
+
+        public static IServiceCollection AddIdentityConfiguration(this IServiceCollection services)
+        {
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+
+            return services;
+        }
+
+        public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddDbContext<ApplicationDbContext>(opt =>
+                opt.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
             return services;
         }
     }

@@ -1,29 +1,16 @@
 using API.Extensions;
 using Application.Extensions;
-using Application.Validators.Models;
-using FluentValidation;
-using Infrastructure.Data;
 using Infrastructure.Extensions;
-using Infrastructure.Identity.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-builder.Services.AddValidatorsFromAssemblyContaining<RegisterUserDtoValidator>();
-
-builder.Services.AddDbContext<ApplicationDbContext>(opt =>
-    opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders();
-
-builder.Services.AddApplicationServices();
-builder.Services.AddInfrastructureServices();
+builder.Services.AddDatabase(builder.Configuration);
+builder.Services.AddIdentityConfiguration();
 builder.Services.AddCustomConfigurations(builder.Configuration);
+builder.Services.AddInfrastructureServices();
+builder.Services.AddApplicationServices();
 
 builder.Services.AddSwaggerGen(); 
 
