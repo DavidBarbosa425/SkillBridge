@@ -13,6 +13,7 @@ namespace Infrastructure.Extensions
             services.AddScoped<IEmailRepository, EmailRepository>();
 
             services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IUrlService, UrlService>();
 
             return services;
         }

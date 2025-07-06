@@ -1,9 +1,10 @@
 ﻿using Domain.Common;
+using Domain.Entities;
 
 namespace Domain.Interfaces
 {
     public interface IEmailService
     {
-        Task SendEmailAsync(string email, string subject, string body);
+        Task SendEmailAsync(SendEmail sendEmail);
     }
 }

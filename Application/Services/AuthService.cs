@@ -55,7 +55,14 @@ namespace Application.Services
 
             if (!resultEmailBody.Success) return Result<string>.Failure(resultEmailBody.Message);
 
-            await _emailService.SendEmailAsync(user.Email, EmailSubjects.Confirmation, resultEmailBody.Data!);
+            var sendEmail = new SendEmail
+            {
+                Email = user.Email,
+                Subject = EmailSubjects.Confirmation,
+                Body = resultEmailBody.Data!
+            };
+
+            await _emailService.SendEmailAsync(sendEmail);
 
             return Result<string>.Ok("E-mail enviado com sucesso!");
         }

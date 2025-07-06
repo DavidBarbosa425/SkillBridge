@@ -1,4 +1,5 @@
-﻿using Domain.Interfaces;
+﻿using Domain.Entities;
+using Domain.Interfaces;
 using Infrastructure.Configurations;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
@@ -21,14 +22,14 @@ namespace Infrastructure.Services
             _smtpSettings = smtpOptions.Value;
         }
 
-        public async Task SendEmailAsync(string email, string subject, string body)
+        public async Task SendEmailAsync(SendEmail sendEmail)
         {
 
             var emailMessage = new MimeMessage();
             emailMessage.From.Add(new MailboxAddress(_emailSettings.Sender, _emailSettings.From));
-            emailMessage.To.Add(new MailboxAddress("", email));
-            emailMessage.Subject = subject;
-            emailMessage.Body = new TextPart("html") { Text = body };
+            emailMessage.To.Add(new MailboxAddress("", sendEmail.Email));
+            emailMessage.Subject = sendEmail.Subject;
+            emailMessage.Body = new TextPart("html") { Text = sendEmail.Body };
 
             using (var client = new SmtpClient())
             {

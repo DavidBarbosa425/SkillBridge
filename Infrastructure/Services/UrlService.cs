@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Domain.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
 
 namespace Infrastructure.Services
 {
-    public class UrlService
+    public class UrlService : IUrlService
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
 
