@@ -1,12 +1,8 @@
-﻿using Domain.Common;
-using Domain.Interfaces;
+﻿using Domain.Interfaces;
 using Infrastructure.Configurations;
-using Infrastructure.Repositories;
 using MailKit.Net.Smtp;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using MimeKit;
-
 
 
 namespace Infrastructure.Services
@@ -15,17 +11,14 @@ namespace Infrastructure.Services
     {
         private readonly EmailSettings _emailSettings;
         private readonly SmtpSettings _smtpSettings;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public EmailService(
             IOptions<EmailSettings> emailOptions,
-            IOptions<SmtpSettings> smtpOptions,
-            IHttpContextAccessor httpContextAccessor
+            IOptions<SmtpSettings> smtpOptions
             )
         {
             _emailSettings = emailOptions.Value;
             _smtpSettings = smtpOptions.Value;
-            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task SendEmailAsync(string email, string subject, string body)
@@ -46,19 +39,5 @@ namespace Infrastructure.Services
             }
 
         }
-        public string GenerateLinkEndPoint(string controller, string method, string? Idparam)
-        {
-            var request = _httpContextAccessor.HttpContext?.Request;
-            var scheme = request?.Scheme ?? "https";
-            var host = request?.Host.ToString() ?? "localhost";
-
-            var endPoint = $"{scheme}://{host}/api/{controller}/{method}";
-
-            endPoint = string.IsNullOrEmpty(Idparam) ? endPoint : $"{endPoint}?id={Idparam}";
-
-            return endPoint;
-        }
-
-
     }
 }

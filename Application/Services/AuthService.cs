@@ -3,6 +3,7 @@ using Application.Interfaces;
 using Application.Templates;
 using Domain.Common;
 using Domain.Constants;
+using Domain.Entities;
 using Domain.Interfaces;
 
 namespace Application.Services
@@ -12,18 +13,21 @@ namespace Application.Services
         private readonly IUserRepository _userRepository;
         private readonly IEmailService _emailService;
         private readonly IEmailRepository _emailRepository;
+        private readonly IUrlService _urlService;
         private readonly IValidatorService _validationRules;
 
         public AuthService(
             IUserRepository userRepository,
             IEmailService emailService,
             IEmailRepository emailRepository,
+            IUrlService urlService,
             IValidatorService validationRules
             )
         {
             _userRepository = userRepository;
             _emailService = emailService;
             _emailRepository = emailRepository;
+            _urlService = urlService;
             _validationRules = validationRules;
         }
 
@@ -37,7 +41,7 @@ namespace Application.Services
 
             if(!creationResult.Success) return Result<string>.Failure("Erro ao criar Usuário, tente novamente mais tarde");
 
-            var result = await SendEmailConfirmationAsync(dto.Name, dto.Email);
+            var result = await SendEmailConfirmationAsync(user);
 
             if(!result.Success) return Result<string>.Failure(result.Message);
 
@@ -45,29 +49,29 @@ namespace Application.Services
 
         }
 
-        private async Task<Result<string>> SendEmailConfirmationAsync(string name, string email)
+        private async Task<Result<string>> SendEmailConfirmationAsync(User user)
         {
-            var resultEmailBody = await GenerateEmailConfirmationAsync(name, email);
+            var resultEmailBody = await GenerateEmailConfirmationAsync(user);
 
             if (!resultEmailBody.Success) return Result<string>.Failure(resultEmailBody.Message);
 
-            await _emailService.SendEmailAsync(email, EmailSubjects.Confirmation, resultEmailBody.Data);
+            await _emailService.SendEmailAsync(user.Email, EmailSubjects.Confirmation, resultEmailBody.Data!);
 
             return Result<string>.Ok("E-mail enviado com sucesso!");
         }
 
-        private async Task<Result<string>> GenerateEmailConfirmationAsync(string name, string email)
+        private async Task<Result<string>> GenerateEmailConfirmationAsync(User user)
         {
-            var confirmationLinkResult = await GenerateLinkConfirmationAsync(name, email);
+            var confirmationLinkResult = await GenerateApiUrlConfirmationAsync(user.Email);
 
             if (!confirmationLinkResult.Success) return Result<string>.Failure(confirmationLinkResult.Message);
 
-            var htmlBody = EmailTemplateFactory.GenerateConfirmationEmailHtml(name, confirmationLinkResult.Data);
+            var htmlBody = EmailTemplateFactory.GenerateConfirmationEmailHtml(user.Name, confirmationLinkResult.Data!);
 
             return Result<string>.Ok(htmlBody);
             
         }
-        private async Task<Result<string>> GenerateLinkConfirmationAsync(string name, string email)
+        private async Task<Result<string>> GenerateApiUrlConfirmationAsync(string email)
         {
 
             var token = await _emailRepository.GenerateEmailConfirmationTokenAsync(email);
@@ -78,11 +82,11 @@ namespace Application.Services
 
             if (!result) return Result<string>.Failure("Erro ao salvar token de confirmação de e-mail.");
 
-            var idToken = await _emailRepository.GetTokenEmailConfirmationIdAsync(email);
+            var tokenGuid = await _emailRepository.GetEmailConfirmationTokenGuidAsync(email);
 
-            if (idToken == null) return Result<string>.Failure("Erro ao buscar token de confirmação de e-mail.");
+            if (tokenGuid == Guid.Empty) return Result<string>.Failure("Erro ao buscar token de confirmação de e-mail.");
 
-            var confirmationLink = _emailService.GenerateLinkEndPoint("auth", "confirmationUserEmail", idToken.ToString());
+            var confirmationLink = _urlService.GenerateApiUrl("auth", "confirmationUserEmail", new Dictionary<string, string?> { { "Guid", tokenGuid.ToString() } });
 
             return Result<string>.Ok(confirmationLink);
         }

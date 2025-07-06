@@ -28,8 +28,8 @@ namespace Infrastructure.Repositories
             var emailConfirmationToken = new EmailConfirmationToken
             {
                 UserId = user.Id,
-                Name = user.UserName,
-                Email = user.Email,
+                Name = user.UserName!,
+                Email = user.Email!,
                 Token = token
             };
 
@@ -40,23 +40,23 @@ namespace Infrastructure.Repositories
             return result > 0;
         }
 
-        public async Task<Guid> GetTokenEmailConfirmationIdAsync(string email)
+        public async Task<Guid> GetEmailConfirmationTokenGuidAsync(string email)
         {
             var result = await _context.EmailConfirmationTokens.FirstOrDefaultAsync(t => t.Email.Contains(email));
-            return result.Id;
+            return result!.Id;
         }
 
         public async Task<string> GenerateEmailConfirmationTokenAsync(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
-            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user!);
 
             return token;
         }
         public async Task<string> GeneratePasswordResetTokenAsync(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
-            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user!);
 
             return token;
         }
