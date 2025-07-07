@@ -1,4 +1,5 @@
 using API.Extensions;
+using API.Middlewares;
 using Application.Extensions;
 using Infrastructure.Extensions;
 
@@ -17,6 +18,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
+
+app.UseCustomExceptionMiddleware();
 
 if (app.Environment.IsDevelopment())
 {

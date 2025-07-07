@@ -13,4 +13,23 @@ public static class ApplicationUserMapper
         };
     }
 
+    public static UserDto ToUserDto(RegisterUserDto dto)
+    {
+        return new UserDto
+        {
+            Name = dto.Name,
+            Email = dto.Email
+        };
+    }
+
+    public static SendEmail ToSendEmail(SendEmailDto dto)
+    {
+        return new SendEmail
+        {
+            Email = dto.Email,
+            Subject = dto.Subject,
+            Body = dto.Body
+        };
+    }
+
 }

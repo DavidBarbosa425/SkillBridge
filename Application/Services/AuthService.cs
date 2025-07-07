@@ -3,7 +3,6 @@ using Application.Interfaces;
 using Application.Templates;
 using Domain.Common;
 using Domain.Constants;
-using Domain.Entities;
 using Domain.Interfaces;
 
 namespace Application.Services
@@ -41,7 +40,9 @@ namespace Application.Services
 
             if(!creationResult.Success) return Result<string>.Failure("Erro ao criar Usuário, tente novamente mais tarde");
 
-            var result = await SendEmailConfirmationAsync(user);
+            var userDto = ApplicationUserMapper.ToUserDto(dto);
+
+            var result = await SendEmailConfirmationAsync(userDto);
 
             if(!result.Success) return Result<string>.Failure(result.Message);
 
@@ -49,31 +50,33 @@ namespace Application.Services
 
         }
 
-        private async Task<Result<string>> SendEmailConfirmationAsync(User user)
+        private async Task<Result<string>> SendEmailConfirmationAsync(UserDto userDto)
         {
-            var resultEmailBody = await GenerateEmailConfirmationAsync(user);
+            var resultEmailBody = await GenerateEmailConfirmationAsync(userDto);
 
             if (!resultEmailBody.Success) return Result<string>.Failure(resultEmailBody.Message);
 
-            var sendEmail = new SendEmail
+            var sendEmailDto = new SendEmailDto
             {
-                Email = user.Email,
+                Email = userDto.Email,
                 Subject = EmailSubjects.Confirmation,
                 Body = resultEmailBody.Data!
             };
+
+            var sendEmail = ApplicationUserMapper.ToSendEmail(sendEmailDto);
 
             await _emailService.SendEmailAsync(sendEmail);
 
             return Result<string>.Ok("E-mail enviado com sucesso!");
         }
 
-        private async Task<Result<string>> GenerateEmailConfirmationAsync(User user)
+        private async Task<Result<string>> GenerateEmailConfirmationAsync(UserDto userDto)
         {
-            var confirmationLinkResult = await GenerateApiUrlConfirmationAsync(user.Email);
+            var confirmationLinkResult = await GenerateApiUrlConfirmationAsync(userDto.Email);
 
             if (!confirmationLinkResult.Success) return Result<string>.Failure(confirmationLinkResult.Message);
 
-            var htmlBody = EmailTemplateFactory.GenerateConfirmationEmailHtml(user.Name, confirmationLinkResult.Data!);
+            var htmlBody = EmailTemplateFactory.GenerateConfirmationEmailHtml(userDto.Name, confirmationLinkResult.Data!);
 
             return Result<string>.Ok(htmlBody);
             
