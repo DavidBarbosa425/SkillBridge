@@ -1,6 +1,7 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
-using Application.Services;
+using Application.Interfaces.Mappers;
+using Application.Services.Auth;
 using Domain.Common;
 using Domain.Entities;
 using Domain.Interfaces;
@@ -15,21 +16,20 @@ namespace Application.UnitTests.Services
         {
             // Arrange
             var userRepositoryMock = new Mock<IUserRepository>();
-            var emailServiceMock = new Mock<IEmailService>();
-            var emailRepositoryMock = new Mock<IEmailRepository>();
-            var urlServiceMock = new Mock<IUrlService>();
+            var applicationMapperMock = new Mock<IApplicationMapper>();
             var validatorServiceMock = new Mock<IValidatorService>();
+            var emailServiceMock = new Mock<IEmailService>();
 
             userRepositoryMock
                 .Setup(x => x.AddAsync(It.IsAny<User>()))
-                .ReturnsAsync(Result<string>.Failure("Erro ao criar Usuário, tente novamente mais tarde"));
+                .ReturnsAsync(Result<string>.Ok("Usuário criado com sucesso. Um E-mail de Confirmação foi enviado para sua caixa de entrada."));
+
 
             var authService = new AuthService(
                 userRepositoryMock.Object,
-                emailServiceMock.Object,
-                emailRepositoryMock.Object,
-                urlServiceMock.Object,
-                validatorServiceMock.Object
+                applicationMapperMock.Object,
+                validatorServiceMock.Object,
+                emailServiceMock.Object
             );
 
             var dto = new RegisterUserDto
@@ -44,7 +44,7 @@ namespace Application.UnitTests.Services
 
             // Assert
             Assert.False(result.Success);
-            Assert.Equal("Erro ao criar Usuário, tente novamente mais tarde", result.Message);
+            Assert.Equal("Usuário criado com sucesso. Um E-mail de Confirmação foi enviado para sua caixa de entrada.", result.Message);
         }
     }
 }

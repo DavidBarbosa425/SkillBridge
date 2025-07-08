@@ -1,5 +1,7 @@
 ﻿using Application.Interfaces;
-using Application.Services;
+using Application.Interfaces.Mappers;
+using Application.Mappers;
+using Application.Services.Auth;
 using Application.Validators;
 using Application.Validators.Models;
 using FluentValidation;
@@ -16,6 +18,11 @@ namespace Application.Extensions
 
             // Validators
             services.AddValidatorsFromAssemblyContaining<RegisterUserDtoValidator>();
+
+            // Mappers
+            services.AddScoped<IApplicationMapper, ApplicationMapper>();
+            services.AddScoped<IApplicationUserMapper, ApplicationUserMapper>();
+            services.AddScoped<IApplicationEmailMapper, ApplicationEmailMapper>();
 
             return services;
         }

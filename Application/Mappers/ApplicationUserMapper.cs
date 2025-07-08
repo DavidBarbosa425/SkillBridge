@@ -1,9 +1,10 @@
 ﻿using Application.DTOs;
+using Application.Interfaces.Mappers;
 using Domain.Entities;
 
-public static class ApplicationUserMapper
+public class ApplicationUserMapper : IApplicationUserMapper
 {
-    public static User ToUser(RegisterUserDto dto)
+    public User ToUser(RegisterUserDto dto)
     {
         return new User
         {
@@ -13,7 +14,7 @@ public static class ApplicationUserMapper
         };
     }
 
-    public static UserDto ToUserDto(RegisterUserDto dto)
+    public UserDto ToUserDto(RegisterUserDto dto)
     {
         return new UserDto
         {
@@ -21,15 +22,4 @@ public static class ApplicationUserMapper
             Email = dto.Email
         };
     }
-
-    public static SendEmail ToSendEmail(SendEmailDto dto)
-    {
-        return new SendEmail
-        {
-            Email = dto.Email,
-            Subject = dto.Subject,
-            Body = dto.Body
-        };
-    }
-
 }
