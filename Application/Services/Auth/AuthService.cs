@@ -29,7 +29,7 @@ namespace Application.Services.Auth
             _emailConfirmationService = emailConfirmationService;
         }
 
-        public async Task<Result<string>> RegisterUserAsync(RegisterUserDto dto)
+        public async Task<Result> RegisterUserAsync(RegisterUserDto dto)
         {
             await _validationRules.ValidateAsync(dto);
 
@@ -43,7 +43,7 @@ namespace Application.Services.Auth
 
             await _emailService.SendEmailAsync(sendEmail);
 
-            return Result<string>.Ok("Usuário criado com sucesso. Um E-mail de Confirmação foi enviado para sua caixa de entrada.");
+            return Result.Ok("Usuário criado com sucesso. Um E-mail de Confirmação foi enviado para sua caixa de entrada.");
 
         }
 
