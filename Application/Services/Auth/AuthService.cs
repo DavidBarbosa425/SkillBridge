@@ -12,18 +12,21 @@ namespace Application.Services.Auth
         private readonly IApplicationMapper _mapper;
         private readonly IValidatorService _validationRules;
         private readonly IEmailService _emailService;
+        private readonly IEmailConfirmationService _emailConfirmationService;
 
         public AuthService(
             IUserRepository userRepository,
             IApplicationMapper mapper,
             IValidatorService validationRules,
-            IEmailService emailService
+            IEmailService emailService,
+            IEmailConfirmationService emailConfirmationService
             )
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _validationRules = validationRules;
             _emailService = emailService;
+            _emailConfirmationService = emailConfirmationService;
         }
 
         public async Task<Result<string>> RegisterUserAsync(RegisterUserDto dto)
@@ -36,7 +39,7 @@ namespace Application.Services.Auth
 
             if(!creationResult.Success) return Result<string>.Failure("Erro ao criar Usuário, tente novamente mais tarde");
 
-            var sendEmail = await _mapper.Email.ToSendEmailConfirmation(user);
+            var sendEmail = await _emailConfirmationService.GenerateEmailConfirmation(user);
 
             await _emailService.SendEmailAsync(sendEmail);
 

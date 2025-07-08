@@ -2,6 +2,7 @@
 using Application.Interfaces.Mappers;
 using Application.Mappers;
 using Application.Services.Auth;
+using Application.Services.Email;
 using Application.Validators;
 using Application.Validators.Models;
 using FluentValidation;
@@ -15,6 +16,7 @@ namespace Application.Extensions
         {
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IValidatorService, ValidatorService>();
+            services.AddScoped<IEmailConfirmationService, EmailConfirmationService>();
 
             // Validators
             services.AddValidatorsFromAssemblyContaining<RegisterUserDtoValidator>();
@@ -22,7 +24,6 @@ namespace Application.Extensions
             // Mappers
             services.AddScoped<IApplicationMapper, ApplicationMapper>();
             services.AddScoped<IApplicationUserMapper, ApplicationUserMapper>();
-            services.AddScoped<IApplicationEmailMapper, ApplicationEmailMapper>();
 
             return services;
         }

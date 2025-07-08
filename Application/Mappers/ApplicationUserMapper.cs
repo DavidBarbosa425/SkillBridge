@@ -13,13 +13,4 @@ public class ApplicationUserMapper : IApplicationUserMapper
             Password = dto.Password
         };
     }
-
-    public UserDto ToUserDto(RegisterUserDto dto)
-    {
-        return new UserDto
-        {
-            Name = dto.Name,
-            Email = dto.Email
-        };
-    }
 }

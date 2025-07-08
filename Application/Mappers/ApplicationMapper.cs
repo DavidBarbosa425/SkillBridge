@@ -5,14 +5,11 @@ namespace Application.Mappers
     public class ApplicationMapper : IApplicationMapper
     {
         public IApplicationUserMapper User { get; }
-        public IApplicationEmailMapper Email { get; }
 
         public ApplicationMapper(
-            IApplicationUserMapper userMapper,
-            IApplicationEmailMapper emailMapper)
+            IApplicationUserMapper userMapper)
         {
             User = userMapper;
-            Email = emailMapper;
         }
     }
 

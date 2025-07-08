@@ -1,25 +1,24 @@
-﻿using Application.Interfaces.Mappers;
+﻿using Application.Interfaces;
 using Application.Templates;
 using Domain.Constants;
 using Domain.Entities;
 using Domain.Interfaces;
 
-namespace Application.Mappers
+namespace Application.Services.Email
 {
-    public class ApplicationEmailMapper : IApplicationEmailMapper
+    public class EmailConfirmationService : IEmailConfirmationService
     {
         private readonly IEmailRepository _emailRepository;
         private readonly IUrlService _urlService;
 
-        public ApplicationEmailMapper(
+        public EmailConfirmationService(
             IEmailRepository emailRepository,
             IUrlService urlService)
         {
             _emailRepository = emailRepository;
             _urlService = urlService;
         }
-
-        public async Task<SendEmail> ToSendEmailConfirmation(User user)
+        public async Task<SendEmail> GenerateEmailConfirmation(User user)
         {
             var token = await _emailRepository.GenerateEmailConfirmationTokenAsync(user.Email);
 
