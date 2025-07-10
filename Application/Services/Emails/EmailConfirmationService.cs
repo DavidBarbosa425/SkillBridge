@@ -43,7 +43,7 @@ namespace Application.Services.Emails
             var tokenGuid = await _emailRepository.GetEmailConfirmationTokenGuidAsync(userDto.Email);
 
             if (!tokenGuid.Success)
-                return Result<SendEmail>.Failure("Falha ao gerar GUID de confirmação por e-mail.");
+                return Result<SendEmail>.Failure("GUID de confirmação por e-mail não foi achado.");
 
             var confirmationLink = _urlService.GenerateApiUrl("auth", "confirmationUserEmail",
                 new Dictionary<string, string?> { { "Guid", tokenGuid.ToString() } });
