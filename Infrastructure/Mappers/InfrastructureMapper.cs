@@ -2,7 +2,7 @@
 
 namespace Infrastructure.Mappers
 {
-    internal class InfrastructureMapper : IInfrastructureMapper
+    public class InfrastructureMapper : IInfrastructureMapper
     {
         public IInfrastructureUserMapper User { get;}
         public InfrastructureMapper(IInfrastructureUserMapper userMapper)

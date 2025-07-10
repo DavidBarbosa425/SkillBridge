@@ -4,7 +4,7 @@ using Infrastructure.Interfaces;
 
 namespace Infrastructure.Mappers
 {
-    internal class InfrastructureUserMapper : IInfrastructureUserMapper
+    public class InfrastructureUserMapper : IInfrastructureUserMapper
     {
         public ApplicationUser ToApplicationUser(User user)
         {
@@ -12,6 +12,16 @@ namespace Infrastructure.Mappers
             {
                 UserName = user.Email,
                 Email = user.Email
+            };
+        }
+
+        public User ToUser(ApplicationUser applicationUser)
+        {
+            return new User
+            {
+                Id = Guid.Parse(applicationUser.Id),
+                Name = applicationUser.UserName!,
+                Email = applicationUser.Email!
             };
         }
 

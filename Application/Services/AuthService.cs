@@ -35,9 +35,7 @@ namespace Application.Services
 
             var user = _mapper.User.ToUser(dto);
 
-            var creationResult = await _userRepository.AddAsync(user);
-
-            if(!creationResult.Success) return Result<string>.Failure("Erro ao criar Usuário, tente novamente mais tarde");
+            await _userRepository.AddAsync(user);
 
             var userDto = _mapper.User.ToUserDto(user);
 

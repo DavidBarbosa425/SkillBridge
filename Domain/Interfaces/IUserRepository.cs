@@ -5,6 +5,6 @@ namespace Domain.Interfaces
 {
     public interface IUserRepository
     {
-        Task<Result<string>> AddAsync(User user);
+        Task<User> AddAsync(User user);
     }
 }
