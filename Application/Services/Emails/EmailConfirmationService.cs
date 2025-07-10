@@ -1,22 +1,25 @@
 ﻿using Application.Interfaces;
-using Application.Templates;
+using Application.Interfaces.Factories;
 using Domain.Constants;
 using Domain.Entities;
 using Domain.Interfaces;
 
-namespace Application.Services.Email
+namespace Application.Services.Emails
 {
     public class EmailConfirmationService : IEmailConfirmationService
     {
         private readonly IEmailRepository _emailRepository;
         private readonly IUrlService _urlService;
+        private readonly IEmailTemplateFactory _emailTemplateFactory;
 
         public EmailConfirmationService(
             IEmailRepository emailRepository,
-            IUrlService urlService)
+            IUrlService urlService,
+            IEmailTemplateFactory emailTemplateFactory)
         {
             _emailRepository = emailRepository;
             _urlService = urlService;
+            _emailTemplateFactory = emailTemplateFactory;
         }
         public async Task<SendEmail> GenerateEmailConfirmation(User user)
         {
@@ -41,7 +44,7 @@ namespace Application.Services.Email
             if (string.IsNullOrEmpty(confirmationLink))
                 throw new Exception("Falha ao gerar link de confirmação de e-mail.");
 
-            var body = EmailTemplateFactory.GenerateConfirmationEmailHtml(user.Name, confirmationLink!);
+            var body = _emailTemplateFactory.GenerateConfirmationEmailHtml(user.Name, confirmationLink!);
 
             if (string.IsNullOrEmpty(body))
                 throw new Exception("Falha ao gerar texto de confirmação de e-mail.");

@@ -1,7 +1,7 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
 using Application.Interfaces.Mappers;
-using Application.Services.Auth;
+using Application.Services;
 using Domain.Common;
 using Domain.Entities;
 using Domain.Interfaces;
@@ -23,7 +23,7 @@ namespace Application.UnitTests.Services
 
             userRepositoryMock
                 .Setup(x => x.AddAsync(It.IsAny<User>()))
-                .ReturnsAsync(Result<string>.Ok("df666392-5154-4ee4-bd1e-c16d07ab4fb4"));
+                .ReturnsAsync(Result<string>.Ok(Guid.NewGuid().ToString()));
 
             var user = new User
             {
@@ -41,23 +41,7 @@ namespace Application.UnitTests.Services
                 Name = "Teste",
                 Email = "teste@teste.com",
                 Subject = "Confirmação de E-mail",
-                Body = @$"
-                            <p>Olá Teste,</p>
-                            <p>Clique no botão abaixo para confirmar seu e-mail:</p>
-                            <p>
-                                <a 
-                                    style='
-                                        padding: 10px 20px; 
-                                        background-color: #4CAF50; 
-                                        color: white; 
-                                        text-decoration: none;
-                                    ' 
-                                    href='https://localhost:44319/api/auth/confirmationUserEmail?Guid=da64780e-54f1-414a-946a-098b3abbe450'>
-                                    Confirmar E-mail
-                                </a>
-                            </p>"
-
-
+                Body = @$"<p>Olá Teste</p>"
             };
 
             emailConfirmationServiceMock

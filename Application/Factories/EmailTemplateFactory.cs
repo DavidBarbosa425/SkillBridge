@@ -1,8 +1,10 @@
-﻿namespace Application.Templates
+﻿using Application.Interfaces.Factories;
+
+namespace Application.Factories
 {
-    public static class EmailTemplateFactory
+    public class EmailTemplateFactory : IEmailTemplateFactory
     {
-        public static string GenerateConfirmationEmailHtml(string userName, string confirmationLink)
+        public string GenerateConfirmationEmailHtml(string userName, string confirmationLink)
         {
             return $@"
             <p>Olá {userName},</p>

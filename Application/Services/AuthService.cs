@@ -4,7 +4,7 @@ using Application.Interfaces.Mappers;
 using Domain.Common;
 using Domain.Interfaces;
 
-namespace Application.Services.Auth
+namespace Application.Services
 {
     public class AuthService : IAuthService
     {
