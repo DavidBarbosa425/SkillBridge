@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Domain.Common;
+using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Identity.Models;
 using Infrastructure.Interfaces;
@@ -18,7 +19,7 @@ namespace Infrastructure.Repositories
             _userManager = userManager;
             _infrastructureMapper = infrastructureMapper;
         }
-        public async Task<User> AddAsync(User user)
+        public async Task<Result<User>> AddAsync(User user)
         {
             var applicationUser = _infrastructureMapper.User.ToApplicationUser(user);
 
@@ -27,12 +28,12 @@ namespace Infrastructure.Repositories
             if (!creationResult.Succeeded)
             {
                 var errors = creationResult.Errors.Select(e => e.Description);
-                throw new Exception(errors.ToString());
+                throw new Exception(string.Join("; ", errors));
             }
 
             var createdUser = _infrastructureMapper.User.ToUser(applicationUser);
 
-            return createdUser;
+            return Result<User>.Ok(createdUser);
         }
     }
 }
