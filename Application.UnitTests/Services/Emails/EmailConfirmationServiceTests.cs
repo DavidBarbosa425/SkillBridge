@@ -1,7 +1,7 @@
 ﻿using Application.DTOs;
+using Application.Interfaces;
 using Application.Interfaces.Factories;
 using Application.Services.Emails;
-using Domain.Entities;
 using Domain.Interfaces;
 using Moq;
 
@@ -16,6 +16,7 @@ namespace Application.UnitTests.Services.Emails
             var emailRepositoryMock = new Mock<IEmailRepository>();
             var urlServiceMock = new Mock<IUrlService>();
             var emailTemplateFactoryMock = new Mock<IEmailTemplateFactory>();
+            var validatorServiceMock = new Mock<IValidatorService>();
 
             emailRepositoryMock
                 .Setup(x => x.GenerateEmailConfirmationTokenAsync(It.IsAny<string>()))
@@ -40,7 +41,8 @@ namespace Application.UnitTests.Services.Emails
             var service = new EmailConfirmationService(
                 emailRepositoryMock.Object,
                 urlServiceMock.Object,
-                emailTemplateFactoryMock.Object
+                emailTemplateFactoryMock.Object,
+                validatorServiceMock.Object
                 );
 
             var userDto = new UserDto
