@@ -10,28 +10,28 @@ namespace Application.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IApplicationMapper _mapper;
-        private readonly IValidatorService _validationRules;
+        private readonly IValidatorService _validatorService;
         private readonly IEmailService _emailService;
         private readonly IEmailConfirmationService _emailConfirmationService;
 
         public AuthService(
             IUserRepository userRepository,
             IApplicationMapper mapper,
-            IValidatorService validationRules,
+            IValidatorService validatorService,
             IEmailService emailService,
             IEmailConfirmationService emailConfirmationService
             )
         {
             _userRepository = userRepository;
             _mapper = mapper;
-            _validationRules = validationRules;
+            _validatorService = validatorService;
             _emailService = emailService;
             _emailConfirmationService = emailConfirmationService;
         }
 
         public async Task<Result> RegisterUserAsync(RegisterUserDto dto)
         {
-            await _validationRules.ValidateAsync(dto);
+            await _validatorService.ValidateAsync(dto);
 
             var user = _mapper.User.ToUser(dto);
 
@@ -51,7 +51,7 @@ namespace Application.Services
 
         public async Task LoginAsync(LoginDto dto)
         {
-            await _validationRules.ValidateAsync(dto);
+            await _validatorService.ValidateAsync(dto);
         }
     }
 }

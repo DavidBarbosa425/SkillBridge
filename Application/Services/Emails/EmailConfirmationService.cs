@@ -12,18 +12,23 @@ namespace Application.Services.Emails
         private readonly IEmailRepository _emailRepository;
         private readonly IUrlService _urlService;
         private readonly IEmailTemplateFactory _emailTemplateFactory;
+        private readonly IValidatorService _validatorService;
 
         public EmailConfirmationService(
             IEmailRepository emailRepository,
             IUrlService urlService,
-            IEmailTemplateFactory emailTemplateFactory)
+            IEmailTemplateFactory emailTemplateFactory,
+            IValidatorService validatorService)
         {
             _emailRepository = emailRepository;
             _urlService = urlService;
             _emailTemplateFactory = emailTemplateFactory;
+            _validatorService = validatorService;
         }
         public async Task<SendEmail> GenerateEmailConfirmation(UserDto userDto)
         {
+            await _validatorService.ValidateAsync(userDto);
+
             var token = await _emailRepository.GenerateEmailConfirmationTokenAsync(userDto.Email);
 
             if (string.IsNullOrEmpty(token))
