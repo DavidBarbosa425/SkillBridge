@@ -2,6 +2,7 @@
 using Application.Interfaces;
 using Application.Interfaces.Factories;
 using Application.Services.Emails;
+using Domain.Common;
 using Domain.Interfaces;
 using Moq;
 
@@ -20,15 +21,15 @@ namespace Application.UnitTests.Services.Emails
 
             emailRepositoryMock
                 .Setup(x => x.GenerateEmailConfirmationTokenAsync(It.IsAny<string>()))
-                .ReturnsAsync("test-token");
+                .ReturnsAsync(Result<string>.Ok("test-token"));
 
             emailRepositoryMock
                 .Setup(x => x.SaveTokenEmailConfirmationAsync(It.IsAny<string>(), It.IsAny<string>()))
-                .ReturnsAsync(true);
+                .ReturnsAsync(Result.Ok());
 
             emailRepositoryMock
                 .Setup(x => x.GetEmailConfirmationTokenGuidAsync(It.IsAny<string>()))
-                .ReturnsAsync(Guid.NewGuid());
+                .ReturnsAsync(Result<Guid>.Ok(Guid.NewGuid()));
 
             urlServiceMock
                 .Setup(x => x.GenerateApiUrl(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<string, string?>>()))
@@ -56,7 +57,7 @@ namespace Application.UnitTests.Services.Emails
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal("Test User", result.Name);
+            Assert.Equal("Test User", result.Data!.Name);
 
         }
     }

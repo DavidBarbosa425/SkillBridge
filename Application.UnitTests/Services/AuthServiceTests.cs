@@ -2,6 +2,7 @@
 using Application.Interfaces;
 using Application.Interfaces.Mappers;
 using Application.Services;
+using Domain.Common;
 using Domain.Entities;
 using Domain.Interfaces;
 using Moq;
@@ -22,7 +23,7 @@ namespace Application.UnitTests.Services
 
             userRepositoryMock
                 .Setup(x => x.AddAsync(It.IsAny<User>()))
-                .ReturnsAsync(new User() { Name = "Test"});
+                .ReturnsAsync(Result<User>.Ok(new User() { Name = "Test"}));
 
             applicationMapperMock
                 .Setup(x => x.User.ToUserDto(It.IsAny<User>()))
@@ -34,7 +35,7 @@ namespace Application.UnitTests.Services
 
             emailConfirmationServiceMock
                 .Setup(x => x.GenerateEmailConfirmation(It.IsAny<UserDto>()))
-                .ReturnsAsync(new SendEmail() { Email = "teste@teste.com" });
+                .ReturnsAsync(Result<SendEmail>.Ok(new SendEmail() { Email = "teste@teste.com" }));
 
             var authService = new AuthService(
                 userRepositoryMock.Object,

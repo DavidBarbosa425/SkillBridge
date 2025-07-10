@@ -40,7 +40,8 @@ namespace Infrastructure.Repositories
         {
             var user = await _userManager.FindByEmailAsync(email);
 
-            if (user == null) Result.Failure("Erro ao buscar usuário para salvar token de confirmação");
+            if (user == null) 
+                Result.Failure("Erro ao buscar usuário para salvar token de confirmação");
 
             var emailConfirmationToken = new EmailConfirmationToken
             {
