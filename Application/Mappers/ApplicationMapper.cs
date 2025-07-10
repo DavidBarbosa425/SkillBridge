@@ -2,7 +2,7 @@
 
 namespace Application.Mappers
 {
-    public class ApplicationMapper : IApplicationMapper
+    internal class ApplicationMapper : IApplicationMapper
     {
         public IApplicationUserMapper User { get; }
 

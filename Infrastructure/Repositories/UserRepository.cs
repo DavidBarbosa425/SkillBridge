@@ -2,7 +2,7 @@
 using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Identity.Models;
-using Infrastructure.Mappers;
+using Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Identity;
 
 namespace Infrastructure.Repositories
@@ -10,14 +10,18 @@ namespace Infrastructure.Repositories
     public class UserRepository : IUserRepository
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IInfrastructureMapper _infrastructureMapper;
 
-        public UserRepository(UserManager<ApplicationUser> userManager)
+        internal UserRepository(
+            UserManager<ApplicationUser> userManager,
+            IInfrastructureMapper infrastructureMapper)
         {
             _userManager = userManager;
+            _infrastructureMapper = infrastructureMapper;
         }
         public async Task<Result<string>> AddAsync(User user)
         {
-            var applicationUser = InfrastructureUserMapper.ToApplicationUser(user);
+            var applicationUser = _infrastructureMapper.User.ToApplicationUser(user);
 
             var creationResult = await _userManager.CreateAsync(applicationUser, user.Password);
 

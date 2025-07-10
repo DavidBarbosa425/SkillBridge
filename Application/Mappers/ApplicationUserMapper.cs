@@ -2,7 +2,7 @@
 using Application.Interfaces.Mappers;
 using Domain.Entities;
 
-public class ApplicationUserMapper : IApplicationUserMapper
+internal class ApplicationUserMapper : IApplicationUserMapper
 {
     public User ToUser(RegisterUserDto dto)
     {

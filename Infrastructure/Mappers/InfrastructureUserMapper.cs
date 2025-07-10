@@ -1,11 +1,12 @@
 ﻿using Domain.Entities;
 using Infrastructure.Identity.Models;
+using Infrastructure.Interfaces;
 
 namespace Infrastructure.Mappers
 {
-    public static class InfrastructureUserMapper
+    internal class InfrastructureUserMapper : IInfrastructureUserMapper
     {
-        public static ApplicationUser ToApplicationUser(User user)
+        public ApplicationUser ToApplicationUser(User user)
         {
             return new ApplicationUser
             {
