@@ -12,14 +12,14 @@ namespace Infrastructure.Services
         {
             _httpContextAccessor = httpContextAccessor;
         }
-        public string GenerateApiUrl(string controller, string method, Dictionary<string, string?>? queryParams = null)
+        public string GenerateApiUrl(string controller, string action, Dictionary<string, string?>? queryParams = null)
         {
             var request = _httpContextAccessor.HttpContext?.Request;
 
             var scheme = request?.Scheme ?? Uri.UriSchemeHttps;
             var host = request?.Host.Value ?? "localhost";
 
-            var path = $"api/{controller}/{method}";
+            var path = $"api/{controller}/{action}";
             var baseUrl = $"{scheme}://{host}/{path}";
 
             if (queryParams is not null && queryParams.Any())

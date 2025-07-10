@@ -35,13 +35,19 @@ namespace Application.Services
 
             var user = _mapper.User.ToUser(dto);
 
-            await _userRepository.AddAsync(user);
+            var createdUser = await _userRepository.AddAsync(user);
+
+            if (!createdUser.Success)
+                return Result.Failure("Erro ao criar usuário.");
 
             var userDto = _mapper.User.ToUserDto(user);
 
             var sendEmail = await _emailConfirmationService.GenerateEmailConfirmation(userDto);
 
-            await _emailService.SendEmailAsync(sendEmail);
+            if (!sendEmail.Success)
+                return Result.Failure("Erro ao gerar e enviar e-mail de confirmação.");
+
+            await _emailService.SendEmailAsync(sendEmail.Data!);
 
             return Result.Ok("Usuário criado com sucesso. Um E-mail de Confirmação foi enviado para sua caixa de entrada.");
 
