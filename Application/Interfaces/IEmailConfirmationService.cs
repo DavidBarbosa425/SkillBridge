@@ -1,9 +1,10 @@
-﻿using Domain.Entities;
+﻿using Application.DTOs;
+using Domain.Entities;
 
 namespace Application.Interfaces
 {
     public interface IEmailConfirmationService
     {
-        Task<SendEmail> GenerateEmailConfirmation(User user);
+        Task<SendEmail> GenerateEmailConfirmation(UserDto user);
     }
 }

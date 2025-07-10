@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using Application.DTOs;
+using Application.Interfaces;
 using Application.Interfaces.Factories;
 using Domain.Constants;
 using Domain.Entities;
@@ -21,19 +22,19 @@ namespace Application.Services.Emails
             _urlService = urlService;
             _emailTemplateFactory = emailTemplateFactory;
         }
-        public async Task<SendEmail> GenerateEmailConfirmation(User user)
+        public async Task<SendEmail> GenerateEmailConfirmation(UserDto userDto)
         {
-            var token = await _emailRepository.GenerateEmailConfirmationTokenAsync(user.Email);
+            var token = await _emailRepository.GenerateEmailConfirmationTokenAsync(userDto.Email);
 
             if (string.IsNullOrEmpty(token))
                 throw new Exception("Falha ao gerar Token de confirmação por e-mail.");
 
-            var result = await _emailRepository.SaveTokenEmailConfirmationAsync(user.Email, token);
+            var result = await _emailRepository.SaveTokenEmailConfirmationAsync(userDto.Email, token);
 
             if (!result)
                 throw new Exception("Falha ao salvar Token de confirmação por e-mail.");
 
-            var tokenGuid = await _emailRepository.GetEmailConfirmationTokenGuidAsync(user.Email);
+            var tokenGuid = await _emailRepository.GetEmailConfirmationTokenGuidAsync(userDto.Email);
 
             if (tokenGuid == Guid.Empty)
                 throw new Exception("Falha ao gerar GUID de confirmação por e-mail.");
@@ -44,15 +45,15 @@ namespace Application.Services.Emails
             if (string.IsNullOrEmpty(confirmationLink))
                 throw new Exception("Falha ao gerar link de confirmação de e-mail.");
 
-            var body = _emailTemplateFactory.GenerateConfirmationEmailHtml(user.Name, confirmationLink!);
+            var body = _emailTemplateFactory.GenerateConfirmationEmailHtml(userDto.Name, confirmationLink!);
 
             if (string.IsNullOrEmpty(body))
                 throw new Exception("Falha ao gerar texto de confirmação de e-mail.");
 
             return new SendEmail
             {
-                Name = user.Name,
-                Email = user.Email,
+                Name = userDto.Name,
+                Email = userDto.Email,
                 Subject = EmailSubjects.Confirmation,
                 Body = body
             };

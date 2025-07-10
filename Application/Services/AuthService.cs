@@ -39,7 +39,9 @@ namespace Application.Services
 
             if(!creationResult.Success) return Result<string>.Failure("Erro ao criar Usuário, tente novamente mais tarde");
 
-            var sendEmail = await _emailConfirmationService.GenerateEmailConfirmation(user);
+            var userDto = _mapper.User.ToUserDto(user);
+
+            var sendEmail = await _emailConfirmationService.GenerateEmailConfirmation(userDto);
 
             await _emailService.SendEmailAsync(sendEmail);
 

@@ -6,6 +6,7 @@ namespace Application.Interfaces.Mappers
     public interface IApplicationUserMapper
     {
         User ToUser(RegisterUserDto dto);
+        UserDto ToUserDto(User user);
 
     }
 }

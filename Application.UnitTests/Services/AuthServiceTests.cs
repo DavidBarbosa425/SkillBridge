@@ -45,7 +45,7 @@ namespace Application.UnitTests.Services
             };
 
             emailConfirmationServiceMock
-                .Setup(x => x.GenerateEmailConfirmation(It.IsAny<User>()))
+                .Setup(x => x.GenerateEmailConfirmation(It.IsAny<UserDto>()))
                 .ReturnsAsync(sendEmail);
 
 

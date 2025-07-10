@@ -1,4 +1,5 @@
-﻿using Application.Interfaces.Factories;
+﻿using Application.DTOs;
+using Application.Interfaces.Factories;
 using Application.Services.Emails;
 using Domain.Entities;
 using Domain.Interfaces;
@@ -42,14 +43,14 @@ namespace Application.UnitTests.Services.Emails
                 emailTemplateFactoryMock.Object
                 );
 
-            var user = new User
+            var userDto = new UserDto
             {
                 Name = "Test User",
                 Email = "teste@teste.com.br"
             };
 
             // Act
-            var result = await service.GenerateEmailConfirmation(user);
+            var result = await service.GenerateEmailConfirmation(userDto);
 
             // Assert
             Assert.NotNull(result);
