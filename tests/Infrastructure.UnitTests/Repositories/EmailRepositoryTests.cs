@@ -3,9 +3,7 @@ using Infrastructure.Identity.Models;
 using Infrastructure.Interfaces.Data;
 using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Moq;
-using System.Linq.Expressions;
 
 namespace Infrastructure.UnitTests.Repositories
 {
