@@ -59,5 +59,42 @@ namespace Infrastructure.UnitTests.Repositories
             Assert.Equal("testuser", result.Data.Name);
 
         }
+
+        [Fact]
+        public async Task AddAsync_ShouldReturnError_WhenUserIsNotCreated()
+        {
+            // Arrange
+            var userManagerMock = GetMockUserManager();
+            var infrastructureMapperMock = new Mock<IInfrastructureMapper>();
+
+            infrastructureMapperMock
+                .Setup(m => m.User.ToApplicationUser(It.IsAny<User>()))
+                .Returns(new ApplicationUser { UserName = "testuser", Email = "" });
+
+            Mock.Get(userManagerMock)
+              .Setup(m => m.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()))
+              .ReturnsAsync(IdentityResult.Failed(new IdentityError { Description = "Erro ao criar usuário." }));
+
+            var userRepository = new UserRepository(
+                userManagerMock,
+                infrastructureMapperMock.Object
+                );
+
+            var user = new User()
+            {
+                Name = "testuser",
+                Email = ""
+            };
+
+            // Act
+
+            var result = await userRepository.AddAsync(user);
+
+            // Assert
+            Assert.False(result.Success);
+            Assert.Null(result.Data);
+            Assert.Equal("Erro ao criar usuário.", result.Message);
+
+        }
     }
 }

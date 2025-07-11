@@ -28,7 +28,7 @@ namespace Infrastructure.Repositories
             if (!creationResult.Succeeded)
             {
                 var errors = creationResult.Errors.Select(e => e.Description);
-                throw new Exception(string.Join("; ", errors));
+                return Result<User>.Failure(string.Join("; ", errors));
             }
 
             var createdUser = _infrastructureMapper.User.ToUser(applicationUser);
