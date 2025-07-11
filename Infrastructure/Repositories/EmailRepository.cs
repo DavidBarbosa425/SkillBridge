@@ -1,6 +1,7 @@
 ﻿using Domain.Common;
 using Domain.Entities;
 using Domain.Interfaces;
+using Infrastructure.Data;
 using Infrastructure.Identity.Models;
 using Infrastructure.Interfaces.Data;
 using Microsoft.AspNetCore.Identity;
@@ -10,11 +11,11 @@ namespace Infrastructure.Repositories
 {
     public class EmailRepository : IEmailRepository
     {
-        private readonly IApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
         public EmailRepository(
-            IApplicationDbContext context,
+            ApplicationDbContext context,
             UserManager<ApplicationUser> userManager)
         {
             _context = context;

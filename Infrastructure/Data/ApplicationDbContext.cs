@@ -7,7 +7,7 @@ using Infrastructure.Interfaces.Data;
 namespace Infrastructure.Data
 {
 
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplicationDbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) {}
         public DbSet<EmailConfirmationToken> EmailConfirmationTokens { get; set; }
