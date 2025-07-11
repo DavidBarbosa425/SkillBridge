@@ -9,14 +9,12 @@ namespace Infrastructure.UnitTests.Repositories
 {
     public class UserRepositoryTests
     {
-        private UserManager<ApplicationUser> GetMockUserManager()
+        public static Mock<UserManager<ApplicationUser>> GetMockUserManager()
         {
             var store = new Mock<IUserStore<ApplicationUser>>();
-            var userManager = new Mock<UserManager<ApplicationUser>>(
-                store.Object, null, null, null, null, null, null, null, null
-            );
-
-            return userManager.Object;
+            var mock = new Mock<UserManager<ApplicationUser>>(
+                store.Object, null, null, null, null, null, null, null, null);
+            return mock;
         }
 
         [Fact]
@@ -30,7 +28,7 @@ namespace Infrastructure.UnitTests.Repositories
                 .Setup(m => m.User.ToApplicationUser(It.IsAny<User>()))
                 .Returns(new ApplicationUser { UserName = "testuser", Email = "" });
 
-            Mock.Get(userManagerMock)
+            userManagerMock
               .Setup(m => m.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()))
                 .ReturnsAsync(IdentityResult.Success);
 
@@ -39,7 +37,7 @@ namespace Infrastructure.UnitTests.Repositories
                 .Returns(new User { Name = "testuser", Email = "" });
 
             var userRepository = new UserRepository(
-                userManagerMock,
+                userManagerMock.Object,
                 infrastructureMapperMock.Object
                 );
 
@@ -71,12 +69,12 @@ namespace Infrastructure.UnitTests.Repositories
                 .Setup(m => m.User.ToApplicationUser(It.IsAny<User>()))
                 .Returns(new ApplicationUser { UserName = "testuser", Email = "" });
 
-            Mock.Get(userManagerMock)
+            userManagerMock
               .Setup(m => m.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()))
               .ReturnsAsync(IdentityResult.Failed(new IdentityError { Description = "Erro ao criar usuário." }));
 
             var userRepository = new UserRepository(
-                userManagerMock,
+                userManagerMock.Object,
                 infrastructureMapperMock.Object
                 );
 

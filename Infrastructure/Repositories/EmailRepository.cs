@@ -1,8 +1,8 @@
 ﻿using Domain.Common;
 using Domain.Entities;
 using Domain.Interfaces;
-using Infrastructure.Data;
 using Infrastructure.Identity.Models;
+using Infrastructure.Interfaces.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,11 +10,11 @@ namespace Infrastructure.Repositories
 {
     public class EmailRepository : IEmailRepository
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
         public EmailRepository(
-            ApplicationDbContext context,
+            IApplicationDbContext context,
             UserManager<ApplicationUser> userManager)
         {
             _context = context;
@@ -41,7 +41,7 @@ namespace Infrastructure.Repositories
             var user = await _userManager.FindByEmailAsync(email);
 
             if (user == null) 
-                Result.Failure("Erro ao buscar usuário para salvar token de confirmação");
+                return Result.Failure("Erro ao buscar usuário para salvar token de confirmação");
 
             var emailConfirmationToken = new EmailConfirmationToken
             {
@@ -55,7 +55,7 @@ namespace Infrastructure.Repositories
 
             var result = await _context.SaveChangesAsync() > 0;
 
-            if (!result) Result.Failure("Erro ao salvar token de confirmação de e-mail.");
+            if (!result) return Result.Failure("Erro ao salvar token de confirmação de e-mail.");
 
             return Result.Ok();
         }

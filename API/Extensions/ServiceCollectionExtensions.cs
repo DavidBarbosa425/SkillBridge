@@ -1,6 +1,7 @@
 ﻿using Infrastructure.Configurations;
 using Infrastructure.Data;
 using Infrastructure.Identity.Models;
+using Infrastructure.Interfaces.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,7 +27,7 @@ namespace API.Extensions
 
         public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<ApplicationDbContext>(opt =>
+            services.AddDbContext<IApplicationDbContext, ApplicationDbContext>(opt =>
                 opt.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
             return services;
         }
