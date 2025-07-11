@@ -79,10 +79,6 @@ namespace Infrastructure.UnitTests.Repositories
                 .Setup(um => um.FindByEmailAsync(email))
                 .ReturnsAsync(new ApplicationUser { Email = email, UserName = "testuser" });
 
-            userManagerMock
-                .Setup(um => um.GenerateEmailConfirmationTokenAsync(It.IsAny<ApplicationUser>()))
-                .ReturnsAsync("");
-
             // Act
             var result = await emailRepository.GenerateEmailConfirmationTokenAsync(email);
 
@@ -148,8 +144,6 @@ namespace Infrastructure.UnitTests.Repositories
                         userManagerMock.Object
                         );
 
-            userManagerMock
-                .Setup(um => um.FindByEmailAsync(email));
 
             // Act
             var result = await emailRepository.SaveTokenEmailConfirmationAsync(email, token);
@@ -157,6 +151,185 @@ namespace Infrastructure.UnitTests.Repositories
             // Assert
             Assert.False(result.Success);
             Assert.Equal("Erro ao buscar usuário para salvar token de confirmação", result.Message);
+
+        }
+
+
+        [Fact]
+        public async Task GetEmailConfirmationTokenGuidAsync_ShouldReturnTokenGuid_WhenTokenIsFound()
+        {
+            // Arrange
+            var email = "test@test.com";
+            var tokenGuid = Guid.NewGuid();
+            var userManagerMock = GetMockUserManager();
+
+            // Create an in-memory database context for testing
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: "TestDb")
+                .Options;
+
+            var dbContext = new ApplicationDbContext(options);
+
+            // Create Repository instance
+            var emailRepository = new EmailRepository(
+                        dbContext,
+                        userManagerMock.Object
+                        );
+
+
+            // Add a token to the in-memory database
+            dbContext.EmailConfirmationTokens.Add(new EmailConfirmationToken
+                {
+                    Id = tokenGuid,
+                    Email = "test@test.com",
+                    Token = "abc123",
+                    UserId = "user-id"
+                });
+
+            await dbContext.SaveChangesAsync();
+            
+            // Act
+            var result = await emailRepository.GetEmailConfirmationTokenGuidAsync(email);
+
+            // Assert
+            Assert.True(result.Success);
+            Assert.Equal(tokenGuid, result.Data);
+            Assert.Equal("Operação realizada com sucesso", result.Message);
+
+        }
+
+        [Fact]
+        public async Task GetEmailConfirmationTokenGuidAsync_ShouldReturnTokenError_WhenTokenIsNotFound()
+        {
+            // Arrange
+            var email = "test@test.com";
+            var tokenGuid = Guid.NewGuid();
+            var userManagerMock = GetMockUserManager();
+
+            // Create an in-memory database context for testing
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: "TestDb")
+                .Options;
+
+            var dbContext = new ApplicationDbContext(options);
+
+            // Create Repository instance
+            var emailRepository = new EmailRepository(
+                        dbContext,
+                        userManagerMock.Object
+                        );
+
+
+            // Act
+            var result = await emailRepository.GetEmailConfirmationTokenGuidAsync(email);
+
+            // Assert
+            Assert.False(result.Success);
+            Assert.Equal("Token de confirmação de e-mail não encontrado.", result.Message);
+
+        }
+
+        [Fact]
+        public async Task GeneratePasswordResetTokenAsync_ShouldReturnToken_WhenTokenIsGeneratad()
+        {
+            // Arrange
+            var email = "test@test.com";
+            var userManagerMock = GetMockUserManager();
+
+            // Create an in-memory database context for testing
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: "TestDb")
+                .Options;
+
+            var dbContext = new ApplicationDbContext(options);
+
+            // Create Repository instance
+            var emailRepository = new EmailRepository(
+                        dbContext,
+                        userManagerMock.Object
+                        );
+
+            // Mock the UserManager to return a user when FindByEmailAsync is called
+            userManagerMock
+                .Setup(um => um.FindByEmailAsync(email))
+                .ReturnsAsync(new ApplicationUser { Email = email, UserName = "testuser", Id = "user-id" });
+
+            userManagerMock
+                .Setup(um => um.GeneratePasswordResetTokenAsync(It.IsAny<ApplicationUser>()))
+                .ReturnsAsync("reset-token");
+
+
+            // Act
+            var result = await emailRepository.GeneratePasswordResetTokenAsync(email);
+
+            // Assert
+            Assert.True(result.Success);
+            Assert.Equal("reset-token", result.Data);
+            Assert.Equal("Operação realizada com sucesso", result.Message);
+
+        }
+
+        [Fact]
+        public async Task GeneratePasswordResetTokenAsync_ShouldReturnError_WhenUserIsNotFound()
+        {
+            // Arrange
+            var email = "test@test.com";
+            var userManagerMock = GetMockUserManager();
+
+            // Create an in-memory database context for testing
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: "TestDb")
+                .Options;
+
+            var dbContext = new ApplicationDbContext(options);
+
+            // Create Repository instance
+            var emailRepository = new EmailRepository(
+                        dbContext,
+                        userManagerMock.Object
+                        );
+
+
+            // Act
+            var result = await emailRepository.GeneratePasswordResetTokenAsync(email);
+
+            // Assert
+            Assert.False(result.Success);
+            Assert.Equal("Usuário não encontrado.", result.Message);
+
+        }
+
+        [Fact]
+        public async Task GeneratePasswordResetTokenAsync_ShouldReturnError_WhenTokenIsNotGeneratad()
+        {
+            // Arrange
+            var email = "test@test.com";
+            var userManagerMock = GetMockUserManager();
+
+            // Create an in-memory database context for testing
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: "TestDb")
+                .Options;
+
+            var dbContext = new ApplicationDbContext(options);
+
+            // Create Repository instance
+            var emailRepository = new EmailRepository(
+                        dbContext,
+                        userManagerMock.Object
+                        );
+
+            // Mock the UserManager to return a user when FindByEmailAsync is called
+            userManagerMock
+                .Setup(um => um.FindByEmailAsync(email))
+                .ReturnsAsync(new ApplicationUser { Email = email, UserName = "testuser", Id = "user-id" });
+
+            // Act
+            var result = await emailRepository.GeneratePasswordResetTokenAsync(email);
+
+            // Assert
+            Assert.False(result.Success);
+            Assert.Equal("Falha ao gerar token de redefinição de senha.", result.Message);
 
         }
 
