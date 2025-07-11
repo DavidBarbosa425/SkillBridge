@@ -6,8 +6,6 @@ using Domain.Common;
 using Domain.Entities;
 using Domain.Interfaces;
 using Moq;
-using System;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Application.UnitTests.Services
 {
