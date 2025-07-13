@@ -1,7 +1,6 @@
 ﻿using Infrastructure.Configurations;
 using Infrastructure.Data;
 using Infrastructure.Identity.Models;
-using Infrastructure.Interfaces.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
