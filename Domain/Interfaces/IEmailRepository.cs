@@ -1,4 +1,5 @@
 ﻿using Domain.Common;
+using Domain.Entities;
 
 namespace Domain.Interfaces
 {
@@ -8,5 +9,8 @@ namespace Domain.Interfaces
         Task<Result> SaveTokenEmailConfirmationAsync(string email, string token);
         Task<Result<Guid>> GetEmailConfirmationTokenGuidAsync(string email);
         Task<Result<string>> GeneratePasswordResetTokenAsync(string email);
+        Task<Result<EmailConfirmationToken>> GetEmailConfirmationTokenAsync(Guid id);
+        Task<Result> ConfirmationUserEmailAsync(User user, EmailConfirmationToken emailConfirmationToken);
+        Task<Result> RemoveTokenConfirmationUserEmailAsync(EmailConfirmationToken emailConfirmationToken);
     }
 }

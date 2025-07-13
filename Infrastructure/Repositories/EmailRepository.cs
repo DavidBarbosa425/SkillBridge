@@ -3,6 +3,7 @@ using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Data;
 using Infrastructure.Identity.Models;
+using Infrastructure.Mappers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,13 +13,16 @@ namespace Infrastructure.Repositories
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly InfrastructureMapper _infrastructureMapper;
 
         public EmailRepository(
             ApplicationDbContext context,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            InfrastructureMapper infrastructureMapper)
         {
             _context = context;
             _userManager = userManager;
+            _infrastructureMapper = infrastructureMapper;
         }
 
         public async Task<Result<string>> GenerateEmailConfirmationTokenAsync(string email)
@@ -68,6 +72,43 @@ namespace Infrastructure.Repositories
                 return Result<Guid>.Failure("Token de confirmação de e-mail não encontrado.");
 
             return Result<Guid>.Ok(result.Id);
+
+        }
+
+        public async Task<Result<EmailConfirmationToken>> GetEmailConfirmationTokenAsync(Guid id)
+        {
+            var tokenEntry = await _context.EmailConfirmationTokens
+                .FirstOrDefaultAsync(t => t.Id == id && t.Expiration > DateTime.UtcNow);
+
+            if (tokenEntry == null)
+                return Result<EmailConfirmationToken>.Failure("Token de confirmação inválido ou expirado.");
+
+            return Result<EmailConfirmationToken>.Ok(tokenEntry);
+
+        }
+
+        public async Task<Result> ConfirmationUserEmailAsync(User user, EmailConfirmationToken emailConfirmationToken)
+        {
+            var applicationUser = _infrastructureMapper.User.ToApplicationUser(user);
+
+            var result = await _userManager.ConfirmEmailAsync(applicationUser, emailConfirmationToken.Token);
+
+            if (!result.Succeeded) return Result.Failure("Erro ao confirmar o e-mail do usuário.");
+
+            return Result.Ok("E-mail confirmado com sucesso!");
+
+        }
+
+        public async Task<Result> RemoveTokenConfirmationUserEmailAsync(EmailConfirmationToken emailConfirmationToken)
+        {
+
+            _context.EmailConfirmationTokens.Remove(emailConfirmationToken);
+
+            var saved = await _context.SaveChangesAsync() > 0;
+
+            if (!saved) return Result.Failure("Erro ao remover o token de confirmação de e-mail.");
+
+            return Result.Ok("Token de confirmação de e-mail removido com sucesso.");
 
         }
 
