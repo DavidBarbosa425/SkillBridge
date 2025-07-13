@@ -13,13 +13,15 @@ namespace Application.Services
         private readonly IValidatorService _validatorService;
         private readonly IEmailService _emailService;
         private readonly IEmailConfirmationService _emailConfirmationService;
+        private readonly IEmailRepository _emailRepository;
 
         public AuthService(
             IUserRepository userRepository,
             IApplicationMapper mapper,
             IValidatorService validatorService,
             IEmailService emailService,
-            IEmailConfirmationService emailConfirmationService
+            IEmailConfirmationService emailConfirmationService,
+            IEmailRepository emailRepository
             )
         {
             _userRepository = userRepository;
@@ -27,6 +29,7 @@ namespace Application.Services
             _validatorService = validatorService;
             _emailService = emailService;
             _emailConfirmationService = emailConfirmationService;
+            _emailRepository = emailRepository;
         }
 
         public async Task<Result> RegisterUserAsync(RegisterUserDto dto)
@@ -52,6 +55,29 @@ namespace Application.Services
             return Result.Ok("Usuário criado com sucesso. Um E-mail de Confirmação foi enviado para sua caixa de entrada.");
 
         }
+
+        public async Task<Result> ConfirmationUserEmailAsync(Guid id)
+        {
+            var token = await _emailRepository.GetEmailConfirmationTokenAsync(id);
+
+            if (!token.Success) return Result.Failure(token.Message);
+
+            var user = await _userRepository.FindByIdAsync(token.Data!.UserId);
+
+            if (!user.Success) return Result.Failure(user.Message);
+
+            var confirmationResult = await _emailRepository.ConfirmationUserEmailAsync(user.Data!, token.Data);
+
+            if (!confirmationResult.Success) return Result.Failure(confirmationResult.Message);
+
+            var removeTokenResult = await _emailRepository.RemoveTokenConfirmationUserEmailAsync(token.Data);
+
+            if (!removeTokenResult.Success) return Result.Failure(removeTokenResult.Message);
+
+            return Result.Ok("E-mail confirmado com sucesso!");
+
+        }
+
 
         public async Task LoginAsync(LoginDto dto)
         {

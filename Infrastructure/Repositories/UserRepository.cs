@@ -35,5 +35,17 @@ namespace Infrastructure.Repositories
 
             return Result<User>.Ok(createdUser);
         }
+
+        public async Task<Result<User>> FindByIdAsync(string id)
+        {
+
+            var applicationUser = await _userManager.FindByIdAsync(id);
+
+            if (applicationUser == null) return Result<User>.Failure("Usuário não encontrado");
+
+            var user = _infrastructureMapper.User.ToUser(applicationUser);
+
+            return Result<User>.Ok(user);
+        }
     }
 }

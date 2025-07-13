@@ -46,7 +46,7 @@ namespace Application.Services.Emails
                 return Result<SendEmail>.Failure("GUID de confirmação por e-mail não foi achado.");
 
             var confirmationLink = _urlService.GenerateApiUrl("auth", "confirmationUserEmail",
-                new Dictionary<string, string?> { { "Guid", tokenGuid.ToString() } });
+                new Dictionary<string, string?> { { "Id", tokenGuid.Data.ToString() } });
 
             if (string.IsNullOrEmpty(confirmationLink))
                 return Result<SendEmail>.Failure("Falha ao gerar link de confirmação de e-mail.");

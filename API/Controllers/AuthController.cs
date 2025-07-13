@@ -23,6 +23,14 @@ namespace API.Controllers
             return Ok(result);
         }
 
+        [HttpGet("confirmationUserEmail")]
+        public async Task<IActionResult> ConfirmationUserEmail(Guid id)
+        {
+            var result = await _authService.ConfirmationUserEmailAsync(id);
+
+            return Ok(result);
+        }
+
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {

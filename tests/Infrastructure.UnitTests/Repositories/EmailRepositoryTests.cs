@@ -1,6 +1,7 @@
 ﻿using Domain.Entities;
 using Infrastructure.Data;
 using Infrastructure.Identity.Models;
+using Infrastructure.Mappers;
 using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -61,6 +62,7 @@ namespace Infrastructure.UnitTests.Repositories
             // Arrange
             var email = "test@test.com";
             var userManagerMock = GetMockUserManager();
+            var infrastructureMapperMock = new Mock<InfrastructureMapper>();
 
             // Create an in-memory database context for testing
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
@@ -72,7 +74,8 @@ namespace Infrastructure.UnitTests.Repositories
             // Create Repository instance
             var emailRepository = new EmailRepository(
                 dbContext,
-                userManagerMock.Object
+                userManagerMock.Object,
+                infrastructureMapperMock.Object
             );
 
             userManagerMock

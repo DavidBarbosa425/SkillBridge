@@ -20,6 +20,7 @@ namespace Application.UnitTests.Services
             var validatorServiceMock = new Mock<IValidatorService>();
             var emailServiceMock = new Mock<IEmailService>();
             var emailConfirmationServiceMock = new Mock<IEmailConfirmationService>();
+            var emailRepositoryMock = new Mock<IEmailRepository>();
 
             userRepositoryMock
                 .Setup(x => x.AddAsync(It.IsAny<User>()))
@@ -42,7 +43,8 @@ namespace Application.UnitTests.Services
                 applicationMapperMock.Object,
                 validatorServiceMock.Object,
                 emailServiceMock.Object,
-                emailConfirmationServiceMock.Object
+                emailConfirmationServiceMock.Object,
+                emailRepositoryMock.Object
             );
 
             var dto = new RegisterUserDto
@@ -69,6 +71,7 @@ namespace Application.UnitTests.Services
             var validatorServiceMock = new Mock<IValidatorService>();
             var emailServiceMock = new Mock<IEmailService>();
             var emailConfirmationServiceMock = new Mock<IEmailConfirmationService>();
+            var emailRepositoryMock = new Mock<IEmailRepository>();
 
             userRepositoryMock
                 .Setup(x => x.AddAsync(It.IsAny<User>()))
@@ -83,7 +86,8 @@ namespace Application.UnitTests.Services
                 applicationMapperMock.Object,
                 validatorServiceMock.Object,
                 emailServiceMock.Object,
-                emailConfirmationServiceMock.Object
+                emailConfirmationServiceMock.Object,
+                emailRepositoryMock.Object
             );
 
             var dto = new RegisterUserDto
@@ -110,6 +114,7 @@ namespace Application.UnitTests.Services
             var validatorServiceMock = new Mock<IValidatorService>();
             var emailServiceMock = new Mock<IEmailService>();
             var emailConfirmationServiceMock = new Mock<IEmailConfirmationService>();
+            var emailRepositoryMock = new Mock<IEmailRepository>();
 
             userRepositoryMock
                 .Setup(x => x.AddAsync(It.IsAny<User>()))
@@ -132,7 +137,8 @@ namespace Application.UnitTests.Services
                 applicationMapperMock.Object,
                 validatorServiceMock.Object,
                 emailServiceMock.Object,
-                emailConfirmationServiceMock.Object
+                emailConfirmationServiceMock.Object,
+                emailRepositoryMock.Object
             );
 
             var dto = new RegisterUserDto

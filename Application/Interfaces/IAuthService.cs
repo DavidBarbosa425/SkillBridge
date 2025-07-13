@@ -7,5 +7,6 @@ namespace Application.Interfaces
     {
         Task LoginAsync(LoginDto dto);
         Task<Result> RegisterUserAsync(RegisterUserDto dto);
+        Task<Result> ConfirmationUserEmailAsync(Guid id);
     }
 }

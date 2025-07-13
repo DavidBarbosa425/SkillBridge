@@ -3,7 +3,7 @@ using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Data;
 using Infrastructure.Identity.Models;
-using Infrastructure.Mappers;
+using Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,12 +13,12 @@ namespace Infrastructure.Repositories
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly InfrastructureMapper _infrastructureMapper;
+        private readonly IInfrastructureMapper _infrastructureMapper;
 
         public EmailRepository(
             ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
-            InfrastructureMapper infrastructureMapper)
+            IInfrastructureMapper infrastructureMapper)
         {
             _context = context;
             _userManager = userManager;
@@ -91,7 +91,7 @@ namespace Infrastructure.Repositories
         {
             var applicationUser = _infrastructureMapper.User.ToApplicationUser(user);
 
-            var result = await _userManager.ConfirmEmailAsync(applicationUser, emailConfirmationToken.Token);
+            var result = await _userManager.ConfirmEmailAsync(applicationUser, emailConfirmationToken.Token.ToString());
 
             if (!result.Succeeded) return Result.Failure("Erro ao confirmar o e-mail do usuário.");
 
