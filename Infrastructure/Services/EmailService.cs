@@ -1,7 +1,11 @@
-﻿using Domain.Entities;
+﻿using Domain.Common;
+using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Configurations;
+using Infrastructure.Identity.Models;
+using Infrastructure.Interfaces;
 using MailKit.Net.Smtp;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using MimeKit;
 
@@ -12,14 +16,20 @@ namespace Infrastructure.Services
     {
         private readonly EmailSettings _emailSettings;
         private readonly SmtpSettings _smtpSettings;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IInfrastructureMapper _infrastructureMapper;
 
         public EmailService(
             IOptions<EmailSettings> emailOptions,
-            IOptions<SmtpSettings> smtpOptions
+            IOptions<SmtpSettings> smtpOptions,
+            UserManager<ApplicationUser> userManager,
+            IInfrastructureMapper infrastructureMapper
             )
         {
             _emailSettings = emailOptions.Value;
             _smtpSettings = smtpOptions.Value;
+            _userManager = userManager;
+            _infrastructureMapper = infrastructureMapper;
         }
 
         public async Task SendEmailAsync(SendEmail sendEmail)
@@ -40,5 +50,42 @@ namespace Infrastructure.Services
             }
 
         }
+
+        public async Task<Result> ConfirmationUserEmailAsync(User user, string token)
+        {
+            var applicationUser = _infrastructureMapper.User.ToApplicationUser(user);
+
+            var result = await _userManager.ConfirmEmailAsync(applicationUser, token);
+
+            if (!result.Succeeded) return Result.Failure("Erro ao confirmar o e-mail do usuário.");
+
+            return Result.Ok("E-mail confirmado com sucesso!");
+
+        }
+
+        public async Task<Result<string>> GenerateEmailConfirmationTokenAsync(User user)
+        {
+            var userMapper = _infrastructureMapper.User.ToApplicationUser(user);
+
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(userMapper);
+
+            if (string.IsNullOrEmpty(token))
+                return Result<string>.Failure("Falha ao gerar token de confirmação de e-mail.");
+
+            return Result<string>.Ok(token);
+        }
+
+        public async Task<Result<string>> GeneratePasswordResetTokenAsync(User user)
+        {
+            var applicationUser = _infrastructureMapper.User.ToApplicationUser(user);
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(applicationUser);
+
+            if (string.IsNullOrEmpty(token))
+                return Result<string>.Failure("Falha ao gerar token de redefinição de senha.");
+
+            return Result<string>.Ok(token);
+        }
+
     }
 }

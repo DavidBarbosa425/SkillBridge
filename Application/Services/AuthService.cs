@@ -43,7 +43,7 @@ namespace Application.Services
             if (!createdUser.Success)
                 return Result.Failure("Erro ao criar usuário.");
 
-            var userDto = _mapper.User.ToUserDto(user);
+            var userDto = _mapper.User.ToUserDto(createdUser.Data!);
 
             var sendEmail = await _emailConfirmationService.GenerateEmailConfirmation(userDto);
 
@@ -66,7 +66,7 @@ namespace Application.Services
 
             if (!user.Success) return Result.Failure(user.Message);
 
-            var confirmationResult = await _emailRepository.ConfirmationUserEmailAsync(user.Data!, token.Data);
+            var confirmationResult = await _emailService.ConfirmationUserEmailAsync(user.Data!, token.Data.Token);
 
             if (!confirmationResult.Success) return Result.Failure(confirmationResult.Message);
 

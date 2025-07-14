@@ -1,6 +1,7 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
 using Application.Interfaces.Factories;
+using Application.Interfaces.Mappers;
 using Domain.Common;
 using Domain.Constants;
 using Domain.Entities;
@@ -14,39 +15,42 @@ namespace Application.Services.Emails
         private readonly IUrlService _urlService;
         private readonly IEmailTemplateFactory _emailTemplateFactory;
         private readonly IValidatorService _validatorService;
+        private readonly IApplicationMapper _applicationMapper;
+        private readonly IEmailService _emailService;
 
         public EmailConfirmationService(
             IEmailRepository emailRepository,
             IUrlService urlService,
             IEmailTemplateFactory emailTemplateFactory,
-            IValidatorService validatorService)
+            IValidatorService validatorService,
+            IApplicationMapper applicationMapper,
+            IEmailService emailService)
         {
             _emailRepository = emailRepository;
             _urlService = urlService;
             _emailTemplateFactory = emailTemplateFactory;
             _validatorService = validatorService;
+            _applicationMapper = applicationMapper;
+            _emailService = emailService;
         }
         public async Task<Result<SendEmail>> GenerateEmailConfirmation(UserDto userDto)
         {
             await _validatorService.ValidateAsync(userDto);
 
-            var token = await _emailRepository.GenerateEmailConfirmationTokenAsync(userDto.Email);
+            var user = _applicationMapper.User.ToUser(userDto);
+
+            var token = await _emailService.GenerateEmailConfirmationTokenAsync(user);
 
             if (!token.Success)
-                return Result<SendEmail>.Failure("Falha ao gerar Token de confirmação por e-mail.");
+                return Result<SendEmail>.Failure(token.Message);
 
-            var result = await _emailRepository.SaveTokenEmailConfirmationAsync(userDto.Email, token.Data!);
+            var savedToken = await _emailRepository.SaveTokenEmailConfirmationAsync(user, token.Data.ToUpper()!);
 
-            if (!result.Success)
-                return Result<SendEmail>.Failure("Falha ao salvar Token de confirmação por e-mail.");
-
-            var tokenGuid = await _emailRepository.GetEmailConfirmationTokenGuidAsync(userDto.Email);
-
-            if (!tokenGuid.Success)
-                return Result<SendEmail>.Failure("GUID de confirmação por e-mail não foi achado.");
+            if (!savedToken.Success)
+                return Result<SendEmail>.Failure(savedToken.Message);
 
             var confirmationLink = _urlService.GenerateApiUrl("auth", "confirmationUserEmail",
-                new Dictionary<string, string?> { { "Id", tokenGuid.Data.ToString() } });
+                new Dictionary<string, string?> { { "Id", savedToken.Data!.Id.ToString().ToUpper() } });
 
             if (string.IsNullOrEmpty(confirmationLink))
                 return Result<SendEmail>.Failure("Falha ao gerar link de confirmação de e-mail.");
