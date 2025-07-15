@@ -15,16 +15,10 @@ namespace Application.UnitTests.Services
         public async Task RegisterUserAsync_ShouldReturnSuccess_WhenUserIsCreated()
         {
             // Arrange
-            var userRepositoryMock = new Mock<IUserRepository>();
             var applicationMapperMock = new Mock<IApplicationMapper>();
             var validatorServiceMock = new Mock<IValidatorService>();
             var emailServiceMock = new Mock<IEmailService>();
-            var emailConfirmationServiceMock = new Mock<IEmailConfirmationService>();
             var emailRepositoryMock = new Mock<IIdentityUserService>();
-
-            userRepositoryMock
-                .Setup(x => x.AddAsync(It.IsAny<User>()))
-                .ReturnsAsync(Result<User>.Ok(new User() { Name = "Test"}));
 
             applicationMapperMock
                 .Setup(x => x.User.ToUserDto(It.IsAny<User>()))

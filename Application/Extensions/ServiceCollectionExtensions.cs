@@ -4,7 +4,6 @@ using Application.Interfaces.Factories;
 using Application.Interfaces.Mappers;
 using Application.Mappers;
 using Application.Services;
-using Application.Services.Emails;
 using Application.Validators;
 using Application.Validators.Models;
 using FluentValidation;
@@ -19,7 +18,6 @@ namespace Application.Extensions
             // Services
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IValidatorService, ValidatorService>();
-            services.AddScoped<IEmailConfirmationService, EmailConfirmationService>();
 
             // Validators
             services.AddValidatorsFromAssemblyContaining<RegisterUserDtoValidator>();
