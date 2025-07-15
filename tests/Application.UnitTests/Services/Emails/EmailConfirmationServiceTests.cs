@@ -14,7 +14,7 @@ namespace Application.UnitTests.Services.Emails
         public async Task GenerateEmailConfirmation_ShouldReturnSendEmail_WhenSuccessful()
         {
             // Arrange
-            var emailRepositoryMock = new Mock<IEmailRepository>();
+            var emailRepositoryMock = new Mock<IIdentityUserService>();
             var urlServiceMock = new Mock<IUrlService>();
             var emailTemplateFactoryMock = new Mock<IEmailTemplateFactory>();
             var validatorServiceMock = new Mock<IValidatorService>();
@@ -65,7 +65,7 @@ namespace Application.UnitTests.Services.Emails
         public async Task GenerateEmailConfirmation_ShouldReturnError_WhenTokenIsNotCreated()
         {
             // Arrange
-            var emailRepositoryMock = new Mock<IEmailRepository>();
+            var emailRepositoryMock = new Mock<IIdentityUserService>();
             var urlServiceMock = new Mock<IUrlService>();
             var emailTemplateFactoryMock = new Mock<IEmailTemplateFactory>();
             var validatorServiceMock = new Mock<IValidatorService>();
@@ -100,7 +100,7 @@ namespace Application.UnitTests.Services.Emails
         public async Task GenerateEmailConfirmation_ShouldReturnError_WhenTokenIsNotSaved()
         {
             // Arrange
-            var emailRepositoryMock = new Mock<IEmailRepository>();
+            var emailRepositoryMock = new Mock<IIdentityUserService>();
             var urlServiceMock = new Mock<IUrlService>();
             var emailTemplateFactoryMock = new Mock<IEmailTemplateFactory>();
             var validatorServiceMock = new Mock<IValidatorService>();
@@ -140,7 +140,7 @@ namespace Application.UnitTests.Services.Emails
         public async Task GenerateEmailConfirmation_ShouldReturnError_WhenTokenIsNotFound()
         {
             // Arrange
-            var emailRepositoryMock = new Mock<IEmailRepository>();
+            var emailRepositoryMock = new Mock<IIdentityUserService>();
             var urlServiceMock = new Mock<IUrlService>();
             var emailTemplateFactoryMock = new Mock<IEmailTemplateFactory>();
             var validatorServiceMock = new Mock<IValidatorService>();
@@ -184,7 +184,7 @@ namespace Application.UnitTests.Services.Emails
         public async Task GenerateEmailConfirmation_ShouldReturnError_WhenAPIUrlIsNotCreated()
         {
             // Arrange
-            var emailRepositoryMock = new Mock<IEmailRepository>();
+            var emailRepositoryMock = new Mock<IIdentityUserService>();
             var urlServiceMock = new Mock<IUrlService>();
             var emailTemplateFactoryMock = new Mock<IEmailTemplateFactory>();
             var validatorServiceMock = new Mock<IValidatorService>();
@@ -232,7 +232,7 @@ namespace Application.UnitTests.Services.Emails
         public async Task GenerateEmailConfirmation_ShouldReturnError_WhenBodyEmailsNotCreated()
         {
             // Arrange
-            var emailRepositoryMock = new Mock<IEmailRepository>();
+            var emailRepositoryMock = new Mock<IIdentityUserService>();
             var urlServiceMock = new Mock<IUrlService>();
             var emailTemplateFactoryMock = new Mock<IEmailTemplateFactory>();
             var validatorServiceMock = new Mock<IValidatorService>();

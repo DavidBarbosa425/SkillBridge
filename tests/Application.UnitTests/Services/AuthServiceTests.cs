@@ -20,7 +20,7 @@ namespace Application.UnitTests.Services
             var validatorServiceMock = new Mock<IValidatorService>();
             var emailServiceMock = new Mock<IEmailService>();
             var emailConfirmationServiceMock = new Mock<IEmailConfirmationService>();
-            var emailRepositoryMock = new Mock<IEmailRepository>();
+            var emailRepositoryMock = new Mock<IIdentityUserService>();
 
             userRepositoryMock
                 .Setup(x => x.AddAsync(It.IsAny<User>()))
@@ -71,7 +71,7 @@ namespace Application.UnitTests.Services
             var validatorServiceMock = new Mock<IValidatorService>();
             var emailServiceMock = new Mock<IEmailService>();
             var emailConfirmationServiceMock = new Mock<IEmailConfirmationService>();
-            var emailRepositoryMock = new Mock<IEmailRepository>();
+            var emailRepositoryMock = new Mock<IIdentityUserService>();
 
             userRepositoryMock
                 .Setup(x => x.AddAsync(It.IsAny<User>()))
@@ -114,7 +114,7 @@ namespace Application.UnitTests.Services
             var validatorServiceMock = new Mock<IValidatorService>();
             var emailServiceMock = new Mock<IEmailService>();
             var emailConfirmationServiceMock = new Mock<IEmailConfirmationService>();
-            var emailRepositoryMock = new Mock<IEmailRepository>();
+            var emailRepositoryMock = new Mock<IIdentityUserService>();
 
             userRepositoryMock
                 .Setup(x => x.AddAsync(It.IsAny<User>()))

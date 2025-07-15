@@ -8,6 +8,7 @@ internal class ApplicationUserMapper : IApplicationUserMapper
     {
         return new User
         {
+            Id = Guid.NewGuid(),
             Name = dto.Name,
             Email = dto.Email,
             Password = dto.Password

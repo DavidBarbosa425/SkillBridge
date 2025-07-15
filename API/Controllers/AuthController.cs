@@ -24,9 +24,9 @@ namespace API.Controllers
         }
 
         [HttpGet("confirmationUserEmail")]
-        public async Task<IActionResult> ConfirmationUserEmail(Guid id)
+        public async Task<IActionResult> ConfirmationUserEmail(Guid userId, string token)
         {
-            var result = await _authService.ConfirmationUserEmailAsync(id);
+            var result = await _authService.ConfirmationUserEmailAsync(userId, token);
 
             return Ok(result);
         }

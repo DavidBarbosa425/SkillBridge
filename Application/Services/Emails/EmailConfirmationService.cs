@@ -11,46 +11,38 @@ namespace Application.Services.Emails
 {
     public class EmailConfirmationService : IEmailConfirmationService
     {
-        private readonly IEmailRepository _emailRepository;
+        private readonly IIdentityUserService _identityUserService;
         private readonly IUrlService _urlService;
         private readonly IEmailTemplateFactory _emailTemplateFactory;
         private readonly IValidatorService _validatorService;
         private readonly IApplicationMapper _applicationMapper;
-        private readonly IEmailService _emailService;
 
         public EmailConfirmationService(
-            IEmailRepository emailRepository,
+            IIdentityUserService identityUserService,
             IUrlService urlService,
             IEmailTemplateFactory emailTemplateFactory,
             IValidatorService validatorService,
-            IApplicationMapper applicationMapper,
-            IEmailService emailService)
+            IApplicationMapper applicationMapper)
         {
-            _emailRepository = emailRepository;
+            _identityUserService = identityUserService;
             _urlService = urlService;
             _emailTemplateFactory = emailTemplateFactory;
             _validatorService = validatorService;
             _applicationMapper = applicationMapper;
-            _emailService = emailService;
         }
         public async Task<Result<SendEmail>> GenerateEmailConfirmation(UserDto userDto)
         {
             await _validatorService.ValidateAsync(userDto);
 
-            var user = _applicationMapper.User.ToUser(userDto);
-
-            var token = await _emailService.GenerateEmailConfirmationTokenAsync(user);
+            var token = await _identityUserService.GenerateEmailConfirmationTokenAsync(userDto.Id);
 
             if (!token.Success)
                 return Result<SendEmail>.Failure(token.Message);
 
-            var savedToken = await _emailRepository.SaveTokenEmailConfirmationAsync(user, token.Data.ToUpper()!);
-
-            if (!savedToken.Success)
-                return Result<SendEmail>.Failure(savedToken.Message);
+            var tokenEncoded = Uri.EscapeDataString(token.Data!);
 
             var confirmationLink = _urlService.GenerateApiUrl("auth", "confirmationUserEmail",
-                new Dictionary<string, string?> { { "Id", savedToken.Data!.Id.ToString().ToUpper() } });
+                new Dictionary<string, string?> { {"userId", userDto.Id.ToString() }, { "token", tokenEncoded } });
 
             if (string.IsNullOrEmpty(confirmationLink))
                 return Result<SendEmail>.Failure("Falha ao gerar link de confirmação de e-mail.");
@@ -70,5 +62,17 @@ namespace Application.Services.Emails
 
             return Result<SendEmail>.Ok(sendEmail);
         }
+        public async Task<Result> ConfirmationUserEmailAsync(Guid userId, string token)
+        {
+            var decodedToken = Uri.UnescapeDataString(token);
+
+            var confirmationResult = await _identityUserService.ConfirmationUserEmailAsync(userId, decodedToken);
+
+            if (!confirmationResult.Success) return Result.Failure(confirmationResult.Message);
+
+            return Result.Ok("E-mail confirmado com sucesso!");
+
+        }
+
     }
 }

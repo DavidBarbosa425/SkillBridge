@@ -1,7 +1,7 @@
 ﻿using Domain.Interfaces;
+using Infrastructure.Identity;
 using Infrastructure.Interfaces;
 using Infrastructure.Mappers;
-using Infrastructure.Repositories;
 using Infrastructure.Services;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,11 +11,8 @@ namespace Infrastructure.Extensions
     {
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
         {
-            // Repositories
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IEmailRepository, EmailRepository>();
-
             // Services
+            services.AddScoped<IIdentityUserService, IdentityUserService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IUrlService, UrlService>();
 

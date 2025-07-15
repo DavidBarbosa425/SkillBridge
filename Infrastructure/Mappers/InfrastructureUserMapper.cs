@@ -8,23 +8,13 @@ namespace Infrastructure.Mappers
     {
         public ApplicationUser ToApplicationUser(User user)
         {
-            if(user.Id == Guid.Empty)
+            return new ApplicationUser
             {
-                return new ApplicationUser
-                {
-                    UserName = user.Name,
-                    Email = user.Email
-                };
-            }
-            else
-            {
-                return new ApplicationUser
-                {
-                    Id = user.Id.ToString().ToUpper(),
-                    UserName = user.Name,
-                    Email = user.Email
-                };
-            }
+                Id = user.Id.ToString(),
+                UserName = user.Name,
+                Email = user.Email
+            };
+
         }
 
         public User ToUser(ApplicationUser applicationUser)
