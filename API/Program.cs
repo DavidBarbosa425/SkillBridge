@@ -1,5 +1,4 @@
 using API.Extensions;
-using API.Middlewares;
 using Application.Extensions;
 using Infrastructure.Extensions;
 

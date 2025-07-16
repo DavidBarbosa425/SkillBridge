@@ -1,9 +1,11 @@
 ﻿using Application.Factories;
 using Application.Interfaces;
+using Application.Interfaces.Emails;
 using Application.Interfaces.Factories;
 using Application.Interfaces.Mappers;
 using Application.Mappers;
 using Application.Services;
+using Application.Services.Emails;
 using Application.Validators;
 using Application.Validators.Models;
 using FluentValidation;
@@ -17,6 +19,7 @@ namespace Application.Extensions
         {
             // Services
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IEmailConfirmationService, EmailConfirmationService>();
             services.AddScoped<IValidatorService, ValidatorService>();
 
             // Validators

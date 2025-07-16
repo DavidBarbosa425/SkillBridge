@@ -1,9 +1,9 @@
 ﻿using Domain.Entities;
-using Domain.Interfaces;
 using Infrastructure.Configurations;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
 using MimeKit;
+using Domain.Interfaces;
 
 
 namespace Infrastructure.Services

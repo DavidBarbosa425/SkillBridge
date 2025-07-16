@@ -1,5 +1,6 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
+using Application.Interfaces.Emails;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -9,10 +10,14 @@ namespace API.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly IEmailConfirmationService _emailConfirmationService;
 
-        public AuthController(IAuthService authService)
+        public AuthController(
+            IAuthService authService,
+            IEmailConfirmationService emailConfirmationService)
         {
             _authService = authService;
+            _emailConfirmationService = emailConfirmationService;
         }
         [HttpPost("registerUser")]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterUserDto dto)
@@ -26,7 +31,7 @@ namespace API.Controllers
         [HttpGet("confirmationUserEmail")]
         public async Task<IActionResult> ConfirmationUserEmail(Guid userId, string token)
         {
-            var result = await _authService.ConfirmationUserEmailAsync(userId, token);
+            var result = await _emailConfirmationService.ConfirmationUserEmailAsync(userId, token);
 
             return Ok(result);
         }
