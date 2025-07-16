@@ -19,7 +19,7 @@ namespace API.Controllers
             _authService = authService;
             _emailConfirmationService = emailConfirmationService;
         }
-        [HttpPost("registerUser")]
+        [HttpPost("register-user")]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterUserDto dto)
         {
 
@@ -28,9 +28,10 @@ namespace API.Controllers
             return Ok(result);
         }
 
-        [HttpGet("confirmationUserEmail")]
+        [HttpGet("confirmation-user-email")]
         public async Task<IActionResult> ConfirmationUserEmail(Guid userId, string token)
         {
+
             var result = await _emailConfirmationService.ConfirmationUserEmailAsync(userId, token);
 
             return Ok(result);

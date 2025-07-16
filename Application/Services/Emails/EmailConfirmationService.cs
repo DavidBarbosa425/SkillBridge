@@ -36,15 +36,12 @@ namespace Application.Services.Emails
             if (!token.Success)
                 return Result<SendEmail>.Failure(token.Message);
 
-            var tokenEncoded = Uri.EscapeDataString(token.Data!);
-
-            var confirmationLink = _urlService.GenerateApiUrl("auth", "confirmationUserEmail",
-                new Dictionary<string, string?> { { "userId", userDto.Id.ToString() }, { "token", tokenEncoded } });
+            var confirmationLink = _urlService.GenerateApiUrlEmailConfirmation(userDto.Id.ToString(), token.Data!);
 
             if (string.IsNullOrEmpty(confirmationLink))
                 return Result<SendEmail>.Failure("Falha ao gerar link de confirmação de e-mail.");
 
-            var body = _emailTemplateFactory.GenerateConfirmationEmailHtml(userDto.Name, confirmationLink!);
+            var body = _emailTemplateFactory.GenerateConfirmationEmailHtml(userDto.Name, confirmationLink);
 
             if (string.IsNullOrEmpty(body))
                 return Result<SendEmail>.Failure("Falha ao gerar texto de confirmação de e-mail.");

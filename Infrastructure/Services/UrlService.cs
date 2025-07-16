@@ -1,33 +1,23 @@
 ﻿using Domain.Interfaces;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.WebUtilities;
+using Infrastructure.Configurations;
+using Microsoft.Extensions.Options;
 
 namespace Infrastructure.Services
 {
     public class UrlService : IUrlService
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly EmailConfirmationSettings _emailConfirmationOptions;
 
-        public UrlService(IHttpContextAccessor httpContextAccessor)
+        public UrlService(
+            IOptions<EmailConfirmationSettings> emailConfirmationOptions)
         {
-            _httpContextAccessor = httpContextAccessor;
+            _emailConfirmationOptions = emailConfirmationOptions.Value;
         }
-        public string GenerateApiUrl(string controller, string action, Dictionary<string, string?>? queryParams = null)
+        public string GenerateApiUrlEmailConfirmation(string userId, string token)
         {
-            var request = _httpContextAccessor.HttpContext?.Request;
+            var url = string.Format(_emailConfirmationOptions.Url, userId, Uri.EscapeDataString(token));
 
-            var scheme = request?.Scheme ?? Uri.UriSchemeHttps;
-            var host = request?.Host.Value ?? "localhost";
-
-            var path = $"api/{controller}/{action}";
-            var baseUrl = $"{scheme}://{host}/{path}";
-
-            if (queryParams is not null && queryParams.Any())
-            {
-                baseUrl = QueryHelpers.AddQueryString(baseUrl, queryParams!);
-            }
-
-            return baseUrl;
+            return url;
         }
     }
 }

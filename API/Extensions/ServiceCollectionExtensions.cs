@@ -1,4 +1,5 @@
-﻿using Infrastructure.Configurations;
+﻿
+using Infrastructure.Configurations;
 using Infrastructure.Data;
 using Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Identity;
@@ -12,6 +13,7 @@ namespace API.Extensions
         {
             services.Configure<SmtpSettings>(configuration.GetSection("Smtp"));
             services.Configure<EmailSettings>(configuration.GetSection("Email"));
+            services.Configure<EmailConfirmationSettings>(configuration.GetSection("EmailConfirmation"));
             return services;
         }
 

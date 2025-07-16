@@ -2,6 +2,6 @@
 {
     public interface IUrlService
     {
-        string GenerateApiUrl(string controller, string method, Dictionary<string, string?>? Idparam);
+        string GenerateApiUrlEmailConfirmation(string userId, string token);
     }
 }
