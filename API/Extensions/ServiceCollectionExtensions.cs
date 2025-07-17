@@ -13,7 +13,7 @@ namespace API.Extensions
         {
             services.Configure<SmtpSettings>(configuration.GetSection("Smtp"));
             services.Configure<EmailSettings>(configuration.GetSection("Email"));
-            services.Configure<EmailConfirmationSettings>(configuration.GetSection("EmailConfirmation"));
+            services.Configure<UrlSettings>(configuration.GetSection("UrlSettings"));
             return services;
         }
 

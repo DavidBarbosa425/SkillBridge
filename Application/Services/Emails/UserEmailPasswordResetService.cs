@@ -9,7 +9,7 @@ using Domain.Interfaces;
 
 namespace Application.Services.Emails
 {
-    public class UserEmailConfirmationService : IUserEmailConfirmationService
+    public class UserEmailPasswordResetService : IUserEmailPasswordResetService
     {
         private readonly IValidatorService _validatorService;
         private readonly IIdentityUserService _identityUserService;
@@ -17,7 +17,7 @@ namespace Application.Services.Emails
         private readonly IAccountEmailTemplateFactory _accountEmailTemplateFactory;
         private readonly IEmailService _emailService;
 
-        public UserEmailConfirmationService(
+        public UserEmailPasswordResetService(
             IValidatorService validatorService,
             IIdentityUserService identityUserService,
             IUrlService urlService,
@@ -30,30 +30,30 @@ namespace Application.Services.Emails
             _accountEmailTemplateFactory = accountEmailTemplateFactory;
             _emailService = emailService;
         }
-        public async Task<Result> SendConfirmationEmailAsync(UserDto userDto)
+        public async Task<Result> SendEmailPasswordResetAsync(UserDto userDto)
         {
             await _validatorService.ValidateAsync(userDto);
 
-            var token = await _identityUserService.GenerateEmailConfirmationTokenAsync(userDto.Id);
+            var token = await _identityUserService.GeneratePasswordResetTokenAsync(userDto.Id);
 
             if (!token.Success)
                 return Result.Failure(token.Message);
 
-            var confirmationLink = _urlService.GenerateApiUrlEmailConfirmation(userDto.Id.ToString(), token.Data!);
+            var resetPasswordLink = _urlService.GenerateApiUrlEmailPasswordReset(userDto.Id.ToString(), token.Data!);
 
-            if (string.IsNullOrEmpty(confirmationLink))
-                return Result.Failure("Falha ao gerar link de confirmação de e-mail.");
+            if (string.IsNullOrEmpty(resetPasswordLink))
+                return Result.Failure("Falha ao gerar link de reset de senha.");
 
-            var body = _accountEmailTemplateFactory.GenerateConfirmationEmailHtml(userDto.Name, confirmationLink);
+            var body = _accountEmailTemplateFactory.GeneratePasswordResetEmailHtml(userDto.Name, resetPasswordLink);
 
             if (string.IsNullOrEmpty(body))
-                return Result.Failure("Falha ao gerar texto de confirmação de e-mail.");
+                return Result.Failure("Falha ao gerar texto de reset de senha.");
 
             var sendEmail = new SendEmail
             {
                 Name = userDto.Name,
                 Email = userDto.Email,
-                Subject = EmailSubjects.Confirmation,
+                Subject = EmailSubjects.PasswordReset,
                 Body = body
             };
 
@@ -61,6 +61,5 @@ namespace Application.Services.Emails
 
             return Result.Ok($"E-mail enviado com sucesso para {sendEmail.Email}");
         }
-
     }
 }

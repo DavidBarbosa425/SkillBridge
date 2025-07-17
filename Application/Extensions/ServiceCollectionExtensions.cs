@@ -19,9 +19,10 @@ namespace Application.Extensions
         {
             // Services
             services.AddScoped<IAuthService, AuthService>();
-            services.AddScoped<IUserService, UserService>();
+            //services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserEmailConfirmationService, UserEmailConfirmationService>();
-            services.AddScoped<IValidatorsService, ValidatorService>();
+            services.AddScoped<IUserEmailPasswordResetService, UserEmailPasswordResetService>();
+            services.AddScoped<IValidatorService, ValidatorService>();
 
             // Validators
             services.AddValidatorsFromAssemblyContaining<RegisterUserDtoValidator>();
@@ -31,7 +32,7 @@ namespace Application.Extensions
             services.AddScoped<IApplicationUserMapper, ApplicationUserMapper>();
 
             // Factories
-            services.AddScoped<IEmailTemplateFactory, EmailTemplateFactory>();
+            services.AddScoped<IAccountEmailTemplateFactory, AccountEmailTemplateFactory>();
 
             return services;
         }

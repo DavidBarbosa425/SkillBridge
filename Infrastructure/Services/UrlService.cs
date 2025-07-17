@@ -6,16 +6,22 @@ namespace Infrastructure.Services
 {
     public class UrlService : IUrlService
     {
-        private readonly EmailConfirmationSettings _emailConfirmationOptions;
+        private readonly UrlSettings _urlOptions;
 
         public UrlService(
-            IOptions<EmailConfirmationSettings> emailConfirmationOptions)
+            IOptions<UrlSettings> urlOptions)
         {
-            _emailConfirmationOptions = emailConfirmationOptions.Value;
+            _urlOptions = urlOptions.Value;
         }
         public string GenerateApiUrlEmailConfirmation(string userId, string token)
         {
-            var url = string.Format(_emailConfirmationOptions.Url, userId, Uri.EscapeDataString(token));
+            var url = string.Format(_urlOptions.AccountEmailConfirmation, userId, Uri.EscapeDataString(token));
+
+            return url;
+        }
+        public string GenerateApiUrlEmailPasswordReset(string userId, string token)
+        {
+            var url = string.Format(_urlOptions.AccountEmailPasswordReset, userId, Uri.EscapeDataString(token));
 
             return url;
         }

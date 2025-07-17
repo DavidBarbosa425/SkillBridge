@@ -36,7 +36,6 @@ namespace Infrastructure.Identity
 
             return Result<User>.Ok(createdUser);
         }
-
         public async Task<Result<User>> FindByIdAsync(string id)
         {
 
@@ -59,21 +58,6 @@ namespace Infrastructure.Identity
 
             return Result<User>.Ok(user);
         }
-
-        public async Task<Result> ConfirmEmailAsync(Guid userId, string token)
-        {
-            var applicationUser = await _userManager.FindByIdAsync(userId.ToString());
-
-            if (applicationUser == null)
-                return Result.Failure("Usuário não encontrado.");
-
-            var result = await _userManager.ConfirmEmailAsync(applicationUser, token);
-
-            if (!result.Succeeded) return Result.Failure("Erro ao confirmar o e-mail do usuário.");
-
-            return Result.Ok("E-mail confirmado com sucesso!");
-
-        }
         public async Task<Result<string>> GenerateEmailConfirmationTokenAsync(Guid userId)
         {
             var applicationUser = await _userManager.FindByIdAsync(userId.ToString());
@@ -88,7 +72,20 @@ namespace Infrastructure.Identity
 
             return Result<string>.Ok(token);
         }
+        public async Task<Result> ConfirmEmailAsync(Guid userId, string token)
+        {
+            var applicationUser = await _userManager.FindByIdAsync(userId.ToString());
 
+            if (applicationUser == null)
+                return Result.Failure("Usuário não encontrado.");
+
+            var result = await _userManager.ConfirmEmailAsync(applicationUser, token);
+
+            if (!result.Succeeded) return Result.Failure("Erro ao confirmar o e-mail do usuário.");
+
+            return Result.Ok("E-mail confirmado com sucesso!");
+
+        }
         public async Task<Result<User>> CheckPasswordAsync(string email, string password)
         {
             var applicationUser = await _userManager.FindByEmailAsync(email);
@@ -104,7 +101,6 @@ namespace Infrastructure.Identity
             return Result<User>.Ok(user);
 
         }
-
         public async Task<Result<string>> GeneratePasswordResetTokenAsync(Guid userId)
         {
             var applicationUser = await _userManager.FindByIdAsync(userId.ToString());
@@ -119,5 +115,23 @@ namespace Infrastructure.Identity
 
             return Result<string>.Ok(token);
         }
+        public async Task<Result> ResetPasswordAsync(string email, string token, string newPassword)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user == null)
+                return Result.Failure("Usuário não encontrado.");
+            var decodedToken = Uri.UnescapeDataString(token);
+            var resetedPassword = await _userManager.ResetPasswordAsync(user, decodedToken, newPassword);
+
+            if (!resetedPassword.Succeeded)
+            {
+                var errors = resetedPassword.Errors.Select(e => e.Description);
+                return Result.Failure(string.Join("; ", errors));
+            }
+
+            return Result.Ok("Senha redefinida com sucesso! Você pode fazer login agora.");
+        }
+
     }
 }

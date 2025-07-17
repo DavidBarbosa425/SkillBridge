@@ -17,11 +17,11 @@ namespace Application.UnitTests.Services
         {
             // Arrange
             var applicationMapperMock = new Mock<IApplicationMapper>();
-            var validatorServiceMock = new Mock<IValidatorsService>();
+            var validatorServiceMock = new Mock<IValidatorService>();
             var emailServiceMock = new Mock<IEmailService>();
             var identityUserServiceMock = new Mock<IIdentityUserService>();
             var urlServiceMock = new Mock<IUrlService>();
-            var emailTemplateFactory = new Mock<IEmailTemplateFactory>();
+            var emailTemplateFactory = new Mock<IAccountEmailTemplateFactory>();
 
             var user = new User
             {
@@ -86,11 +86,11 @@ namespace Application.UnitTests.Services
         {
             // Arrange
             var applicationMapperMock = new Mock<IApplicationMapper>();
-            var validatorServiceMock = new Mock<IValidatorsService>();
+            var validatorServiceMock = new Mock<IValidatorService>();
             var emailServiceMock = new Mock<IEmailService>();
             var identityUserServiceMock = new Mock<IIdentityUserService>();
             var urlServiceMock = new Mock<IUrlService>();
-            var emailTemplateFactory = new Mock<IEmailTemplateFactory>();
+            var emailTemplateFactory = new Mock<IAccountEmailTemplateFactory>();
 
 
             applicationMapperMock
@@ -126,11 +126,11 @@ namespace Application.UnitTests.Services
         {
             // Arrange
             var applicationMapperMock = new Mock<IApplicationMapper>();
-            var validatorServiceMock = new Mock<IValidatorsService>();
+            var validatorServiceMock = new Mock<IValidatorService>();
             var emailServiceMock = new Mock<IEmailService>();
             var identityUserServiceMock = new Mock<IIdentityUserService>();
             var urlServiceMock = new Mock<IUrlService>();
-            var emailTemplateFactory = new Mock<IEmailTemplateFactory>();
+            var emailTemplateFactory = new Mock<IAccountEmailTemplateFactory>();
 
             applicationMapperMock
                 .Setup(x => x.User.ToUserDto(It.IsAny<User>()))

@@ -1,6 +1,6 @@
 ﻿namespace Application.Interfaces
 {
-    public interface IValidatorsService
+    public interface IValidatorService
     {
         Task ValidateAsync<T>(T dto);
     }
