@@ -65,7 +65,7 @@ namespace Application.Services.Emails
         {
             var decodedToken = Uri.UnescapeDataString(token);
 
-            var confirmationResult = await _identityUserService.ConfirmationUserEmailAsync(userId, decodedToken);
+            var confirmationResult = await _identityUserService.ConfirmEmailAsync(userId, decodedToken);
 
             if (!confirmationResult.Success) return Result.Failure(confirmationResult.Message);
 

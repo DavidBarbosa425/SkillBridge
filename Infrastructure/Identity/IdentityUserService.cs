@@ -64,7 +64,7 @@ namespace Infrastructure.Identity
             return Result<string>.Ok(token);
         }
 
-        public async Task<Result> ConfirmationUserEmailAsync(Guid userId, string token)
+        public async Task<Result> ConfirmEmailAsync(Guid userId, string token)
         {
             var applicationUser = await _userManager.FindByIdAsync(userId.ToString());
 
