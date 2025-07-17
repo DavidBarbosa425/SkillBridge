@@ -15,36 +15,39 @@ namespace Application.Services.Emails
         private readonly IIdentityUserService _identityUserService;
         private readonly IUrlService _urlService;
         private readonly IEmailTemplateFactory _emailTemplateFactory;
+        private readonly IEmailService _emailService;
 
         public EmailConfirmationService(
             IValidatorService validatorService,
             IIdentityUserService identityUserService,
             IUrlService urlService,
-            IEmailTemplateFactory emailTemplateFactory)
+            IEmailTemplateFactory emailTemplateFactory,
+            IEmailService emailService)
         {
             _validatorService = validatorService;
             _identityUserService = identityUserService;
             _urlService = urlService;
             _emailTemplateFactory = emailTemplateFactory;
+            _emailService = emailService;
         }
-        public async Task<Result<SendEmail>> GenerateEmailConfirmation(UserDto userDto)
+        public async Task<Result> SendEmailConfirmation(UserDto userDto)
         {
             await _validatorService.ValidateAsync(userDto);
 
             var token = await _identityUserService.GenerateEmailConfirmationTokenAsync(userDto.Id);
 
             if (!token.Success)
-                return Result<SendEmail>.Failure(token.Message);
+                return Result.Failure(token.Message);
 
             var confirmationLink = _urlService.GenerateApiUrlEmailConfirmation(userDto.Id.ToString(), token.Data!);
 
             if (string.IsNullOrEmpty(confirmationLink))
-                return Result<SendEmail>.Failure("Falha ao gerar link de confirmação de e-mail.");
+                return Result.Failure("Falha ao gerar link de confirmação de e-mail.");
 
             var body = _emailTemplateFactory.GenerateConfirmationEmailHtml(userDto.Name, confirmationLink);
 
             if (string.IsNullOrEmpty(body))
-                return Result<SendEmail>.Failure("Falha ao gerar texto de confirmação de e-mail.");
+                return Result.Failure("Falha ao gerar texto de confirmação de e-mail.");
 
             var sendEmail = new SendEmail
             {
@@ -54,7 +57,9 @@ namespace Application.Services.Emails
                 Body = body
             };
 
-            return Result<SendEmail>.Ok(sendEmail);
+            await _emailService.SendEmailAsync(sendEmail);
+
+            return Result.Ok($"E-mail enviado com sucesso para {sendEmail.Email}");
         }
         public async Task<Result> ConfirmationUserEmailAsync(Guid userId, string token)
         {

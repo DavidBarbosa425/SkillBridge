@@ -11,21 +11,18 @@ namespace Application.Services
     {
         private readonly IApplicationMapper _mapper;
         private readonly IValidatorService _validatorService;
-        private readonly IEmailService _emailService;
         private readonly IEmailConfirmationService _emailConfirmationService;
         private readonly IIdentityUserService _identityUserService;
 
         public AuthService(
             IApplicationMapper mapper,
             IValidatorService validatorService,
-            IEmailService emailService,
             IEmailConfirmationService emailConfirmationService,
             IIdentityUserService identityUserService
             )
         {
             _mapper = mapper;
             _validatorService = validatorService;
-            _emailService = emailService;
             _emailConfirmationService = emailConfirmationService;
             _identityUserService = identityUserService;
 
@@ -40,16 +37,14 @@ namespace Application.Services
             var createdUser = await _identityUserService.AddAsync(user);
 
             if (!createdUser.Success)
-                return Result.Failure("Erro ao criar usuário.");
+                return Result.Failure(createdUser.Message);
 
             var userDto = _mapper.User.ToUserDto(createdUser.Data!);
 
-            var sendEmail = await _emailConfirmationService.GenerateEmailConfirmation(userDto);
+            var sentEmail = await _emailConfirmationService.SendEmailConfirmation(userDto);
 
-            if (!sendEmail.Success)
-                return Result.Failure("Erro ao gerar e enviar e-mail de confirmação.");
-
-            await _emailService.SendEmailAsync(sendEmail.Data!);
+            if (!sentEmail.Success)
+                return Result.Failure(sentEmail.Message);
 
             return Result.Ok("Usuário criado com sucesso. Um E-mail de Confirmação foi enviado para sua caixa de entrada.");
 
