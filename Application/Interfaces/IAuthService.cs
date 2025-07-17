@@ -1,9 +1,10 @@
 ﻿using Application.DTOs;
+using Domain.Common;
 
 namespace Application.Interfaces
 {
     public interface IAuthService
     {
-        Task LoginAsync(LoginDto dto);
+        Task<Result<UserDto>> LoginAsync(LoginDto dto);
     }
 }

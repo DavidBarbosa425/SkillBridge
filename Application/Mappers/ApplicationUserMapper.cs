@@ -24,6 +24,14 @@ internal class ApplicationUserMapper : IApplicationUserMapper
             Email = dto.Email,
         };
     }
+    public User ToUser(LoginDto dto)
+    {
+        return new User
+        {
+            Email = dto.Email,
+            Password = dto.Password
+        };
+    }
 
     public UserDto ToUserDto(User user)
     {

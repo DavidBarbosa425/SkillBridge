@@ -69,7 +69,7 @@ namespace Application.Services.Emails
 
             if (!confirmationResult.Success) return Result.Failure(confirmationResult.Message);
 
-            return Result.Ok("E-mail confirmado com sucesso!");
+            return Result.Ok(confirmationResult.Message);
 
         }
     }

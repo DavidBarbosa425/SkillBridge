@@ -48,7 +48,32 @@ namespace Infrastructure.Identity
 
             return Result<User>.Ok(user);
         }
+        public async Task<Result<User>> FindByEmailAsync(string email)
+        {
 
+            var applicationUser = await _userManager.FindByEmailAsync(email);
+
+            if (applicationUser == null) return Result<User>.Failure("Usuário não encontrado");
+
+            var user = _infrastructureMapper.User.ToUser(applicationUser);
+
+            return Result<User>.Ok(user);
+        }
+
+        public async Task<Result> ConfirmEmailAsync(Guid userId, string token)
+        {
+            var applicationUser = await _userManager.FindByIdAsync(userId.ToString());
+
+            if (applicationUser == null)
+                return Result.Failure("Usuário não encontrado.");
+
+            var result = await _userManager.ConfirmEmailAsync(applicationUser, token);
+
+            if (!result.Succeeded) return Result.Failure("Erro ao confirmar o e-mail do usuário.");
+
+            return Result.Ok("E-mail confirmado com sucesso!");
+
+        }
         public async Task<Result<string>> GenerateEmailConfirmationTokenAsync(Guid userId)
         {
             var applicationUser = await _userManager.FindByIdAsync(userId.ToString());
@@ -64,18 +89,19 @@ namespace Infrastructure.Identity
             return Result<string>.Ok(token);
         }
 
-        public async Task<Result> ConfirmEmailAsync(Guid userId, string token)
+        public async Task<Result<User>> CheckPasswordAsync(string email, string password)
         {
-            var applicationUser = await _userManager.FindByIdAsync(userId.ToString());
+            var applicationUser = await _userManager.FindByEmailAsync(email);
 
-            if (applicationUser == null)
-                return Result.Failure("Usuário não encontrado.");
+            if (applicationUser == null || !await _userManager.CheckPasswordAsync(applicationUser, password))
+                return Result<User>.Failure("E-mail ou senha inválidos");
 
-            var result = await _userManager.ConfirmEmailAsync(applicationUser, token);
+            if (!await _userManager.IsEmailConfirmedAsync(applicationUser))
+                return Result<User>.Failure("Confirme seu e-mail antes de fazer login.");
 
-            if (!result.Succeeded) return Result.Failure("Erro ao confirmar o e-mail do usuário.");
+            var user = _infrastructureMapper.User.ToUser(applicationUser);
 
-            return Result.Ok("E-mail confirmado com sucesso!");
+            return Result<User>.Ok(user);
 
         }
 
