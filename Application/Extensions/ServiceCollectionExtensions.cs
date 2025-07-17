@@ -19,8 +19,8 @@ namespace Application.Extensions
         {
             // Services
             services.AddScoped<IAuthService, AuthService>();
-            services.AddScoped<IEmailConfirmationService, EmailConfirmationService>();
-            services.AddScoped<IValidatorService, ValidatorService>();
+            services.AddScoped<IUserEmailConfirmationService, UserEmailConfirmationService>();
+            services.AddScoped<IValidatorsService, ValidatorService>();
 
             // Validators
             services.AddValidatorsFromAssemblyContaining<RegisterUserDtoValidator>();

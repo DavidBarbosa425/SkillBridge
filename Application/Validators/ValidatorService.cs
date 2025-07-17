@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace Application.Validators
 {
-    public class ValidatorService : IValidatorService
+    public class ValidatorService : IValidatorsService
     {
 
         private readonly IServiceProvider _serviceProvider;

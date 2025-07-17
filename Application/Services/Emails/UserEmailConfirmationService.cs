@@ -9,16 +9,16 @@ using Domain.Interfaces;
 
 namespace Application.Services.Emails
 {
-    public class EmailConfirmationService : IEmailConfirmationService
+    public class UserEmailConfirmationService : IUserEmailConfirmationService
     {
-        private readonly IValidatorService _validatorService;
+        private readonly IValidatorsService _validatorService;
         private readonly IIdentityUserService _identityUserService;
         private readonly IUrlService _urlService;
         private readonly IEmailTemplateFactory _emailTemplateFactory;
         private readonly IEmailService _emailService;
 
-        public EmailConfirmationService(
-            IValidatorService validatorService,
+        public UserEmailConfirmationService(
+            IValidatorsService validatorService,
             IIdentityUserService identityUserService,
             IUrlService urlService,
             IEmailTemplateFactory emailTemplateFactory,
@@ -30,7 +30,7 @@ namespace Application.Services.Emails
             _emailTemplateFactory = emailTemplateFactory;
             _emailService = emailService;
         }
-        public async Task<Result> SendEmailConfirmation(UserDto userDto)
+        public async Task<Result> SendConfirmationEmailAsync(UserDto userDto)
         {
             await _validatorService.ValidateAsync(userDto);
 
@@ -61,7 +61,7 @@ namespace Application.Services.Emails
 
             return Result.Ok($"E-mail enviado com sucesso para {sendEmail.Email}");
         }
-        public async Task<Result> ConfirmationUserEmailAsync(Guid userId, string token)
+        public async Task<Result> ConfirmEmailAsync(Guid userId, string token)
         {
             var decodedToken = Uri.UnescapeDataString(token);
 

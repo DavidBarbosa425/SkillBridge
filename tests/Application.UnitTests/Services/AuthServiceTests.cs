@@ -17,7 +17,7 @@ namespace Application.UnitTests.Services
         {
             // Arrange
             var applicationMapperMock = new Mock<IApplicationMapper>();
-            var validatorServiceMock = new Mock<IValidatorService>();
+            var validatorServiceMock = new Mock<IValidatorsService>();
             var emailServiceMock = new Mock<IEmailService>();
             var identityUserServiceMock = new Mock<IIdentityUserService>();
             var urlServiceMock = new Mock<IUrlService>();
@@ -86,7 +86,7 @@ namespace Application.UnitTests.Services
         {
             // Arrange
             var applicationMapperMock = new Mock<IApplicationMapper>();
-            var validatorServiceMock = new Mock<IValidatorService>();
+            var validatorServiceMock = new Mock<IValidatorsService>();
             var emailServiceMock = new Mock<IEmailService>();
             var identityUserServiceMock = new Mock<IIdentityUserService>();
             var urlServiceMock = new Mock<IUrlService>();
@@ -126,7 +126,7 @@ namespace Application.UnitTests.Services
         {
             // Arrange
             var applicationMapperMock = new Mock<IApplicationMapper>();
-            var validatorServiceMock = new Mock<IValidatorService>();
+            var validatorServiceMock = new Mock<IValidatorsService>();
             var emailServiceMock = new Mock<IEmailService>();
             var identityUserServiceMock = new Mock<IIdentityUserService>();
             var urlServiceMock = new Mock<IUrlService>();

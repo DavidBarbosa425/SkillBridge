@@ -10,29 +10,13 @@ namespace API.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
-        private readonly IEmailConfirmationService _emailConfirmationService;
+        private readonly IUserEmailConfirmationService _emailConfirmationService;
 
         public AuthController(
-            IAuthService authService,
-            IEmailConfirmationService emailConfirmationService)
+            IAuthService authService)
         {
             _authService = authService;
             _emailConfirmationService = emailConfirmationService;
-        }
-        [HttpPost("register-user")]
-        public async Task<IActionResult> RegisterUser([FromBody] RegisterUserDto dto)
-        {
-            var result = await _authService.RegisterUserAsync(dto);
-
-            return Ok(result);
-        }
-
-        [HttpGet("confirmation-user-email")]
-        public async Task<IActionResult> ConfirmationUserEmail(Guid userId, string token)
-        {
-            var result = await _emailConfirmationService.ConfirmationUserEmailAsync(userId, token);
-
-            return Ok(result);
         }
 
         [HttpPost("login")]

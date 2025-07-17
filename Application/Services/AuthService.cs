@@ -1,55 +1,19 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
-using Application.Interfaces.Emails;
-using Application.Interfaces.Mappers;
-using Domain.Common;
-using Domain.Interfaces;
 
 namespace Application.Services
 {
     public class AuthService : IAuthService 
     {
-        private readonly IApplicationMapper _mapper;
-        private readonly IValidatorService _validatorService;
-        private readonly IEmailConfirmationService _emailConfirmationService;
-        private readonly IIdentityUserService _identityUserService;
+        private readonly IValidatorsService _validatorService;
 
         public AuthService(
-            IApplicationMapper mapper,
-            IValidatorService validatorService,
-            IEmailConfirmationService emailConfirmationService,
-            IIdentityUserService identityUserService
+            IValidatorsService validatorService
             )
         {
-            _mapper = mapper;
             _validatorService = validatorService;
-            _emailConfirmationService = emailConfirmationService;
-            _identityUserService = identityUserService;
-
         }
-
-        public async Task<Result> RegisterUserAsync(RegisterUserDto dto)
-        {
-            await _validatorService.ValidateAsync(dto);
-
-            var user = _mapper.User.ToUser(dto);
-
-            var createdUser = await _identityUserService.AddAsync(user);
-
-            if (!createdUser.Success)
-                return Result.Failure(createdUser.Message);
-
-            var userDto = _mapper.User.ToUserDto(createdUser.Data!);
-
-            var sentEmail = await _emailConfirmationService.SendEmailConfirmation(userDto);
-
-            if (!sentEmail.Success)
-                return Result.Failure(sentEmail.Message);
-
-            return Result.Ok("Usuário criado com sucesso. Um E-mail de Confirmação foi enviado para sua caixa de entrada.");
-
-        }
-       
+     
         public async Task LoginAsync(LoginDto dto)
         {
             await _validatorService.ValidateAsync(dto);
