@@ -27,7 +27,13 @@ namespace API.Controllers
         [HttpGet("confirm-email")]
         public async Task<IActionResult> ConfirmEmail([FromQuery] Guid userId, [FromQuery] string token)
         {
-            var result = await _authService.ConfirmEmailAsync(userId, token);
+            var confirmEmailDto = new ConfirmEmailDto
+            {
+                UserId = userId,
+                Token = token
+            };
+
+            var result = await _authService.ConfirmEmailAsync(confirmEmailDto);
 
             return Ok(result);
         }

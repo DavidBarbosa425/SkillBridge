@@ -50,11 +50,13 @@ namespace Application.Services
 
         }
 
-        public async Task<Result> ConfirmEmailAsync(Guid userId, string token)
+        public async Task<Result> ConfirmEmailAsync(ConfirmEmailDto dto)
         {
-            var decodedToken = Uri.UnescapeDataString(token);
+            await _validatorService.ValidateAsync(dto);
 
-            var confirmationResult = await _identityUserService.ConfirmEmailAsync(userId, decodedToken);
+            var decodedToken = Uri.UnescapeDataString(dto.Token);
+
+            var confirmationResult = await _identityUserService.ConfirmEmailAsync(dto.UserId, decodedToken);
 
             if (!confirmationResult.Success) return Result.Failure(confirmationResult.Message);
 
