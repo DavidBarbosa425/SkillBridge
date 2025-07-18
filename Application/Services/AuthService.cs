@@ -3,9 +3,7 @@ using Application.Interfaces;
 using Application.Interfaces.Emails;
 using Application.Interfaces.Mappers;
 using Domain.Common;
-using Domain.Entities;
 using Domain.Interfaces;
-using Microsoft.AspNetCore.Identity;
 
 namespace Application.Services
 {
@@ -13,22 +11,19 @@ namespace Application.Services
     {
         private readonly IApplicationMapper _mapper;
         private readonly IValidatorService _validatorService;
-        private readonly IUserEmailConfirmationService _userEmailConfirmationService;
-        private readonly IUserEmailPasswordResetService _userEmailPasswordResetService;
+        private readonly IEmailAccountService _emailAccountService;
         private readonly IIdentityUserService _identityUserService;
 
         public AuthService(
             IApplicationMapper mapper,
             IValidatorService validatorService,
-            IUserEmailConfirmationService userEmailConfirmationService,
-            IUserEmailPasswordResetService userEmailPasswordResetService,
+            IEmailAccountService emailAccountService,
             IIdentityUserService identityUserService
             )
         {
             _mapper = mapper;
             _validatorService = validatorService;
-            _userEmailConfirmationService = userEmailConfirmationService;
-            _userEmailPasswordResetService = userEmailPasswordResetService;
+            _emailAccountService = emailAccountService;
             _identityUserService = identityUserService;
 
         }
@@ -46,12 +41,12 @@ namespace Application.Services
 
             var userDto = _mapper.User.ToUserDto(createdUser.Data!);
 
-            var sentEmail = await _userEmailConfirmationService.SendConfirmationEmailAsync(userDto);
+            var sentEmail = await _emailAccountService.SendConfirmationEmailAsync(userDto);
 
             if (!sentEmail.Success)
                 return Result.Failure(sentEmail.Message);
 
-            return Result.Ok("Usuário criado com sucesso. Um E-mail de Confirmação foi enviado para sua caixa de entrada.");
+            return Result.Ok($"Usuário criado com sucesso. Um E-mail de Confirmação foi enviado para {userDto.Email}.");
 
         }
 
@@ -87,24 +82,24 @@ namespace Application.Services
             var user = await _identityUserService.FindByEmailAsync(dto.Email);
 
             if (!user.Success)
-                return Result.Failure("Se o e-mail estiver cadastrado, enviaremos um link de redefinição.");
+                return Result.Failure(user.Message);
 
             var userDto = _mapper.User.ToUserDto(user.Data!);
 
-            await _userEmailPasswordResetService.SendEmailPasswordResetAsync(userDto);
+            await _emailAccountService.SendPasswordResetEmailAsync(userDto);
 
-            return Result.Ok("E-mail de recuperar senha enviado com sucesso! Confira sua caixa de entrada.");
+            return Result.Ok($"E-mail de recuperação de senha enviado com sucesso para {user.Data?.Email}");
 
         }
 
         public async Task<Result> ResetPasswordAsync(ResetPasswordDto dto)
         {
-            var resetedPassword = await _identityUserService.ResetPasswordAsync(dto.Email, dto.Token, dto.NewPassword);
+            var passwordWasReset = await _identityUserService.ResetPasswordAsync(dto.Email, dto.Token, dto.NewPassword);
 
-            if (!resetedPassword.Success)
-                return Result.Failure(resetedPassword.Message);
+            if (!passwordWasReset.Success)
+                return Result.Failure(passwordWasReset.Message);
 
-            return Result.Ok(resetedPassword.Message);
+            return Result.Ok(passwordWasReset.Message);
         }
     }
 }

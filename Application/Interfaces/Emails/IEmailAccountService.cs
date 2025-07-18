@@ -4,8 +4,9 @@ using Domain.Entities;
 
 namespace Application.Interfaces.Emails
 {
-    public interface IUserEmailConfirmationService
+    public interface IEmailAccountService
     {
         Task<Result> SendConfirmationEmailAsync(UserDto userDto);
+        Task<Result> SendPasswordResetEmailAsync(UserDto userDto);
     }
 }
