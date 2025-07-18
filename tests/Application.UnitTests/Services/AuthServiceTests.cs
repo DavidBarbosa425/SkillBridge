@@ -1,5 +1,6 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
+using Application.Interfaces.Emails;
 using Application.Interfaces.Factories;
 using Application.Interfaces.Mappers;
 using Application.Services;
@@ -13,155 +14,119 @@ namespace Application.UnitTests.Services
     public class AuthServiceTests
     {
         [Fact]
-        public async Task RegisterUserAsync_ShouldReturnSuccess_WhenUserIsCreated()
+        public async Task RegisterAsync_ShouldReturnSuccess_WhenUserIsCreated()
         {
             // Arrange
+            var dto = new RegisterUserDto { Email = "teste@email.com", Name = "Teste" };
+            var user = new User {Name = dto.Name, Email = dto.Email };
+            var userDto = new UserDto {Name = dto.Name, Email = dto.Email };
+
             var applicationMapperMock = new Mock<IApplicationMapper>();
             var validatorServiceMock = new Mock<IValidatorService>();
-            var emailServiceMock = new Mock<IEmailService>();
+            var emailAccountServiceMock = new Mock<IEmailAccountService>();
             var identityUserServiceMock = new Mock<IIdentityUserService>();
-            var urlServiceMock = new Mock<IUrlService>();
-            var emailTemplateFactory = new Mock<IAccountEmailTemplateFactory>();
 
-            var user = new User
-            {
-                Id = Guid.NewGuid(),
-                Name = "Test User",
-                Email = "Test@test.com"
-            };
+            // mocks
+            applicationMapperMock.Setup(x => x.User.ToUser(dto)).Returns(user);
 
-            applicationMapperMock
-                .Setup(x => x.User.ToUser(It.IsAny<RegisterUserDto>()))
-                .Returns(user);
-
-            identityUserServiceMock
-                .Setup(x => x.AddAsync(It.IsAny<User>()))
+            identityUserServiceMock.Setup(x => x.AddAsync(user))
                 .ReturnsAsync(Result<User>.Ok(user));
 
-            var userDto = new UserDto
-            {
-                Id = user.Id,
-                Name = user.Name,
-                Email = user.Email
-            };
+            applicationMapperMock.Setup(x => x.User.ToUserDto(user)).Returns(userDto);
 
-            applicationMapperMock
-                .Setup(x => x.User.ToUserDto(It.IsAny<User>()))
-                .Returns(userDto);
+            emailAccountServiceMock.Setup(x => x.SendConfirmationEmailAsync(userDto))
+                .ReturnsAsync(Result.Ok("Email enviado"));
 
-            var authService = new AuthService(
+            var service = new AuthService(
                 applicationMapperMock.Object,
                 validatorServiceMock.Object,
-                emailServiceMock.Object,
-                identityUserServiceMock.Object,
-                urlServiceMock.Object,
-                emailTemplateFactory.Object
+                emailAccountServiceMock.Object,
+                identityUserServiceMock.Object
             );
 
-            var sendEmail = new SendEmail()
-            {
-                Name = user.Name,
-                Email = user.Email,
-                Subject = "Confirmação de E-mail",
-                Body = "Por favor, confirme seu e-mail."
-            };
-
-            var dto = new RegisterUserDto
-            {
-                Name = "Teste",
-                Email = "teste@teste.com",
-                Password = "123456"
-            };
-
             // Act
-            var result = await authService.RegisterUserAsync(dto);
+            var result = await service.RegisterAsync(dto);
 
             // Assert
+            Assert.NotNull(result);
             Assert.True(result.Success);
-            Assert.Equal("Usuário criado com sucesso. Um E-mail de Confirmação foi enviado para sua caixa de entrada.", result.Message);
+            Assert.Equal($"Usuário criado com sucesso. Um E-mail de Confirmação foi enviado para {dto.Email}.", result.Message);
+
         }
 
         [Fact]
-        public async Task RegisterUserAsync_ShouldReturnError_WhenUserIsNotCreated()
+        public async Task RegisterAsync_ShouldReturnError_WhenUserIsNotCreated()
         {
             // Arrange
+            var dto = new RegisterUserDto { Email = "teste@email.com", Name = "Teste" };
+            var user = new User { Name = dto.Name, Email = dto.Email };
+            var userDto = new UserDto { Name = dto.Name, Email = dto.Email };
+
             var applicationMapperMock = new Mock<IApplicationMapper>();
             var validatorServiceMock = new Mock<IValidatorService>();
-            var emailServiceMock = new Mock<IEmailService>();
+            var emailAccountServiceMock = new Mock<IEmailAccountService>();
             var identityUserServiceMock = new Mock<IIdentityUserService>();
-            var urlServiceMock = new Mock<IUrlService>();
-            var emailTemplateFactory = new Mock<IAccountEmailTemplateFactory>();
 
+            // mocks
+            applicationMapperMock.Setup(x => x.User.ToUser(dto)).Returns(user);
 
-            applicationMapperMock
-                .Setup(x => x.User.ToUser(It.IsAny<RegisterUserDto>()))
-                .Returns(new User() { Name = "Test" });
+            identityUserServiceMock.Setup(x => x.AddAsync(user))
+                .ReturnsAsync(Result<User>.Failure("Erro ao criar usuário"));
 
-            var authService = new AuthService(
+            var service = new AuthService(
                 applicationMapperMock.Object,
                 validatorServiceMock.Object,
-                emailServiceMock.Object,
-                identityUserServiceMock.Object,
-                urlServiceMock.Object,
-                emailTemplateFactory.Object
+                emailAccountServiceMock.Object,
+                identityUserServiceMock.Object
             );
 
-            var dto = new RegisterUserDto
-            {
-                Name = "Teste",
-                Email = "teste@teste.com",
-                Password = "123456"
-            };
-
             // Act
-            var result = await authService.RegisterUserAsync(dto);
+            var result = await service.RegisterAsync(dto);
 
             // Assert
+            Assert.NotNull(result);
             Assert.False(result.Success);
-            Assert.Equal("Erro ao criar usuário.", result.Message);
+            Assert.Equal("Erro ao criar usuário", result.Message);
         }
 
         [Fact]
         public async Task RegisterUserAsync_ShouldReturnError_WhenEmailConfirmationIsNotSend()
         {
             // Arrange
+            var dto = new RegisterUserDto { Email = "teste@email.com", Name = "Teste" };
+            var user = new User { Name = dto.Name, Email = dto.Email };
+            var userDto = new UserDto { Name = dto.Name, Email = dto.Email };
+
             var applicationMapperMock = new Mock<IApplicationMapper>();
             var validatorServiceMock = new Mock<IValidatorService>();
-            var emailServiceMock = new Mock<IEmailService>();
+            var emailAccountServiceMock = new Mock<IEmailAccountService>();
             var identityUserServiceMock = new Mock<IIdentityUserService>();
-            var urlServiceMock = new Mock<IUrlService>();
-            var emailTemplateFactory = new Mock<IAccountEmailTemplateFactory>();
 
-            applicationMapperMock
-                .Setup(x => x.User.ToUserDto(It.IsAny<User>()))
-                .Returns(new UserDto() { Name = "Test" });
+            // mocks
+            applicationMapperMock.Setup(x => x.User.ToUser(dto)).Returns(user);
 
-            applicationMapperMock
-                .Setup(x => x.User.ToUser(It.IsAny<RegisterUserDto>()))
-                .Returns(new User() { Name = "Test" });
+            identityUserServiceMock.Setup(x => x.AddAsync(user))
+                .ReturnsAsync(Result<User>.Ok(user));
 
-            var authService = new AuthService(
+            applicationMapperMock.Setup(x => x.User.ToUserDto(user)).Returns(userDto);
+
+            emailAccountServiceMock.Setup(x => x.SendConfirmationEmailAsync(userDto))
+                .ReturnsAsync(Result.Failure("Erro ao enviar email de confirmação"));
+
+            var service = new AuthService(
                 applicationMapperMock.Object,
                 validatorServiceMock.Object,
-                emailServiceMock.Object,
-                identityUserServiceMock.Object,
-                urlServiceMock.Object,
-                emailTemplateFactory.Object
+                emailAccountServiceMock.Object,
+                identityUserServiceMock.Object
             );
 
-            var dto = new RegisterUserDto
-            {
-                Name = "Teste",
-                Email = "teste@teste.com",
-                Password = "123456"
-            };
-
             // Act
-            var result = await authService.RegisterUserAsync(dto);
+            var result = await service.RegisterAsync(dto);
 
             // Assert
+            Assert.NotNull(result);
             Assert.False(result.Success);
-            Assert.Equal("Erro ao gerar e enviar e-mail de confirmação.", result.Message);
+            Assert.Equal("Erro ao enviar email de confirmação", result.Message);
         }
 
     }
