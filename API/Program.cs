@@ -11,6 +11,7 @@ builder.Services.AddIdentityConfiguration();
 builder.Services.AddCustomConfigurations(builder.Configuration);
 builder.Services.AddInfrastructureServices();
 builder.Services.AddApplicationServices();
+builder.Services.AddApiServices();
 
 builder.Services.AddSwaggerGen(); 
 

@@ -1,4 +1,6 @@
-﻿using Application.DTOs;
+﻿using API.Interfaces.Mappers;
+using API.Models;
+using Application.DTOs;
 using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,11 +11,14 @@ namespace API.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly IApiMapper _apiMapper;
 
         public AuthController(
-            IAuthService authService)
+            IAuthService authService,
+            IApiMapper apiMapper)
         {
             _authService = authService;
+            _apiMapper = apiMapper;
         }
 
         [HttpPost]
@@ -25,13 +30,9 @@ namespace API.Controllers
         }
 
         [HttpGet("confirm-email")]
-        public async Task<IActionResult> ConfirmEmail([FromQuery] Guid userId, [FromQuery] string token)
+        public async Task<IActionResult> ConfirmEmail([FromQuery] ConfirmEmailRequest request)
         {
-            var confirmEmailDto = new ConfirmEmailDto
-            {
-                UserId = userId,
-                Token = token
-            };
+            var confirmEmailDto = _apiMapper.User.ToConfirmEmailDto(request);
 
             var result = await _authService.ConfirmEmailAsync(confirmEmailDto);
 

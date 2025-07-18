@@ -1,4 +1,6 @@
 ﻿
+using API.Interfaces.Mappers;
+using API.Mappers;
 using Infrastructure.Configurations;
 using Infrastructure.Data;
 using Infrastructure.Identity.Models;
@@ -9,13 +11,6 @@ namespace API.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddCustomConfigurations(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.Configure<SmtpSettings>(configuration.GetSection("Smtp"));
-            services.Configure<EmailSettings>(configuration.GetSection("Email"));
-            services.Configure<UrlSettings>(configuration.GetSection("UrlSettings"));
-            return services;
-        }
 
         public static IServiceCollection AddIdentityConfiguration(this IServiceCollection services)
         {
@@ -30,6 +25,20 @@ namespace API.Extensions
         {
             services.AddDbContext<ApplicationDbContext>(opt =>
                 opt.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+            return services;
+        }
+        public static IServiceCollection AddApiServices(this IServiceCollection services)
+        {
+            services.AddScoped<IApiMapper, ApiMapper>();
+            services.AddScoped<IApiUserMapper, ApiUserMapper>();
+
+            return services;
+        }
+        public static IServiceCollection AddCustomConfigurations(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<SmtpSettings>(configuration.GetSection("Smtp"));
+            services.Configure<EmailSettings>(configuration.GetSection("Email"));
+            services.Configure<UrlSettings>(configuration.GetSection("UrlSettings"));
             return services;
         }
     }
