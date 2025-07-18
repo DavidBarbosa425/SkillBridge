@@ -7,7 +7,7 @@ using Application.Mappers;
 using Application.Services;
 using Application.Services.Emails;
 using Application.Validators;
-using Application.Validators.Models;
+using Application.Validators.Models.Auth;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 

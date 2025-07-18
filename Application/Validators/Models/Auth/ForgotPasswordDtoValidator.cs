@@ -1,7 +1,7 @@
 ﻿using Application.DTOs;
 using FluentValidation;
 
-namespace Application.Validators.Models
+namespace Application.Validators.Models.Auth
 {
     internal class ForgotPasswordDtoValidator : AbstractValidator<ForgotPasswordDto>
     {

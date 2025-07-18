@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Validators.Models
+namespace Application.Validators.Models.Auth
 {
     public class ResetPasswordDtoValidator : AbstractValidator<ResetPasswordDto>
     {
