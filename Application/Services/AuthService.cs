@@ -81,6 +81,8 @@ namespace Application.Services
 
         public async Task<Result> ForgotPasswordAsync(ForgotPasswordDto dto)
         {
+            await _validatorService.ValidateAsync(dto);
+
             var user = await _identityUserService.FindByEmailAsync(dto.Email);
 
             if (!user.Success)
@@ -96,6 +98,8 @@ namespace Application.Services
 
         public async Task<Result> ResetPasswordAsync(ResetPasswordDto dto)
         {
+            await _validatorService.ValidateAsync(dto);
+
             var passwordWasReset = await _identityUserService.ResetPasswordAsync(dto.Email, dto.Token, dto.NewPassword);
 
             if (!passwordWasReset.Success)
