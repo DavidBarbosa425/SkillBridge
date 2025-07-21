@@ -15,6 +15,7 @@ namespace Infrastructure.Extensions
             services.AddScoped<IIdentityUserService, IdentityUserService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IUrlService, UrlService>();
+            services.AddScoped<IJwtService, JwtService>();
 
             // Mappers
             services.AddScoped<IInfrastructureMapper, InfrastructureMapper>();

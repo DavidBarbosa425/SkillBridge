@@ -38,7 +38,8 @@ namespace API.Extensions
         {
             services.Configure<SmtpSettings>(configuration.GetSection("Smtp"));
             services.Configure<EmailSettings>(configuration.GetSection("Email"));
-            services.Configure<UrlSettings>(configuration.GetSection("UrlSettings"));
+            services.Configure<UrlSettings>(configuration.GetSection("Url"));
+            services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
             return services;
         }
     }

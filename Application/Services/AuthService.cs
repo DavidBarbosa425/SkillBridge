@@ -13,19 +13,21 @@ namespace Application.Services
         private readonly IValidatorService _validatorService;
         private readonly IEmailAccountService _emailAccountService;
         private readonly IIdentityUserService _identityUserService;
+        private readonly IJwtService _jwtService;
 
         public AuthService(
             IApplicationMapper mapper,
             IValidatorService validatorService,
             IEmailAccountService emailAccountService,
-            IIdentityUserService identityUserService
+            IIdentityUserService identityUserService,
+            IJwtService jwtService
             )
         {
             _mapper = mapper;
             _validatorService = validatorService;
             _emailAccountService = emailAccountService;
             _identityUserService = identityUserService;
-
+            _jwtService = jwtService;
         }
 
         public async Task<Result> RegisterAsync(RegisterUserDto dto)
@@ -64,18 +66,18 @@ namespace Application.Services
 
         }
 
-        public async Task<Result<UserDto>> LoginAsync(LoginDto dto)
+        public async Task<Result<string>> LoginAsync(LoginDto dto)
         {
             await _validatorService.ValidateAsync(dto);
 
             var userChecked = await _identityUserService.CheckPasswordAsync(dto.Email, dto.Password);
 
             if (!userChecked.Success)
-                return Result<UserDto>.Failure(userChecked.Message);
+                return Result<string>.Failure(userChecked.Message);
 
-            var user = _mapper.User.ToUserDto(userChecked.Data!);
+            var token = _jwtService.GenerateToken(userChecked.Data!);
 
-            return Result<UserDto>.Ok(user);
+            return Result<string>.Ok(token);
 
         }
 
