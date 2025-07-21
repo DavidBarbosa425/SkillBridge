@@ -3,7 +3,7 @@ using Application.Interfaces;
 using Application.Interfaces.Emails;
 using Application.Interfaces.Factories;
 using Domain.Common;
-using Domain.Constants;
+using Application.Constants;
 using Domain.Entities;
 using Domain.Interfaces;
 
