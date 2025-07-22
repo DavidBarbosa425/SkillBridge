@@ -75,7 +75,7 @@ namespace Application.Services
             if (!userChecked.Success)
                 return Result<string>.Failure(userChecked.Message);
 
-            var token = _jwtService.GenerateToken(userChecked.Data!);
+            var token = await _jwtService.GenerateToken(userChecked.Data!);
 
             return Result<string>.Ok(token);
 

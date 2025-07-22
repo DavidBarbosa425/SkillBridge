@@ -121,7 +121,9 @@ namespace Infrastructure.Identity
 
             if (user == null)
                 return Result.Failure("Usuário não encontrado.");
+
             var decodedToken = Uri.UnescapeDataString(token);
+
             var resetedPassword = await _userManager.ResetPasswordAsync(user, decodedToken, newPassword);
 
             if (!resetedPassword.Succeeded)
@@ -133,5 +135,36 @@ namespace Infrastructure.Identity
             return Result.Ok("Senha redefinida com sucesso! Você pode fazer login agora.");
         }
 
+        public async Task<Result> AssignRoleToUserAsync(string email, string role)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user == null)
+                return Result.Failure("Usuário não encontrado.");
+
+            if (!await _userManager.IsInRoleAsync(user, role))
+                {
+                var result = await _userManager.AddToRoleAsync(user, role);
+                if (!result.Succeeded)
+                {
+                    var errors = result.Errors.Select(e => e.Description);
+                    return Result.Failure(string.Join("; ", errors));
+                }
+            }
+
+            return Result.Ok($"Usuário {email} adicionado ao papel {role} com sucesso!");
+        }
+
+        public async Task<Result<IList<string>>> GetRolesByEmailAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user == null)
+                return Result<IList<string>>.Failure("Usuário não encontrado.");
+
+            var roles = await _userManager.GetRolesAsync(user);
+
+            return Result<IList<string>>.Ok(roles);
+        }
     }
 }
