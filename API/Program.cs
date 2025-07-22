@@ -1,6 +1,7 @@
 using API.Extensions;
 using Application.Extensions;
 using Infrastructure.Extensions;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,8 +13,39 @@ builder.Services.AddCustomConfigurations(builder.Configuration);
 builder.Services.AddInfrastructureServices();
 builder.Services.AddApplicationServices();
 builder.Services.AddApiServices();
+builder.Services.AddJwtBearer(builder.Configuration);
 
-builder.Services.AddSwaggerGen(); 
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "SeuProjeto API", Version = "v1" });
+
+    // Adiciona suporte a JWT no Swagger
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Digite 'Bearer {seu_token}' no campo abaixo.\n\nExemplo: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] { }
+        }
+    });
+});
+
 
 builder.Services.AddOpenApi();
 
