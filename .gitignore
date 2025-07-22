@@ -341,9 +341,9 @@ __pycache__/
 *.tss
 
 # Arquivos sensíveis de configuração
-appsettings.Development.json
-appsettings.Production.json
-secrets.json
+# appsettings.Development.json
+#appsettings.Production.json
+#secrets.json
 
 # Telerik's JustMock configuration file
 *.jmconfig
