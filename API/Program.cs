@@ -36,6 +36,8 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+await app.SeedRolesAsync();
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
