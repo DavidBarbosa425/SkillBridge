@@ -5,5 +5,6 @@
         public const string Developer = "Developer";
         public const string Company = "Company";
         public const string Admin = "Admin";
+        public const string User = "User";
     }
 }

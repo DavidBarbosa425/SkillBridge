@@ -1,4 +1,5 @@
 ﻿using Domain.Common;
+using Domain.Constants;
 using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Identity.Models;
@@ -29,6 +30,14 @@ namespace Infrastructure.Identity
             if (!creationResult.Succeeded)
             {
                 var errors = creationResult.Errors.Select(e => e.Description);
+                return Result<User>.Failure(errors.ToList());
+            }
+
+            var result = await _userManager.AddToRoleAsync(applicationUser, Roles.User);
+
+            if (!result.Succeeded)
+            {
+                var errors = result.Errors.Select(e => e.Description);
                 return Result<User>.Failure(string.Join("; ", errors));
             }
 
