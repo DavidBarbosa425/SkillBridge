@@ -36,10 +36,15 @@ namespace Application.Services
 
             var user = _mapper.User.ToUser(dto);
 
-            var createdUser = await _identityUserService.AddAsync(user, dto.Role);
+            var createdUser = await _identityUserService.AddAsync(user);
 
             if (!createdUser.Success)
                 return Result.Failure(createdUser.Message);
+
+            var roleAdded = await _identityUserService.AssignRoleToUserAsync(dto.Email, dto.Role);
+
+            if (!roleAdded.Success)
+                return Result.Failure(roleAdded.Message);
 
             var userDto = _mapper.User.ToUserDto(createdUser.Data!);
 
