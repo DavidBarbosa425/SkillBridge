@@ -16,6 +16,7 @@ namespace Application.Services
         private readonly IIdentityUserService _identityUserService;
         private readonly IJwtService _jwtService;
         private readonly IUserRepository _userRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
         public AuthService(
             IApplicationMapper mapper,
@@ -23,7 +24,8 @@ namespace Application.Services
             IEmailAccountService emailAccountService,
             IIdentityUserService identityUserService,
             IJwtService jwtService,
-            IUserRepository userRepository
+            IUserRepository userRepository,
+            IUnitOfWork unitOfWork
             )
         {
             _mapper = mapper;
@@ -32,6 +34,7 @@ namespace Application.Services
             _identityUserService = identityUserService;
             _jwtService = jwtService;
             _userRepository = userRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Result> RegisterAsync(RegisterUserDto dto)
@@ -40,28 +43,35 @@ namespace Application.Services
 
             var user = _mapper.User.ToUser(dto);
 
+            await _unitOfWork.BeginTransactionAsync();
+
             var createdUser = await _identityUserService.AddAsync(user, dto.Password);
 
             if (!createdUser.Success)
+            {
+                await _unitOfWork.RollbackAsync();
                 return Result.Failure(createdUser.Message);
-
-            var roleAdded = await _identityUserService.AssignRoleToUserAsync(dto.Email, dto.Role);
-
-            if (!roleAdded.Success)
-                return Result.Failure(roleAdded.Message);
+            }
 
             var domainUserCreated = _userRepository.AddAsync(createdUser.Data!);
 
             if (!domainUserCreated.Success)
+            {
+                await _unitOfWork.RollbackAsync();
                 return Result.Failure(domainUserCreated.Message);
+            }
 
             var userDto = _mapper.User.ToUserDto(createdUser.Data!);
 
             var sentEmail = await _emailAccountService.SendConfirmationEmailAsync(userDto);
 
             if (!sentEmail.Success)
+            {
+                await _unitOfWork.RollbackAsync();
                 return Result.Failure(sentEmail.Message);
+            }
 
+            await _unitOfWork.CommitAsync();
             return Result.Ok($"Usuário criado com sucesso. Um E-mail de Confirmação foi enviado para {userDto.Email}.");
 
         }

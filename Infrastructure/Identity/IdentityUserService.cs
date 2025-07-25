@@ -5,6 +5,7 @@ using Domain.Interfaces;
 using Infrastructure.Identity.Models;
 using Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using System.Data;
 
 namespace Infrastructure.Identity
 {
@@ -31,6 +32,16 @@ namespace Infrastructure.Identity
             {
                 var errors = creationResult.Errors.Select(e => e.Description);
                 return Result<User>.Failure(errors.ToList());
+            }
+
+            if (!await _userManager.IsInRoleAsync(applicationUser, Roles.User))
+            {
+                var result = await _userManager.AddToRoleAsync(applicationUser, Roles.User);
+                if (!result.Succeeded)
+                {
+                    var errors = result.Errors.Select(e => e.Description);
+                    return Result<User>.Failure(string.Join("; ", errors));
+                }
             }
 
             var createdUser = _infrastructureMapper.User.ToUser(applicationUser);

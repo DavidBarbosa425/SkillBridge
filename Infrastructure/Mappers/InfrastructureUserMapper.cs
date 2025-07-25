@@ -10,7 +10,7 @@ namespace Infrastructure.Mappers
         {
             return new ApplicationUser
             {
-                Id = user.Id.ToString(),
+                Id = Guid.NewGuid().ToString(), 
                 UserName = user.Email,
                 Email = user.Email
             };
@@ -21,9 +21,9 @@ namespace Infrastructure.Mappers
         {
             return new User
             {
-                Id = Guid.Parse(applicationUser.Id),
                 Name = applicationUser.UserName!,
-                Email = applicationUser.Email!
+                Email = applicationUser.Email!,
+                IdentityUserId = applicationUser.Id
             };
         }
 

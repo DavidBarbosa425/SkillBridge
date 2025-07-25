@@ -1,4 +1,5 @@
 ﻿using Domain.Common;
+using Domain.Interfaces;
 using System.Net;
 
 namespace API.Middlewares
@@ -8,12 +9,18 @@ namespace API.Middlewares
         private readonly RequestDelegate _next;
         private readonly ILogger<ExceptionMiddleware> _logger;
         private readonly IHostEnvironment _env;
+        private readonly IServiceProvider _serviceProvider;
 
-        public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger, IHostEnvironment env)
+        public ExceptionMiddleware(
+            RequestDelegate next, 
+            ILogger<ExceptionMiddleware> logger, 
+            IHostEnvironment env,
+            IServiceProvider serviceProvider)
         {
             _next = next;
             _logger = logger;
             _env = env;
+            _serviceProvider = serviceProvider;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -24,6 +31,10 @@ namespace API.Middlewares
             }
             catch (Exception ex)
             {
+                var unitOfWork = context.RequestServices.GetService<IUnitOfWork>();
+                if (unitOfWork != null && unitOfWork.HasActiveTransaction)
+                    await unitOfWork.RollbackAsync();// Rollback any transaction if an exception occurs
+
                 _logger.LogError(ex, "Ocorreu uma exceção não tratada.");
 
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
