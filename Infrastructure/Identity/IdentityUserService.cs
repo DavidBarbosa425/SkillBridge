@@ -21,11 +21,11 @@ namespace Infrastructure.Identity
             _infrastructureMapper = infrastructureMapper;
         }
 
-        public async Task<Result<User>> AddAsync(User user)
+        public async Task<Result<User>> AddAsync(User user, string password)
         {
             var applicationUser = _infrastructureMapper.User.ToApplicationUser(user);
 
-            var creationResult = await _userManager.CreateAsync(applicationUser, user.Password);
+            var creationResult = await _userManager.CreateAsync(applicationUser, password);
 
             if (!creationResult.Succeeded)
             {

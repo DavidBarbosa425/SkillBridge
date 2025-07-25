@@ -10,8 +10,7 @@ internal class ApplicationUserMapper : IApplicationUserMapper
         {
             Id = Guid.NewGuid(),
             Name = dto.Name,
-            Email = dto.Email,
-            Password = dto.Password
+            Email = dto.Email
         };
     }
 
@@ -28,8 +27,7 @@ internal class ApplicationUserMapper : IApplicationUserMapper
     {
         return new User
         {
-            Email = dto.Email,
-            Password = dto.Password
+            Email = dto.Email
         };
     }
 

@@ -5,7 +5,7 @@ namespace Domain.Interfaces
 {
     public interface IIdentityUserService
     {
-        Task<Result<User>> AddAsync(User user);
+        Task<Result<User>> AddAsync(User user, string password);
         Task<Result<User>> FindByIdAsync(string id);
         Task<Result<User>> FindByEmailAsync(string email);
         Task<Result<User>> CheckPasswordAsync(string email,string password);
