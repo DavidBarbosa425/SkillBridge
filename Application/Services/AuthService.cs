@@ -4,6 +4,7 @@ using Application.Interfaces.Emails;
 using Application.Interfaces.Mappers;
 using Domain.Common;
 using Domain.Interfaces;
+using Infrastructure.Interfaces;
 
 namespace Application.Services
 {
@@ -14,13 +15,15 @@ namespace Application.Services
         private readonly IEmailAccountService _emailAccountService;
         private readonly IIdentityUserService _identityUserService;
         private readonly IJwtService _jwtService;
+        private readonly IUserRepository _userRepository;
 
         public AuthService(
             IApplicationMapper mapper,
             IValidatorService validatorService,
             IEmailAccountService emailAccountService,
             IIdentityUserService identityUserService,
-            IJwtService jwtService
+            IJwtService jwtService,
+            IUserRepository userRepository
             )
         {
             _mapper = mapper;
@@ -28,6 +31,7 @@ namespace Application.Services
             _emailAccountService = emailAccountService;
             _identityUserService = identityUserService;
             _jwtService = jwtService;
+            _userRepository = userRepository;
         }
 
         public async Task<Result> RegisterAsync(RegisterUserDto dto)
@@ -45,6 +49,11 @@ namespace Application.Services
 
             if (!roleAdded.Success)
                 return Result.Failure(roleAdded.Message);
+
+            var domainUserCreated = _userRepository.AddAsync(createdUser.Data!);
+
+            if (!domainUserCreated.Success)
+                return Result.Failure(domainUserCreated.Message);
 
             var userDto = _mapper.User.ToUserDto(createdUser.Data!);
 

@@ -2,6 +2,7 @@
 using Infrastructure.Identity;
 using Infrastructure.Interfaces;
 using Infrastructure.Mappers;
+using Infrastructure.Repositories;
 using Infrastructure.Services;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -20,6 +21,9 @@ namespace Infrastructure.Extensions
             // Mappers
             services.AddScoped<IInfrastructureMapper, InfrastructureMapper>();
             services.AddScoped<IInfrastructureUserMapper, InfrastructureUserMapper>();
+
+            //repositories
+            services.AddScoped<IUserRepository, UserRepository>();
 
             return services;
         }
