@@ -11,7 +11,7 @@ namespace Infrastructure.Mappers
             return new ApplicationUser
             {
                 Id = user.Id.ToString(),
-                UserName = user.Name,
+                UserName = user.Email,
                 Email = user.Email
             };
 
