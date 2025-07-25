@@ -21,7 +21,7 @@ namespace Infrastructure.Identity
             _infrastructureMapper = infrastructureMapper;
         }
 
-        public async Task<Result<User>> AddAsync(User user)
+        public async Task<Result<User>> AddAsync(User user, string role)
         {
             var applicationUser = _infrastructureMapper.User.ToApplicationUser(user);
 
@@ -33,7 +33,7 @@ namespace Infrastructure.Identity
                 return Result<User>.Failure(errors.ToList());
             }
 
-            var result = await _userManager.AddToRoleAsync(applicationUser, Roles.User);
+            var result = await _userManager.AddToRoleAsync(applicationUser, role);
 
             if (!result.Succeeded)
             {
