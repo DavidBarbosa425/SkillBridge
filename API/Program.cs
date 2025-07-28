@@ -12,7 +12,7 @@ builder.Services.AddApiServices();
 builder.Services.AddIdentityConfiguration();
 builder.Services.AddJwtBearer(builder.Configuration);
 builder.Services.AddCustomConfigurations(builder.Configuration);
-builder.Services.AddInfrastructureServices();
+builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddApplicationServices();
 builder.Services.AddSwaggerDocumentation();
 
