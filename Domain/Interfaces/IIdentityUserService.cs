@@ -9,9 +9,9 @@ namespace Domain.Interfaces
         Task<Result<User>> FindByIdAsync(string id);
         Task<Result<User>> FindByEmailAsync(string email);
         Task<Result<User>> CheckPasswordAsync(string email,string password);
-        Task<Result<string>> GenerateEmailConfirmationTokenAsync(Guid userId);
+        Task<Result<string>> GenerateEmailConfirmationTokenAsync(string userId);
         Task<Result> ConfirmEmailAsync(Guid userId, string token);
-        Task<Result<string>> GeneratePasswordResetTokenAsync(Guid userId);
+        Task<Result<string>> GeneratePasswordResetTokenAsync(string userId);
         Task<Result> ResetPasswordAsync(string email, string token, string newPassword);
         Task<Result> AssignRoleToUserAsync(string email, string role);
         Task<Result<IList<string>>> GetRolesByEmailAsync(string email);

@@ -6,6 +6,7 @@ using Domain.Common;
 using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace Application.Services
 {
@@ -18,7 +19,6 @@ namespace Application.Services
         private readonly IJwtService _jwtService;
         private readonly IUserRepository _userRepository;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IMessageBrokerService _messageBrokerService;
 
         public AuthService(
             IApplicationMapper mapper,
@@ -27,8 +27,7 @@ namespace Application.Services
             IIdentityUserService identityUserService,
             IJwtService jwtService,
             IUserRepository userRepository,
-            IUnitOfWork unitOfWork,
-            IMessageBrokerService messageBrokerService
+            IUnitOfWork unitOfWork
             )
         {
             _mapper = mapper;
@@ -38,7 +37,6 @@ namespace Application.Services
             _jwtService = jwtService;
             _userRepository = userRepository;
             _unitOfWork = unitOfWork;
-            _messageBrokerService = messageBrokerService;
         }
 
         public async Task<Result> RegisterAsync(RegisterUserDto dto)
@@ -65,30 +63,17 @@ namespace Application.Services
                 return Result.Failure(domainUserCreated.Message);
             }
 
-            await _unitOfWork.CommitAsync();
-
             var userDto = _mapper.User.ToUserDto(createdUser.Data!);
 
-            // Publicar mensagem no RabbitMQ em vez de enviar email diretamente
-            var userRegisteredMessage = new UserRegisteredMessage
+            var sentEmail = await _emailAccountService.SendConfirmationEmailAsync(userDto);
+
+            if (!sentEmail.Success)
             {
-                UserId = userDto.Id.ToString(),
-                Email = userDto.Email,
-                Name = userDto.Name
-            };
+                await _unitOfWork.RollbackAsync();
+                return Result.Failure(domainUserCreated.Message);
+            }
 
-            await _messageBrokerService.PublishAsync(userRegisteredMessage);
-
-            //var userDto = _mapper.User.ToUserDto(createdUser.Data!);
-
-            //var sentEmail = await _emailAccountService.SendConfirmationEmailAsync(userDto);
-
-            //if (!sentEmail.Success)
-            //{
-            //    await _unitOfWork.RollbackAsync();
-            //    return Result.Failure(sentEmail.Message);
-            //}
-
+            await _unitOfWork.CommitAsync();
             return Result.Ok($"Usuário criado com sucesso. Um E-mail de Confirmação foi enviado para {userDto.Email}.");
 
         }

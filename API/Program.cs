@@ -7,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
+builder.Services.AddLogging();
+
 builder.Services.AddDatabase(builder.Configuration);
 builder.Services.AddApiServices();
 builder.Services.AddIdentityConfiguration();

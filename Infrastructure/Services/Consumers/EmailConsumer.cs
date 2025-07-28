@@ -1,5 +1,4 @@
-﻿// Infrastructure/Services/Consumers/EmailConsumer.cs
-using MassTransit;
+﻿using MassTransit;
 using Domain.Entities;
 using Domain.Interfaces;
 using Microsoft.Extensions.Logging;

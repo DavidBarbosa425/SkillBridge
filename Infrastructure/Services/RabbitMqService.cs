@@ -1,5 +1,4 @@
-﻿// Infrastructure/Services/RabbitMqService.cs
-using Domain.Interfaces;
+﻿using Domain.Interfaces;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 

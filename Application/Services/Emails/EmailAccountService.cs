@@ -15,31 +15,31 @@ namespace Application.Services.Emails
         private readonly IIdentityUserService _identityUserService;
         private readonly IUrlService _urlService;
         private readonly IAccountEmailTemplateFactory _accountEmailTemplateFactory;
-        private readonly IEmailService _emailService;
+        private readonly IMessageBrokerService _messageBrokerService;
 
         public EmailAccountService(
             IValidatorService validatorService,
             IIdentityUserService identityUserService,
             IUrlService urlService,
             IAccountEmailTemplateFactory accountEmailTemplateFactory,
-            IEmailService emailService)
+            IMessageBrokerService messageBrokerService)
         {
             _validatorService = validatorService;
             _identityUserService = identityUserService;
             _urlService = urlService;
             _accountEmailTemplateFactory = accountEmailTemplateFactory;
-            _emailService = emailService;
+            _messageBrokerService = messageBrokerService;
         }
         public async Task<Result> SendConfirmationEmailAsync(UserDto userDto)
         {
             await _validatorService.ValidateAsync(userDto);
 
-            var token = await _identityUserService.GenerateEmailConfirmationTokenAsync(userDto.Id);
+            var token = await _identityUserService.GenerateEmailConfirmationTokenAsync(userDto.IdentityUserId);
 
             if (!token.Success)
                 return Result.Failure(token.Message);
 
-            var confirmationLink = _urlService.GenerateApiUrlEmailConfirmation(userDto.Id.ToString(), token.Data!);
+            var confirmationLink = _urlService.GenerateApiUrlEmailConfirmation(userDto.IdentityUserId, token.Data!);
 
             if (string.IsNullOrEmpty(confirmationLink))
                 return Result.Failure("Falha ao gerar link de confirmação de e-mail.");
@@ -49,24 +49,23 @@ namespace Application.Services.Emails
             if (string.IsNullOrEmpty(body))
                 return Result.Failure("Falha ao gerar texto de confirmação de e-mail.");
 
-            var sendEmail = new SendEmail
+            var emailMessage = new EmailMessage
             {
+                To = userDto.Email,
                 Name = userDto.Name,
-                Email = userDto.Email,
                 Subject = EmailSubjects.Confirmation,
                 Body = body
             };
+            await _messageBrokerService.PublishAsync(emailMessage);
 
-            await _emailService.SendEmailAsync(sendEmail);
-
-            return Result.Ok($"E-mail enviado com sucesso para {sendEmail.Email}");
+            return Result.Ok($"Um e-mail de confirmação sera enviado para {userDto.Email}");
         }
 
         public async Task<Result> SendPasswordResetEmailAsync(UserDto userDto)
         {
             await _validatorService.ValidateAsync(userDto);
 
-            var token = await _identityUserService.GeneratePasswordResetTokenAsync(userDto.Id);
+            var token = await _identityUserService.GeneratePasswordResetTokenAsync(userDto.IdentityUserId);
 
             if (!token.Success)
                 return Result.Failure(token.Message);
@@ -81,17 +80,16 @@ namespace Application.Services.Emails
             if (string.IsNullOrEmpty(body))
                 return Result.Failure("Falha ao gerar texto de reset de senha.");
 
-            var sendEmail = new SendEmail
+            var emailMessage = new EmailMessage
             {
+                To = userDto.Email,
                 Name = userDto.Name,
-                Email = userDto.Email,
                 Subject = EmailSubjects.PasswordReset,
                 Body = body
             };
+            await _messageBrokerService.PublishAsync(emailMessage);
 
-            await _emailService.SendEmailAsync(sendEmail);
-
-            return Result.Ok($"E-mail enviado com sucesso para {sendEmail.Email}");
+            return Result.Ok($"Um e-mail para reset de senha sera enviado para {userDto.Email}");
         }
 
     }
