@@ -31,7 +31,7 @@ namespace Infrastructure.Services.Consumers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro ao processar email");
-                throw;
+                throw new Exception(ex.Message);
             }
         }
     }

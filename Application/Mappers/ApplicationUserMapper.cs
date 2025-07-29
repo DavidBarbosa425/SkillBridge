@@ -61,4 +61,14 @@ internal class ApplicationUserMapper : IApplicationUserMapper
             IdentityUserId = user.IdentityUserId
         };
     }
+
+    public User ToCreateUser(string identityUser, User user)
+    {
+        return new User
+        {
+            Name = user.Name,
+            Email = user.Email,
+            IdentityUserId = identityUser
+        };
+    }
 }

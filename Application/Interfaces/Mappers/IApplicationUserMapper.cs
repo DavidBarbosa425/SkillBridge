@@ -8,6 +8,7 @@ namespace Application.Interfaces.Mappers
         User ToUser(RegisterUserDto dto);
         User ToUser(UserDto dto);
         User ToUser(LoginDto dto);
+        User ToCreateUser(string identityUserId, User user);
         UserDto ToUserDto(User user);
         UserRegistered ToUserRegistered(User user);
         UserForgotPassword ToUserForgotPassword(User user);

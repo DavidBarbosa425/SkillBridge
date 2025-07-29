@@ -25,7 +25,7 @@ namespace Infrastructure.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Erro ao publicar mensagem na fila: {queueName}");
-                throw;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -39,7 +39,7 @@ namespace Infrastructure.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Erro ao publicar mensagem: {typeof(T).Name}");
-                throw;
+                throw new Exception(ex.Message);
             }
         }
     }

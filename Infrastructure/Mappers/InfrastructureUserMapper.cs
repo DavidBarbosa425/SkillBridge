@@ -21,7 +21,6 @@ namespace Infrastructure.Mappers
         {
             return new User
             {
-                Name = applicationUser.UserName!,
                 Email = applicationUser.Email!,
                 IdentityUserId = applicationUser.Id
             };

@@ -63,7 +63,9 @@ namespace Application.Services
                 return Result.Failure(roleAssigned.Message);
             }
 
-            var domainUserCreated = await _userRepository.AddAsync(identityUserCreated.Data);
+            var createUser = _mapper.User.ToCreateUser(identityUserCreated.Data!.IdentityUserId!, user);
+
+            var domainUserCreated = await _userRepository.AddAsync(createUser);
 
             if (!domainUserCreated.Success)
             {
@@ -71,11 +73,11 @@ namespace Application.Services
                 return Result.Failure(domainUserCreated.Message);
             }
 
-            await _unitOfWork.CommitAsync();
-
             var userRegistered = _mapper.User.ToUserRegistered(domainUserCreated.Data!);
 
             await _messageBrokerService.PublishAsync(userRegistered);
+
+            await _unitOfWork.CommitAsync();
 
             return Result.Ok($"Usuário criado com sucesso. Um E-mail de Confirmação sera enviado para {userRegistered.Email}.");
 
