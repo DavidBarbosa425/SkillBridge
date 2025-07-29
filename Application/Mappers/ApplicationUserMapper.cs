@@ -41,4 +41,14 @@ internal class ApplicationUserMapper : IApplicationUserMapper
             IdentityUserId = user.IdentityUserId
         };
     }
+
+    public UserRegistered ToUserRegistered(User user)
+    {
+        return new UserRegistered
+        {
+            Name = user.Name,
+            Email = user.Email,
+            IdentityUserId = user.IdentityUserId
+        };
+    }
 }

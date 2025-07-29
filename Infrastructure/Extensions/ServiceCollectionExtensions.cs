@@ -23,6 +23,7 @@ namespace Infrastructure.Extensions
             {
                 // Configurar consumers
                 x.AddConsumer<EmailConsumer>();
+                x.AddConsumer<UserRegisteredConsumer>();
 
                 // Configurar RabbitMQ
                 x.UsingRabbitMq((context, cfg) =>

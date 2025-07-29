@@ -9,6 +9,7 @@ namespace Application.Interfaces.Mappers
         User ToUser(UserDto dto);
         User ToUser(LoginDto dto);
         UserDto ToUserDto(User user);
+        UserRegistered ToUserRegistered(User user);
 
     }
 }

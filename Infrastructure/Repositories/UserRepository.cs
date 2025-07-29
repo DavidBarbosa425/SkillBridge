@@ -2,6 +2,7 @@
 using Domain.Entities;
 using Infrastructure.Data;
 using Infrastructure.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
@@ -13,14 +14,25 @@ namespace Infrastructure.Repositories
         {
             _applicationDbContext = applicationDbContext;
         }
-        public Result<User> AddAsync(User user)
+        public async Task<Result<User>> AddAsync(User user)
         {
-            _applicationDbContext.DomainUsers.Add(user);
+            await _applicationDbContext.DomainUsers.AddAsync(user);
 
-            var saveResult = _applicationDbContext.SaveChanges();
+            var saveResult = await _applicationDbContext.SaveChangesAsync();
 
             if(saveResult <= 0)
                 return Result<User>.Failure("Erro ao criar usuário no dominio");
+
+            return Result<User>.Ok(user);
+        }
+
+        public async Task<Result<User>> FindByIdAsync(string id)
+        {
+            var user = await _applicationDbContext.DomainUsers
+                .FirstOrDefaultAsync(u => u.Id == Guid.Parse(id));
+
+            if (user is null)
+                return Result<User>.Failure("Usuário não encontrado.");
 
             return Result<User>.Ok(user);
         }

@@ -14,29 +14,29 @@ namespace Application.Services
     {
         private readonly IApplicationMapper _mapper;
         private readonly IValidatorService _validatorService;
-        private readonly IEmailAccountService _emailAccountService;
         private readonly IIdentityUserService _identityUserService;
         private readonly IJwtService _jwtService;
         private readonly IUserRepository _userRepository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMessageBrokerService _messageBrokerService;
 
         public AuthService(
             IApplicationMapper mapper,
             IValidatorService validatorService,
-            IEmailAccountService emailAccountService,
             IIdentityUserService identityUserService,
             IJwtService jwtService,
             IUserRepository userRepository,
-            IUnitOfWork unitOfWork
+            IUnitOfWork unitOfWork,
+            IMessageBrokerService messageBrokerService
             )
         {
             _mapper = mapper;
             _validatorService = validatorService;
-            _emailAccountService = emailAccountService;
             _identityUserService = identityUserService;
             _jwtService = jwtService;
             _userRepository = userRepository;
             _unitOfWork = unitOfWork;
+            _messageBrokerService = messageBrokerService;
         }
 
         public async Task<Result> RegisterAsync(RegisterUserDto dto)
@@ -47,15 +47,17 @@ namespace Application.Services
 
             await _unitOfWork.BeginTransactionAsync();
 
-            var createdUser = await _identityUserService.AddAsync(user, dto.Password);
+            var createdIdentityUser = await _identityUserService.AddAsync(user, dto.Password);
 
-            if (!createdUser.Success)
+            if (!createdIdentityUser.Success)
             {
                 await _unitOfWork.RollbackAsync();
-                return Result.Failure(createdUser.Message);
+                return Result.Failure(createdIdentityUser.Message);
             }
 
-            var domainUserCreated = _userRepository.AddAsync(createdUser.Data!);
+            var identityUser = createdIdentityUser.Data!;
+
+            var domainUserCreated = await _userRepository.AddAsync(identityUser);
 
             if (!domainUserCreated.Success)
             {
@@ -63,18 +65,15 @@ namespace Application.Services
                 return Result.Failure(domainUserCreated.Message);
             }
 
-            var userDto = _mapper.User.ToUserDto(createdUser.Data!);
-
-            var sentEmail = await _emailAccountService.SendConfirmationEmailAsync(userDto);
-
-            if (!sentEmail.Success)
-            {
-                await _unitOfWork.RollbackAsync();
-                return Result.Failure(domainUserCreated.Message);
-            }
-
             await _unitOfWork.CommitAsync();
-            return Result.Ok($"Usuário criado com sucesso. Um E-mail de Confirmação foi enviado para {userDto.Email}.");
+
+            var userDomain = domainUserCreated.Data!;
+
+            var userRegistered = _mapper.User.ToUserRegistered(userDomain);
+
+            await _messageBrokerService.PublishAsync(userRegistered);
+
+            return Result.Ok($"Usuário criado com sucesso. Um E-mail de Confirmação sera enviado para {userRegistered.Email}.");
 
         }
 

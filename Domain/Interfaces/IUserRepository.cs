@@ -5,6 +5,7 @@ namespace Infrastructure.Interfaces
 {
     public interface IUserRepository
     {
-        Result<User> AddAsync(User user);
+        Task<Result<User>> AddAsync(User user);
+        Task<Result<User>> FindByIdAsync(string id);
     }
 }
