@@ -14,7 +14,7 @@ namespace Infrastructure.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddMassTransitWithRabbitMq(this IServiceCollection services, IConfiguration configuration)
         {
             // Configuração do RabbitMQ
             var rabbitMqSettings = configuration.GetSection("RabbitMq").Get<RabbitMqSettings>();
@@ -37,6 +37,11 @@ namespace Infrastructure.Extensions
                     cfg.ConfigureEndpoints(context);
                 });
             });
+
+            return services;
+        }
+        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
+        {
 
             // Services
             services.AddScoped<IIdentityUserService, IdentityUserService>();

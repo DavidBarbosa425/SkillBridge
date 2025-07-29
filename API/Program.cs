@@ -9,14 +9,20 @@ builder.Services.AddControllers();
 
 builder.Services.AddLogging();
 
+// API Configuration
 builder.Services.AddDatabase(builder.Configuration);
 builder.Services.AddApiServices();
 builder.Services.AddIdentityConfiguration();
 builder.Services.AddJwtBearer(builder.Configuration);
 builder.Services.AddCustomConfigurations(builder.Configuration);
-builder.Services.AddInfrastructureServices(builder.Configuration);
-builder.Services.AddApplicationServices();
 builder.Services.AddSwaggerDocumentation();
+
+// Application Configuration
+builder.Services.AddApplicationServices();
+
+// Infrastructure Configuration
+builder.Services.AddInfrastructureServices();
+builder.Services.AddMassTransitWithRabbitMq(builder.Configuration);
 
 builder.Services.AddOpenApi();
 
