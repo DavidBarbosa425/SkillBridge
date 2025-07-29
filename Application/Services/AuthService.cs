@@ -47,17 +47,23 @@ namespace Application.Services
 
             await _unitOfWork.BeginTransactionAsync();
 
-            var createdIdentityUser = await _identityUserService.AddAsync(user, dto.Password);
+            var identityUserCreated = await _identityUserService.AddAsync(user, dto.Password);
 
-            if (!createdIdentityUser.Success)
+            if (!identityUserCreated.Success)
             {
                 await _unitOfWork.RollbackAsync();
-                return Result.Failure(createdIdentityUser.Message);
+                return Result.Failure(identityUserCreated.Message);
             }
 
-            var identityUser = createdIdentityUser.Data!;
+            var roleAssigned = await _identityUserService.AssignRoleToUserAsync(identityUserCreated.Data!.Email, dto.Role);
 
-            var domainUserCreated = await _userRepository.AddAsync(identityUser);
+            if (!roleAssigned.Success)
+            {
+                await _unitOfWork.RollbackAsync();
+                return Result.Failure(roleAssigned.Message);
+            }
+
+            var domainUserCreated = await _userRepository.AddAsync(identityUserCreated.Data);
 
             if (!domainUserCreated.Success)
             {
@@ -67,9 +73,7 @@ namespace Application.Services
 
             await _unitOfWork.CommitAsync();
 
-            var userDomain = domainUserCreated.Data!;
-
-            var userRegistered = _mapper.User.ToUserRegistered(userDomain);
+            var userRegistered = _mapper.User.ToUserRegistered(domainUserCreated.Data!);
 
             await _messageBrokerService.PublishAsync(userRegistered);
 
@@ -85,7 +89,8 @@ namespace Application.Services
 
             var confirmationResult = await _identityUserService.ConfirmEmailAsync(dto.UserId, decodedToken);
 
-            if (!confirmationResult.Success) return Result.Failure(confirmationResult.Message);
+            if (!confirmationResult.Success) 
+                return Result.Failure(confirmationResult.Message);
 
             return Result.Ok(confirmationResult.Message);
 
@@ -115,11 +120,11 @@ namespace Application.Services
             if (!user.Success)
                 return Result.Failure(user.Message);
 
-            var userDto = _mapper.User.ToUserDto(user.Data!);
+            var userForgotPassword = _mapper.User.ToUserForgotPassword(user.Data!);
 
-            await _emailAccountService.SendPasswordResetEmailAsync(userDto);
+            await _messageBrokerService.PublishAsync(userForgotPassword);
 
-            return Result.Ok($"E-mail de recuperação de senha enviado com sucesso para {user.Data?.Email}");
+            return Result.Ok($"E-mail de recuperação de senha enviado com sucesso para {user.Data!.Email}");
 
         }
 

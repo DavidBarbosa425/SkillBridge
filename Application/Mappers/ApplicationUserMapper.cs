@@ -51,4 +51,14 @@ internal class ApplicationUserMapper : IApplicationUserMapper
             IdentityUserId = user.IdentityUserId
         };
     }
+
+    public UserForgotPassword ToUserForgotPassword(User user)
+    {
+        return new UserForgotPassword
+        {
+            Name = user.Name,
+            Email = user.Email,
+            IdentityUserId = user.IdentityUserId
+        };
+    }
 }

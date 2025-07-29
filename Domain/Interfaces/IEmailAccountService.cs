@@ -6,6 +6,6 @@ namespace Application.Interfaces.Emails
     public interface IEmailAccountService
     {
         Task<Result> SendConfirmationEmailAsync(UserRegistered user);
-        Task<Result> SendPasswordResetEmailAsync(User user);
+        Task<Result> SendPasswordResetEmailAsync(UserForgotPassword user);
     }
 }

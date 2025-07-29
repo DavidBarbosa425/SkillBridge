@@ -10,6 +10,7 @@ namespace Application.Interfaces.Mappers
         User ToUser(LoginDto dto);
         UserDto ToUserDto(User user);
         UserRegistered ToUserRegistered(User user);
+        UserForgotPassword ToUserForgotPassword(User user);
 
     }
 }

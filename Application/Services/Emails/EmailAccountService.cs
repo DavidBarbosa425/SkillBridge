@@ -61,7 +61,7 @@ namespace Application.Services.Emails
             return Result.Ok($"Um e-mail de confirmação sera enviado para {user.Email}");
         }
 
-        public async Task<Result> SendPasswordResetEmailAsync(User user)
+        public async Task<Result> SendPasswordResetEmailAsync(UserForgotPassword user)
         {
             await _validatorService.ValidateAsync(user);
 
