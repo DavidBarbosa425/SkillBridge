@@ -63,7 +63,7 @@ namespace Application.Services
                 return Result.Failure(roleAssigned.Message);
             }
 
-            var createUser = _mapper.User.ToCreateUser(identityUserCreated.Data!.IdentityUserId!, user);
+            var createUser = _mapper.User.ToCreateUser(identityUserCreated.Data!.IdentityUserId, user);
 
             var domainUserCreated = await _userRepository.AddAsync(createUser);
 
