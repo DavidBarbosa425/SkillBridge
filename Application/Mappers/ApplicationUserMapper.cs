@@ -8,8 +8,9 @@ internal class ApplicationUserMapper : IApplicationUserMapper
     {
         return new User
         {
-            Id = Guid.NewGuid(),
-            FullName = dto.Name,
+            Name = dto.Name,
+            FullName = dto.FullName,
+            PreferredName = dto.PreferredName,
             Email = dto.Email
         };
     }
@@ -66,7 +67,10 @@ internal class ApplicationUserMapper : IApplicationUserMapper
     {
         return new User
         {
+            Id = new Guid(),
+            Name = user.Name,
             FullName = user.FullName,
+            PreferredName = user.PreferredName,
             Email = user.Email,
             IdentityUserId = identityUser
         };

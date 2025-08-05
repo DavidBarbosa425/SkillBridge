@@ -1,12 +1,10 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
-using Application.Interfaces.Emails;
 using Application.Interfaces.Mappers;
 using Domain.Common;
-using Domain.Entities;
+using Domain.Constants;
 using Domain.Interfaces;
 using Infrastructure.Interfaces;
-using Microsoft.Extensions.Logging;
 
 namespace Application.Services
 {
@@ -47,15 +45,15 @@ namespace Application.Services
 
             await _unitOfWork.BeginTransactionAsync();
 
-            var identityUserCreated = await _identityUserService.AddAsync(user, dto.Password);
+            var identityUser = await _identityUserService.AddAsync(user, dto.Password);
 
-            if (!identityUserCreated.Success)
+            if (!identityUser.Success)
             {
                 await _unitOfWork.RollbackAsync();
-                return Result.Failure(identityUserCreated.Message);
+                return Result.Failure(identityUser.Message);
             }
 
-            var roleAssigned = await _identityUserService.AssignRoleToUserAsync(identityUserCreated.Data!.Email, dto.Role);
+            var roleAssigned = await _identityUserService.AssignRoleToUserAsync(dto.Email, Roles.User);
 
             if (!roleAssigned.Success)
             {
@@ -63,17 +61,17 @@ namespace Application.Services
                 return Result.Failure(roleAssigned.Message);
             }
 
-            var createUser = _mapper.User.ToCreateUser(identityUserCreated.Data!.IdentityUserId, user);
+            var createUserMapper = _mapper.User.ToCreateUser(identityUser.Data!.IdentityUserId, user);
 
-            var domainUserCreated = await _userRepository.AddAsync(createUser);
+            var createdUser = await _userRepository.AddAsync(createUserMapper);
 
-            if (!domainUserCreated.Success)
+            if (!createdUser.Success)
             {
                 await _unitOfWork.RollbackAsync();
-                return Result.Failure(domainUserCreated.Message);
+                return Result.Failure(createdUser.Message);
             }
 
-            var userRegistered = _mapper.User.ToUserRegistered(domainUserCreated.Data!);
+            var userRegistered = _mapper.User.ToUserRegistered(createdUser.Data!);
 
             await _messageBrokerService.PublishAsync(userRegistered);
 
