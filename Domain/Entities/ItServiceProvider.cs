@@ -3,8 +3,8 @@
     public class ItServiceProvider
     {
         public Guid Id { get; set; }
-        public Guid DomainUserId { get; set; }
-        public User DomainUser { get; set; } = null!;
+        public Guid UserId { get; set; }
+        public User User { get; set; } = null!;
         public string JobTitle { get; set; } = string.Empty;
     }
 }

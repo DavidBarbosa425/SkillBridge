@@ -16,7 +16,7 @@ namespace Infrastructure.Repositories
         }
         public async Task<Result<User>> AddAsync(User user)
         {
-            await _applicationDbContext.DomainUsers.AddAsync(user);
+            await _applicationDbContext.Users.AddAsync(user);
 
             var saveResult = await _applicationDbContext.SaveChangesAsync();
 
@@ -28,8 +28,10 @@ namespace Infrastructure.Repositories
 
         public async Task<Result<User>> FindByIdAsync(string id)
         {
-            var user = await _applicationDbContext.DomainUsers
-                .FirstOrDefaultAsync(u => u.Id == Guid.Parse(id));
+            var user = await _applicationDbContext.Users
+                .Include(u => u.ItServiceProviders)
+                .Include(u => u.Companies)
+                .FirstOrDefaultAsync(u => u.IdentityUserId.ToUpper() == id.ToUpper());
 
             if (user is null)
                 return Result<User>.Failure("Usuário não encontrado.");

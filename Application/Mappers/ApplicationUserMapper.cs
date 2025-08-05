@@ -20,7 +20,7 @@ internal class ApplicationUserMapper : IApplicationUserMapper
         return new User
         {
             Id = dto.Id,
-            FullName = dto.Name,
+            Name = dto.Name,
             Email = dto.Email,
         };
     }
@@ -37,7 +37,7 @@ internal class ApplicationUserMapper : IApplicationUserMapper
         return new UserDto
         {
             Id = user.Id,
-            Name = user.FullName,
+            Name = user.Name,
             Email = user.Email,
             IdentityUserId = user.IdentityUserId
         };
@@ -47,7 +47,7 @@ internal class ApplicationUserMapper : IApplicationUserMapper
     {
         return new UserRegistered
         {
-            Name = user.FullName,
+            Name = user.Name,
             Email = user.Email,
             IdentityUserId = user.IdentityUserId
         };
@@ -57,7 +57,7 @@ internal class ApplicationUserMapper : IApplicationUserMapper
     {
         return new UserForgotPassword
         {
-            Name = user.FullName,
+            Name = user.Name,
             Email = user.Email,
             IdentityUserId = user.IdentityUserId
         };

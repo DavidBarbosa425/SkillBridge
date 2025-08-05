@@ -105,6 +105,8 @@ namespace Application.Services
             if (!userChecked.Success)
                 return Result<string>.Failure(userChecked.Message);
 
+            var a = await _userRepository.FindByIdAsync(userChecked.Data.IdentityUserId);
+
             var token = await _jwtService.GenerateToken(userChecked.Data!);
 
             return Result<string>.Ok(token);
