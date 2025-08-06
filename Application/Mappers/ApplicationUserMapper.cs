@@ -63,7 +63,7 @@ internal class ApplicationUserMapper : IApplicationUserMapper
         };
     }
 
-    public User ToCreateUser(Guid identityId, User user)
+    public User ToCreateUser(string identityId, User user)
     {
         return new User
         {

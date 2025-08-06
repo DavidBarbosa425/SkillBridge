@@ -22,7 +22,7 @@ namespace Infrastructure.Mappers
             return new User
             {
                 Email = applicationUser.Email!,
-                IdentityId = Guid.Parse(applicationUser.Id)
+                IdentityId = applicationUser.Id
             };
         }
 

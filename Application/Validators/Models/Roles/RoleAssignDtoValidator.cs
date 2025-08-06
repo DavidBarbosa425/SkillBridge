@@ -7,8 +7,8 @@ namespace Application.Validators.Models.Roles
     {
         public RoleAssignDtoValidator()
         {
-            RuleFor(x => x.Id)
-                .NotEmpty().WithMessage("O e-mail é obrigatório.");
+            RuleFor(x => x.IdentityUserId)
+                .NotEmpty().WithMessage("Identificação do usuário é obrigatório.");
             RuleFor(x => x.Role)
                 .NotEmpty().WithMessage("Role é obrigatório.");
         }

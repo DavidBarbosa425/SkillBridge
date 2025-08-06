@@ -8,7 +8,7 @@ namespace Application.Validators.Models.Auth
         public ConfirmEmailDtoValidator()
         {
             RuleFor(x => x.IdentityId)
-                .NotEqual(Guid.Empty).WithMessage("ID do usuário é obrigatório");
+                .NotEmpty().WithMessage("ID do usuário é obrigatório");
 
             RuleFor(x => x.Token)
                 .NotEmpty().WithMessage("Token de verificação é obrigatório");

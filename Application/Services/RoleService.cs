@@ -21,7 +21,7 @@ namespace Application.Services
         {
             await _validatorService.ValidateAsync(dto);
 
-            var result = await _identityUserService.AssignRoleAsync(dto.Id, dto.Role);
+            var result = await _identityUserService.AssignRoleAsync(dto.IdentityUserId, dto.Role);
 
             if (!result.Success)
                 return Result.Failure(result.Message);

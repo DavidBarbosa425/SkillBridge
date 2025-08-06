@@ -53,7 +53,7 @@ namespace Application.Services
                 return Result.Failure(userIdentityResult.Message);
             }
 
-            var roleAssignedResult = await _identityUserService.AssignRoleAsync(userIdentityResult.Data.Id, Roles.User);
+            var roleAssignedResult = await _identityUserService.AssignRoleAsync(userIdentityResult.Data.IdentityId, Roles.User);
 
             if (!roleAssignedResult.Success)
             {
@@ -110,7 +110,7 @@ namespace Application.Services
             if (!userResult.Success)
                 return Result<string>.Failure(userResult.Message);
 
-            var rolesResult = await _identityUserService.GetRolesByIdAsync(userResult.Data.Id);
+            var rolesResult = await _identityUserService.GetRolesByIdAsync(userResult.Data.IdentityId);
 
             if (!rolesResult.Success)
                 return Result<string>.Failure(rolesResult.Message);

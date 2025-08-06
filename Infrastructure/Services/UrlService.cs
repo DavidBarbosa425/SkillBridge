@@ -13,13 +13,13 @@ namespace Infrastructure.Services
         {
             _urlOptions = urlOptions.Value;
         }
-        public string GenerateApiUrlEmailConfirmation(Guid identityId, string token)
+        public string GenerateApiUrlEmailConfirmation(string identityId, string token)
         {
             var url = string.Format(_urlOptions.AccountEmailConfirmation, identityId, Uri.EscapeDataString(token));
 
             return url;
         }
-        public string GenerateUrlEmailPasswordReset(Guid identityId, string token)
+        public string GenerateUrlEmailPasswordReset(string identityId, string token)
         {
             var url = string.Format(_urlOptions.AccountEmailPasswordReset, identityId, Uri.EscapeDataString(token));
 
