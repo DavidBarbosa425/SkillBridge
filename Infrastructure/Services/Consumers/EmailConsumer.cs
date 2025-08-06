@@ -22,15 +22,7 @@ namespace Infrastructure.Services.Consumers
             {
                 var message = context.Message;
 
-                var sendEmail = new SendEmail
-                {
-                    Name = message.Name,
-                    Email = message.To,
-                    Subject = message.Subject,
-                    Body = message.Body
-                };
-
-                await _emailService.SendEmailAsync(sendEmail);
+                await _emailService.SendEmailAsync(message);
 
                 _logger.LogInformation($"Email processado com sucesso para: {message.To}");
             }

@@ -48,15 +48,15 @@ namespace Application.Services.Emails
             if (string.IsNullOrEmpty(body))
                 return Result.Failure("Falha ao gerar texto de confirmação de e-mail.");
 
-            var sendEmail = new SendEmail
+            var emailMessage = new EmailMessage
             {
                 Name = user.Name,
-                Email = user.Email,
+                To = user.Email,
                 Subject = EmailSubjects.Confirmation,
                 Body = body
             };
 
-            await _emailService.SendEmailAsync(sendEmail);
+            await _emailService.SendEmailAsync(emailMessage);
 
             return Result.Ok($"Um e-mail de confirmação sera enviado para {user.Email}");
         }
@@ -80,15 +80,15 @@ namespace Application.Services.Emails
             if (string.IsNullOrEmpty(body))
                 return Result.Failure("Falha ao gerar texto de reset de senha.");
 
-            var sendEmail = new SendEmail
+            var emailMessage = new EmailMessage
             {
                 Name = user.Name,
-                Email = user.Email,
+                To = user.Email,
                 Subject = EmailSubjects.PasswordReset,
                 Body = body
             };
 
-            await _emailService.SendEmailAsync(sendEmail);
+            await _emailService.SendEmailAsync(emailMessage);
 
             return Result.Ok($"Um e-mail para reset de senha sera enviado para {user.Email}");
         }

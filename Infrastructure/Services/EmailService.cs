@@ -23,20 +23,19 @@ namespace Infrastructure.Services
 
         }
 
-        public async Task SendEmailAsync(SendEmail sendEmail)
+        public async Task SendEmailAsync(EmailMessage emailMessage)
         {
-
-            var emailMessage = new MimeMessage();
-            emailMessage.From.Add(new MailboxAddress(_emailSettings.Sender, _emailSettings.From));
-            emailMessage.To.Add(new MailboxAddress("", sendEmail.Email));
-            emailMessage.Subject = sendEmail.Subject;
-            emailMessage.Body = new TextPart("html") { Text = sendEmail.Body };
+            var mimeMessage = new MimeMessage();
+            mimeMessage.From.Add(new MailboxAddress(_emailSettings.Sender, _emailSettings.From));
+            mimeMessage.To.Add(new MailboxAddress("", emailMessage.To));
+            mimeMessage.Subject = emailMessage.Subject;
+            mimeMessage.Body = new TextPart("html") { Text = emailMessage.Body };
 
             using (var client = new SmtpClient())
             {
                 await client.ConnectAsync(_smtpSettings.Server, _smtpSettings.Port, false);
                 await client.AuthenticateAsync(_smtpSettings.Username, _smtpSettings.Password);
-                await client.SendAsync(emailMessage);
+                await client.SendAsync(mimeMessage);
                 await client.DisconnectAsync(true);
             }
 
