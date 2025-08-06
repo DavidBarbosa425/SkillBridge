@@ -10,7 +10,7 @@ namespace API.Mappers
         {
             return new ConfirmEmailDto
             {
-              UserId = dto.UserId,
+              IdentityId = dto.Id,
               Token = dto.Token
             };
         }

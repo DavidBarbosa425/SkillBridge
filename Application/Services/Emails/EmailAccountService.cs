@@ -38,7 +38,7 @@ namespace Application.Services.Emails
             if (!token.Success)
                 return Result.Failure(token.Message);
 
-            var confirmationLink = _urlService.GenerateApiUrlEmailConfirmation(user.IdentityId, token.Data!);
+            var confirmationLink = _urlService.GenerateApiUrlEmailConfirmation(user.IdentityId, token.Data);
 
             if (string.IsNullOrEmpty(confirmationLink))
                 return Result.Failure("Falha ao gerar link de confirmação de e-mail.");

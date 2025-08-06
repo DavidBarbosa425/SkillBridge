@@ -39,7 +39,7 @@ internal class ApplicationUserMapper : IApplicationUserMapper
             Id = user.Id,
             Name = user.Name,
             Email = user.Email,
-            IdentityUserId = user.IdentityUserId
+            IdentityId = user.IdentityId
         };
     }
 
@@ -49,7 +49,7 @@ internal class ApplicationUserMapper : IApplicationUserMapper
         {
             Name = user.Name,
             Email = user.Email,
-            IdentityUserId = user.IdentityUserId
+            IdentityId = user.IdentityId
         };
     }
 
@@ -59,11 +59,11 @@ internal class ApplicationUserMapper : IApplicationUserMapper
         {
             Name = user.Name,
             Email = user.Email,
-            IdentityUserId = user.IdentityUserId
+            IdentityId = user.IdentityId
         };
     }
 
-    public User ToCreateUser(string identityUser, User user)
+    public User ToCreateUser(Guid identityId, User user)
     {
         return new User
         {
@@ -72,7 +72,7 @@ internal class ApplicationUserMapper : IApplicationUserMapper
             FullName = user.FullName,
             PreferredName = user.PreferredName,
             Email = user.Email,
-            IdentityUserId = identityUser
+            IdentityId = identityId
         };
     }
 }

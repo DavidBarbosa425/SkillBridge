@@ -1,6 +1,4 @@
-﻿using Domain.Constants;
-
-namespace Domain.Entities
+﻿namespace Domain.Entities
 {
     public class User
     {
@@ -9,7 +7,7 @@ namespace Domain.Entities
         public string FullName { get; set; } = string.Empty;
         public string PreferredName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
-        public string IdentityUserId { get; set; } = string.Empty;
+        public Guid IdentityId { get; set; }
         public ICollection<ItServiceProvider>? ItServiceProviders { get; set; } 
         public ICollection<Company>? Companies { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

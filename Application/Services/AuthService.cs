@@ -45,15 +45,15 @@ namespace Application.Services
 
             await _unitOfWork.BeginTransactionAsync();
 
-            var identityResult = await _identityUserService.AddAsync(mapToUser, dto.Password);
+            var userIdentityResult = await _identityUserService.AddAsync(mapToUser, dto.Password);
 
-            if (!identityResult.Success)
+            if (!userIdentityResult.Success)
             {
                 await _unitOfWork.RollbackAsync();
-                return Result.Failure(identityResult.Message);
+                return Result.Failure(userIdentityResult.Message);
             }
 
-            var roleAssignedResult = await _identityUserService.AssignRoleAsync(identityResult.Data.Id, Roles.User);
+            var roleAssignedResult = await _identityUserService.AssignRoleAsync(userIdentityResult.Data.Id, Roles.User);
 
             if (!roleAssignedResult.Success)
             {
@@ -61,7 +61,7 @@ namespace Application.Services
                 return Result.Failure(roleAssignedResult.Message);
             }
 
-            var mapToCreateUser = _mapper.User.ToCreateUser(identityResult.Data.IdentityUserId, mapToUser);
+            var mapToCreateUser = _mapper.User.ToCreateUser(userIdentityResult.Data.IdentityId, mapToUser);
 
             var createUserResult = await _userRepository.AddAsync(mapToCreateUser);
 
@@ -87,7 +87,7 @@ namespace Application.Services
 
             var decodedToken = Uri.UnescapeDataString(dto.Token);
 
-            var confirmationResult = await _identityUserService.ConfirmEmailAsync(dto.UserId, decodedToken);
+            var confirmationResult = await _identityUserService.ConfirmEmailAsync(dto.IdentityId, decodedToken);
 
             if (!confirmationResult.Success) 
                 return Result.Failure(confirmationResult.Message);

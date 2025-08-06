@@ -25,12 +25,12 @@ namespace Infrastructure.Repositories
 
             return Result<User>.Ok(user);
         }
-        public async Task<Result<User>> FindByIdAsync(string id)
+        public async Task<Result<User>> FindByIdAsync(Guid id)
         {
             var user = await _applicationDbContext.Users
                 .Include(u => u.ItServiceProviders)
                 .Include(u => u.Companies)
-                .FirstOrDefaultAsync(u => u.IdentityUserId.ToUpper() == id.ToUpper());
+                .FirstOrDefaultAsync(u => u.Id == id);
 
             if (user is null)
                 return Result<User>.Failure("Usuário não encontrado.");

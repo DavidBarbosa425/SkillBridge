@@ -27,10 +27,10 @@
         public static Result<T> Ok(T data, string message = "Operação realizada com sucesso")
             => new Result<T> { Success = true, Message = message, Data = data };
 
-        public static Result<T> Failure(string message = "Erro na operação")
+        public new static Result<T> Failure(string message = "Erro na operação")
             => new Result<T> { Success = false, Message = message, Data = default! };
 
-        public static Result<T> Failure(List<string> errors)
+        public new static Result<T> Failure(List<string> errors)
             => new Result<T> { Success = false, Message = string.Join(", ", errors), Data = default!, Errors = errors };
     }
 }

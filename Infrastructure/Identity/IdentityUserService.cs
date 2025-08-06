@@ -37,9 +37,9 @@ namespace Infrastructure.Identity
 
             return Result<User>.Ok(createdUser);
         }
-        public async Task<Result<User>> FindByIdAsync(string id)
+        public async Task<Result<User>> FindByIdAsync(Guid id)
         {
-            var applicationUser = await _userManager.FindByIdAsync(id);
+            var applicationUser = await _userManager.FindByIdAsync(id.ToString());
 
             if (applicationUser == null) return Result<User>.Failure("Usuário não encontrado");
 
@@ -57,9 +57,9 @@ namespace Infrastructure.Identity
 
             return Result<User>.Ok(user);
         }
-        public async Task<Result<string>> GenerateEmailConfirmationTokenAsync(string id)
+        public async Task<Result<string>> GenerateEmailConfirmationTokenAsync(Guid id)
         {
-            var applicationUser = await _userManager.FindByIdAsync(id);
+            var applicationUser = await _userManager.FindByIdAsync(id.ToString());
 
             if (applicationUser == null)
                 return Result<string>.Failure("Usuário não encontrado.");
@@ -98,9 +98,9 @@ namespace Infrastructure.Identity
 
             return Result<User>.Ok(user);
         }
-        public async Task<Result<string>> GeneratePasswordResetTokenAsync(string id)
+        public async Task<Result<string>> GeneratePasswordResetTokenAsync(Guid id)
         {
-            var applicationUser = await _userManager.FindByIdAsync(id);
+            var applicationUser = await _userManager.FindByIdAsync(id.ToString());
 
             if (applicationUser == null)
                 return Result<string>.Failure("Usuário não encontrado.");

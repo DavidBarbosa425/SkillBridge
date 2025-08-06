@@ -2,7 +2,7 @@
 {
     public interface IUrlService
     {
-        string GenerateApiUrlEmailConfirmation(string identityId, string token);
-        string GenerateUrlEmailPasswordReset(string identityId, string token);
+        string GenerateApiUrlEmailConfirmation(Guid identityId, string token);
+        string GenerateUrlEmailPasswordReset(Guid identityId, string token);
     }
 }

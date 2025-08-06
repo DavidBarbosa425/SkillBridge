@@ -20,7 +20,7 @@ namespace Infrastructure.Data
             builder.Entity<User>()
                 .HasOne<ApplicationUser>()
                 .WithOne()
-                .HasForeignKey<User>(u => u.IdentityUserId)
+                .HasForeignKey<User>(u => u.IdentityId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<User>()
