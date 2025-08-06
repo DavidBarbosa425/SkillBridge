@@ -1,7 +1,7 @@
 ﻿using Domain.Entities;
 using FluentValidation;
 
-namespace Application.Validators.Models
+namespace Application.Validators.Models.Users
 {
     public class UserRegisterValidator : AbstractValidator<UserRegistered>
     {
