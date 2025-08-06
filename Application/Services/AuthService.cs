@@ -41,43 +41,43 @@ namespace Application.Services
         {
             await _validatorService.ValidateAsync(dto);
 
-            var user = _mapper.User.ToUser(dto);
+            var mapToUser = _mapper.User.ToUser(dto);
 
             await _unitOfWork.BeginTransactionAsync();
 
-            var identityUser = await _identityUserService.AddAsync(user, dto.Password);
+            var identityResult = await _identityUserService.AddAsync(mapToUser, dto.Password);
 
-            if (!identityUser.Success)
+            if (!identityResult.Success)
             {
                 await _unitOfWork.RollbackAsync();
-                return Result.Failure(identityUser.Message);
+                return Result.Failure(identityResult.Message);
             }
 
-            var roleAssigned = await _identityUserService.AssignRoleAsync(identityUser.Data.Id, Roles.User);
+            var roleAssignedResult = await _identityUserService.AssignRoleAsync(identityResult.Data.Id, Roles.User);
 
-            if (!roleAssigned.Success)
+            if (!roleAssignedResult.Success)
             {
                 await _unitOfWork.RollbackAsync();
-                return Result.Failure(roleAssigned.Message);
+                return Result.Failure(roleAssignedResult.Message);
             }
 
-            var createUserMapper = _mapper.User.ToCreateUser(identityUser.Data!.IdentityUserId, user);
+            var mapToCreateUser = _mapper.User.ToCreateUser(identityResult.Data.IdentityUserId, mapToUser);
 
-            var createdUser = await _userRepository.AddAsync(createUserMapper);
+            var createUserResult = await _userRepository.AddAsync(mapToCreateUser);
 
-            if (!createdUser.Success)
+            if (!createUserResult.Success)
             {
                 await _unitOfWork.RollbackAsync();
-                return Result.Failure(createdUser.Message);
+                return Result.Failure(createUserResult.Message);
             }
 
-            var userRegistered = _mapper.User.ToUserRegistered(createdUser.Data!);
+            var MapToUserRegisteredEvent = _mapper.User.ToUserRegistered(createUserResult.Data);
 
-            await _messageBrokerService.PublishAsync(userRegistered);
+            await _messageBrokerService.PublishAsync(MapToUserRegisteredEvent);
 
             await _unitOfWork.CommitAsync();
 
-            return Result.Ok($"Usuário criado com sucesso. Um E-mail de Confirmação sera enviado para {userRegistered.Email}.");
+            return Result.Ok($"Usuário criado com sucesso. Um E-mail de Confirmação sera enviado para {MapToUserRegisteredEvent.Email}.");
 
         }
 
@@ -100,22 +100,22 @@ namespace Application.Services
         {
             await _validatorService.ValidateAsync(dto);
 
-            var userChecked = await _identityUserService.CheckPasswordAsync(dto.Email, dto.Password);
+            var checkResult = await _identityUserService.CheckPasswordAsync(dto.Email, dto.Password);
 
-            if (!userChecked.Success)
-                return Result<string>.Failure(userChecked.Message);
+            if (!checkResult.Success)
+                return Result<string>.Failure(checkResult.Message);
 
-            var user = await _userRepository.FindByIdAsync(userChecked.Data.Email);
+            var userResult = await _userRepository.FindByEmailAsync(checkResult.Data.Email);
 
-            if (!user.Success)
-                return Result<string>.Failure(user.Message);
+            if (!userResult.Success)
+                return Result<string>.Failure(userResult.Message);
 
-            var userRoles = await _identityUserService.GetRolesByIdAsync(user.Data.Id);
+            var rolesResult = await _identityUserService.GetRolesByIdAsync(userResult.Data.Id);
 
-            if (!userRoles.Success)
-                return Result<string>.Failure(userRoles.Message);
+            if (!rolesResult.Success)
+                return Result<string>.Failure(rolesResult.Message);
 
-            var token = _jwtService.GenerateToken(user.Data, userRoles.Data);
+            var token = _jwtService.GenerateToken(userResult.Data, rolesResult.Data);
 
             return Result<string>.Ok(token);
 
@@ -125,16 +125,16 @@ namespace Application.Services
         {
             await _validatorService.ValidateAsync(dto);
 
-            var user = await _identityUserService.FindByEmailAsync(dto.Email);
+            var identityResult = await _identityUserService.FindByEmailAsync(dto.Email);
 
-            if (!user.Success)
-                return Result.Failure(user.Message);
+            if (!identityResult.Success)
+                return Result.Failure(identityResult.Message);
 
-            var userForgotPassword = _mapper.User.ToUserForgotPassword(user.Data!);
+            var mapToUserForgotPassword = _mapper.User.ToUserForgotPassword(identityResult.Data);
 
-            await _messageBrokerService.PublishAsync(userForgotPassword);
+            await _messageBrokerService.PublishAsync(mapToUserForgotPassword);
 
-            return Result.Ok($"E-mail de recuperação de senha enviado com sucesso para {user.Data!.Email}");
+            return Result.Ok($"E-mail de recuperação de senha enviado com sucesso para {identityResult.Data.Email}");
 
         }
 
@@ -142,12 +142,12 @@ namespace Application.Services
         {
             await _validatorService.ValidateAsync(dto);
 
-            var passwordWasReset = await _identityUserService.ResetPasswordAsync(dto.Email, dto.Token, dto.NewPassword);
+            var resetPasswordResult = await _identityUserService.ResetPasswordAsync(dto.Email, dto.Token, dto.NewPassword);
 
-            if (!passwordWasReset.Success)
-                return Result.Failure(passwordWasReset.Message);
+            if (!resetPasswordResult.Success)
+                return Result.Failure(resetPasswordResult.Message);
 
-            return Result.Ok(passwordWasReset.Message);
+            return Result.Ok(resetPasswordResult.Message);
         }
     }
 }

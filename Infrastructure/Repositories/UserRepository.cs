@@ -25,13 +25,24 @@ namespace Infrastructure.Repositories
 
             return Result<User>.Ok(user);
         }
-
         public async Task<Result<User>> FindByIdAsync(string id)
         {
             var user = await _applicationDbContext.Users
                 .Include(u => u.ItServiceProviders)
                 .Include(u => u.Companies)
                 .FirstOrDefaultAsync(u => u.IdentityUserId.ToUpper() == id.ToUpper());
+
+            if (user is null)
+                return Result<User>.Failure("Usuário não encontrado.");
+
+            return Result<User>.Ok(user);
+        }
+        public async Task<Result<User>> FindByEmailAsync(string email)
+        {
+            var user = await _applicationDbContext.Users
+                .Include(u => u.ItServiceProviders)
+                .Include(u => u.Companies)
+                .FirstOrDefaultAsync(u => u.Email.Contains(email));
 
             if (user is null)
                 return Result<User>.Failure("Usuário não encontrado.");
