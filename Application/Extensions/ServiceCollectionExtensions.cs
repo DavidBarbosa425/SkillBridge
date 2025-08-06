@@ -22,6 +22,7 @@ namespace Application.Extensions
             services.AddScoped<IEmailAccountService, EmailAccountService>();
             services.AddScoped<IValidatorService, ValidatorService>();
             services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<ICompanyService, CompanyService>();
 
             // Validators
             services.AddValidatorsFromAssemblyContaining<RegisterUserDtoValidator>();
