@@ -5,7 +5,7 @@ namespace Application.Validators.Models.Companies
 {
     public class RegisterCompanyDtoValidator : AbstractValidator<RegisterCompanyDto>
     {
-        RegisterCompanyDtoValidator()
+        public RegisterCompanyDtoValidator()
         {
             RuleFor(x => x.Name)
                 .NotEmpty()

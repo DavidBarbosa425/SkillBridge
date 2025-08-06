@@ -3,5 +3,6 @@
     public interface IApplicationMapper
     {
         IApplicationUserMapper User { get; }
+        IApplicationCompanyMapper Company { get; set; }
     }
 }
