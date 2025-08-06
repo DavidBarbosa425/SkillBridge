@@ -24,10 +24,8 @@ namespace Infrastructure.Services
             _jwtOptions = jwtOptions.Value;
             _identityUserService = identityUserService;
         }
-        public async Task<string> GenerateToken(User user)
+        public string GenerateToken(User user, IList<string> roles)
         {
-            var roles = await _identityUserService.GetRolesByEmailAsync(user.Email);
-
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
@@ -35,7 +33,7 @@ namespace Infrastructure.Services
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
 
-            foreach (var role in roles.Data!)
+            foreach (var role in roles)
             {
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }

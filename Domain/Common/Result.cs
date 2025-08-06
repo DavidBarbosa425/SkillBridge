@@ -20,7 +20,7 @@
 
     public class Result<T> : Result
     {
-        public T? Data { get; private set; }
+        public T Data { get; private set; } = default!;
 
         private Result() { }
 
@@ -28,9 +28,9 @@
             => new Result<T> { Success = true, Message = message, Data = data };
 
         public static Result<T> Failure(string message = "Erro na operação")
-            => new Result<T> { Success = false, Message = message, Data = default };
+            => new Result<T> { Success = false, Message = message, Data = default! };
 
         public static Result<T> Failure(List<string> errors)
-            => new Result<T> { Success = false, Message = string.Join(", ", errors), Data = default, Errors = errors };
+            => new Result<T> { Success = false, Message = string.Join(", ", errors), Data = default!, Errors = errors };
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Domain.Common;
-using Domain.Constants;
 using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Identity.Models;
@@ -40,7 +39,6 @@ namespace Infrastructure.Identity
         }
         public async Task<Result<User>> FindByIdAsync(string id)
         {
-
             var applicationUser = await _userManager.FindByIdAsync(id);
 
             if (applicationUser == null) return Result<User>.Failure("Usuário não encontrado");
@@ -60,9 +58,9 @@ namespace Infrastructure.Identity
 
             return Result<User>.Ok(user);
         }
-        public async Task<Result<string>> GenerateEmailConfirmationTokenAsync(string userId)
+        public async Task<Result<string>> GenerateEmailConfirmationTokenAsync(string id)
         {
-            var applicationUser = await _userManager.FindByIdAsync(userId);
+            var applicationUser = await _userManager.FindByIdAsync(id);
 
             if (applicationUser == null)
                 return Result<string>.Failure("Usuário não encontrado.");
@@ -74,9 +72,9 @@ namespace Infrastructure.Identity
 
             return Result<string>.Ok(token);
         }
-        public async Task<Result> ConfirmEmailAsync(Guid userId, string token)
+        public async Task<Result> ConfirmEmailAsync(Guid id, string token)
         {
-            var applicationUser = await _userManager.FindByIdAsync(userId.ToString());
+            var applicationUser = await _userManager.FindByIdAsync(id.ToString());
 
             if (applicationUser == null)
                 return Result.Failure("Usuário não encontrado.");
@@ -103,9 +101,9 @@ namespace Infrastructure.Identity
             return Result<User>.Ok(user);
 
         }
-        public async Task<Result<string>> GeneratePasswordResetTokenAsync(string userId)
+        public async Task<Result<string>> GeneratePasswordResetTokenAsync(string id)
         {
-            var applicationUser = await _userManager.FindByIdAsync(userId);
+            var applicationUser = await _userManager.FindByIdAsync(id);
 
             if (applicationUser == null)
                 return Result<string>.Failure("Usuário não encontrado.");
@@ -137,9 +135,9 @@ namespace Infrastructure.Identity
             return Result.Ok("Senha redefinida com sucesso! Você pode fazer login agora.");
         }
 
-        public async Task<Result> AssignRoleToUserAsync(string email, string role)
+        public async Task<Result> AssignRoleAsync(Guid id, string role)
         {
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.FindByIdAsync(id.ToString());
 
             if (user == null)
                 return Result.Failure("Usuário não encontrado.");
@@ -154,12 +152,24 @@ namespace Infrastructure.Identity
                 }
             }
 
-            return Result.Ok($"Usuário {email} adicionado ao papel {role} com sucesso!");
+            return Result.Ok($"Usuário {user.Email} adicionado ao papel {role} com sucesso!");
         }
 
         public async Task<Result<IList<string>>> GetRolesByEmailAsync(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
+
+            if (user == null)
+                return Result<IList<string>>.Failure("Usuário não encontrado.");
+
+            var roles = await _userManager.GetRolesAsync(user);
+
+            return Result<IList<string>>.Ok(roles);
+        }
+
+        public async Task<Result<IList<string>>> GetRolesByIdAsync(Guid id)
+        {
+            var user = await _userManager.FindByIdAsync(id.ToString());
 
             if (user == null)
                 return Result<IList<string>>.Failure("Usuário não encontrado.");

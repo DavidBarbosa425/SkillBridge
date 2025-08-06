@@ -13,7 +13,8 @@ namespace Domain.Interfaces
         Task<Result> ConfirmEmailAsync(Guid userId, string token);
         Task<Result<string>> GeneratePasswordResetTokenAsync(string userId);
         Task<Result> ResetPasswordAsync(string email, string token, string newPassword);
-        Task<Result> AssignRoleToUserAsync(string email, string role);
+        Task<Result> AssignRoleAsync(Guid id, string role);
         Task<Result<IList<string>>> GetRolesByEmailAsync(string email);
+        Task<Result<IList<string>>> GetRolesByIdAsync(Guid userId);
     }
 }

@@ -53,7 +53,7 @@ namespace Application.Services
                 return Result.Failure(identityUser.Message);
             }
 
-            var roleAssigned = await _identityUserService.AssignRoleToUserAsync(dto.Email, Roles.User);
+            var roleAssigned = await _identityUserService.AssignRoleAsync(identityUser.Data.Id, Roles.User);
 
             if (!roleAssigned.Success)
             {
@@ -105,9 +105,17 @@ namespace Application.Services
             if (!userChecked.Success)
                 return Result<string>.Failure(userChecked.Message);
 
-            var a = await _userRepository.FindByIdAsync(userChecked.Data.IdentityUserId);
+            var user = await _userRepository.FindByIdAsync(userChecked.Data.Email);
 
-            var token = await _jwtService.GenerateToken(userChecked.Data!);
+            if (!user.Success)
+                return Result<string>.Failure(user.Message);
+
+            var userRoles = await _identityUserService.GetRolesByIdAsync(user.Data.Id);
+
+            if (!userRoles.Success)
+                return Result<string>.Failure(userRoles.Message);
+
+            var token = _jwtService.GenerateToken(user.Data, userRoles.Data);
 
             return Result<string>.Ok(token);
 
