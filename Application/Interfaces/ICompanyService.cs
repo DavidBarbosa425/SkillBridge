@@ -1,9 +1,11 @@
 ﻿using Application.DTOs;
+using Domain.Common;
+using Domain.Entities;
 
 namespace Application.Interfaces
 {
     public interface ICompanyService
     {
-        Task<bool> RegisterAsync(RegisterCompanyDto registerCompanyDto);
+        Task<Result<Company>> RegisterAsync(RegisterCompanyDto registerCompanyDto);
     }
 }
