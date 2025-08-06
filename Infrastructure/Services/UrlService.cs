@@ -13,15 +13,15 @@ namespace Infrastructure.Services
         {
             _urlOptions = urlOptions.Value;
         }
-        public string GenerateApiUrlEmailConfirmation(string userId, string token)
+        public string GenerateApiUrlEmailConfirmation(string identityId, string token)
         {
-            var url = string.Format(_urlOptions.AccountEmailConfirmation, userId, Uri.EscapeDataString(token));
+            var url = string.Format(_urlOptions.AccountEmailConfirmation, identityId, Uri.EscapeDataString(token));
 
             return url;
         }
-        public string GenerateApiUrlEmailPasswordReset(string userId, string token)
+        public string GenerateUrlEmailPasswordReset(string identityId, string token)
         {
-            var url = string.Format(_urlOptions.AccountEmailPasswordReset, userId, Uri.EscapeDataString(token));
+            var url = string.Format(_urlOptions.AccountEmailPasswordReset, identityId, Uri.EscapeDataString(token));
 
             return url;
         }

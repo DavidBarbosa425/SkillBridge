@@ -49,7 +49,6 @@ namespace Infrastructure.Identity
         }
         public async Task<Result<User>> FindByEmailAsync(string email)
         {
-
             var applicationUser = await _userManager.FindByEmailAsync(email);
 
             if (applicationUser == null) return Result<User>.Failure("Usuário não encontrado");
@@ -84,7 +83,6 @@ namespace Infrastructure.Identity
             if (!result.Succeeded) return Result.Failure("Erro ao confirmar o e-mail do usuário.");
 
             return Result.Ok("E-mail confirmado com sucesso!");
-
         }
         public async Task<Result<User>> CheckPasswordAsync(string email, string password)
         {
@@ -99,7 +97,6 @@ namespace Infrastructure.Identity
             var user = _infrastructureMapper.User.ToUser(applicationUser);
 
             return Result<User>.Ok(user);
-
         }
         public async Task<Result<string>> GeneratePasswordResetTokenAsync(string id)
         {

@@ -33,12 +33,12 @@ namespace Application.Services.Emails
         {
             await _validatorService.ValidateAsync(user);
 
-            var token = await _identityUserService.GenerateEmailConfirmationTokenAsync(user.IdentityUserId);
+            var token = await _identityUserService.GenerateEmailConfirmationTokenAsync(user.IdentityId);
 
             if (!token.Success)
                 return Result.Failure(token.Message);
 
-            var confirmationLink = _urlService.GenerateApiUrlEmailConfirmation(user.IdentityUserId, token.Data!);
+            var confirmationLink = _urlService.GenerateApiUrlEmailConfirmation(user.IdentityId, token.Data!);
 
             if (string.IsNullOrEmpty(confirmationLink))
                 return Result.Failure("Falha ao gerar link de confirmação de e-mail.");
@@ -65,12 +65,12 @@ namespace Application.Services.Emails
         {
             await _validatorService.ValidateAsync(user);
 
-            var token = await _identityUserService.GeneratePasswordResetTokenAsync(user.IdentityUserId);
+            var token = await _identityUserService.GeneratePasswordResetTokenAsync(user.IdentityId);
 
             if (!token.Success)
                 return Result.Failure(token.Message);
 
-            var resetPasswordLink = _urlService.GenerateApiUrlEmailPasswordReset(user.IdentityUserId, token.Data!);
+            var resetPasswordLink = _urlService.GenerateUrlEmailPasswordReset(user.IdentityId, token.Data!);
 
             if (string.IsNullOrEmpty(resetPasswordLink))
                 return Result.Failure("Falha ao gerar link de reset de senha.");
