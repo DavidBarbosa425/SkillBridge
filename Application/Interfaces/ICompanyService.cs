@@ -6,6 +6,6 @@ namespace Application.Interfaces
 {
     public interface ICompanyService
     {
-        Task<Result<Company>> RegisterAsync(RegisterCompanyDto registerCompanyDto);
+        Task<Result> RegisterAsync(RegisterCompanyDto registerCompanyDto);
     }
 }
