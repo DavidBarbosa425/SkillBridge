@@ -18,6 +18,12 @@ namespace API.Controllers
             _companyService = companyService;
         }
 
+        //[HttpGet("claims")]
+        //public IActionResult GetClaims()
+        //{
+        //    return Ok(User.Claims.Select(c => new { c.Type, c.Value }));
+        //}
+
         [HttpPost]
         public async Task<IActionResult> Register([FromBody] RegisterCompanyDto dto)
         {

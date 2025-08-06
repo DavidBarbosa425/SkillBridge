@@ -10,6 +10,7 @@ namespace Application.Mappers
         {
             return new Company
             {
+                Id = new Guid(),
                 UserId = dto.UserId,
                 Name = dto.Name,
                 CNPJ = dto.CNPJ,
