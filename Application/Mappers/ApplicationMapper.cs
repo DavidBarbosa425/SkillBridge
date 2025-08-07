@@ -6,13 +6,16 @@ namespace Application.Mappers
     {
         public IApplicationUserMapper User { get; }
         public IApplicationCompanyMapper Company { get; set; }
+        public IApplicationItServiceProviderMapper ItServiceProvider { get; set; }
 
         public ApplicationMapper(
             IApplicationUserMapper userMapper,
-            IApplicationCompanyMapper companyMapper)
+            IApplicationCompanyMapper companyMapper,
+            IApplicationItServiceProviderMapper itServiceProviderMapper)
         {
             User = userMapper;
             Company = companyMapper;
+            ItServiceProvider = itServiceProviderMapper;
         }
     }
 

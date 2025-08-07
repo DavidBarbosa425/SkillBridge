@@ -31,6 +31,7 @@ namespace Application.Extensions
             services.AddScoped<IApplicationMapper, ApplicationMapper>();
             services.AddScoped<IApplicationUserMapper, ApplicationUserMapper>();
             services.AddScoped<IApplicationCompanyMapper, ApplicationCompanyMapper>();
+            services.AddScoped<IApplicationItServiceProviderMapper, ApplicationItServiceProviderMapper>();
 
             // Factories
             services.AddScoped<IAccountEmailTemplateFactory, AccountEmailTemplateFactory>();
