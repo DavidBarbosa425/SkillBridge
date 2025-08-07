@@ -60,6 +60,7 @@ namespace Infrastructure.Extensions
             //repositories
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ICompanyRepository, CompanyRepository>();
+            services.AddScoped<IItServiceProviderRepository, ItServiceProviderRepository>();
 
             return services;
         }

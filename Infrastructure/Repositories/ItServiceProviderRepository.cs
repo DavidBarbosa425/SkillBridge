@@ -22,7 +22,6 @@ namespace Infrastructure.Repositories
             if (save < 0)
                 return Result<ItServiceProvider>.Failure("It Service Provider registered successfully.");
 
-
             return Result<ItServiceProvider>.Ok(itServiceProvider, "It Service Provider registered successfully.");
         }
     }
