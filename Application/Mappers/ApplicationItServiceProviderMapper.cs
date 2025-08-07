@@ -10,6 +10,7 @@ namespace Application.Mappers
         {
             return new ItServiceProvider
             {
+                Id = new Guid(),
                 UserId = dto.UserId,
                 JobTitle = dto.JobTitle
             };

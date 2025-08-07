@@ -23,6 +23,7 @@ namespace Application.Extensions
             services.AddScoped<IValidatorService, ValidatorService>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<ICompanyService, CompanyService>();
+            services.AddScoped<IItServiceProviderService, ItServiceProviderService>();
 
             // Validators
             services.AddValidatorsFromAssemblyContaining<RegisterUserDtoValidator>();
