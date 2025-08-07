@@ -4,5 +4,6 @@
     {
         IApplicationUserMapper User { get; }
         IApplicationCompanyMapper Company { get; set; }
+        IApplicationItServiceProviderMapper ItServiceProvider { get; set; }
     }
 }
