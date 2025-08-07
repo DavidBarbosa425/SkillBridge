@@ -4,6 +4,7 @@ using Application.Interfaces.Mappers;
 using Domain.Common;
 using Domain.Constants;
 using Domain.Interfaces;
+using Infrastructure.Interfaces;
 
 namespace Application.Services
 {
@@ -11,6 +12,7 @@ namespace Application.Services
     {
         private readonly IApplicationMapper _mapper;
         private readonly IValidatorService _validatorService;
+        private readonly IUserRepository _userRepository;
         private readonly IItServiceProviderRepository _itServiceProviderRepository;
         private readonly IIdentityUserService _identityUserService;
         private readonly IUnitOfWork _unitOfWork;
@@ -18,12 +20,14 @@ namespace Application.Services
         public ItServiceProviderService(
             IApplicationMapper applicationMapper,
             IValidatorService validatorService,
+            IUserRepository userRepository,
             IItServiceProviderRepository itServiceProviderRepository,
             IIdentityUserService identityUserService,
             IUnitOfWork unitOfWork)
         {
             _mapper = applicationMapper;
             _validatorService = validatorService;
+            _userRepository = userRepository;
             _itServiceProviderRepository = itServiceProviderRepository;
             _identityUserService = identityUserService;
             _unitOfWork = unitOfWork;
@@ -31,6 +35,11 @@ namespace Application.Services
         public async Task<Result> RegisterAsync(RegisterItServiceProviderDto dto)
         {
             await _validatorService.ValidateAsync(dto);
+
+            var userResult = await _userRepository.FindByIdAsync(dto.UserId);
+
+            if (!userResult.Success)
+                return Result.Failure(userResult.Message);
 
             var toItServiceProvider = _mapper.ItServiceProvider.ToItServiceProvider(dto);
 
@@ -44,7 +53,7 @@ namespace Application.Services
                 return Result.Failure(addProviderResult.Message);
             }
 
-            var assignRoleResult = await _identityUserService.AssignRoleAsync(addProviderResult.Data.User.IdentityId, Roles.Developer);
+            var assignRoleResult = await _identityUserService.AssignRoleAsync(userResult.Data.IdentityId, Roles.Developer);
 
             if (!assignRoleResult.Success)
             {
