@@ -6,6 +6,8 @@ using Infrastructure.Data;
 using Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
@@ -71,6 +73,25 @@ namespace API.Extensions
             services.Configure<EmailSettings>(configuration.GetSection("Email"));
             services.Configure<UrlSettings>(configuration.GetSection("Url"));
             services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
+            return services;
+        }
+
+        public static IServiceCollection AddConfigurationApiVersioning(this IServiceCollection services)
+        {
+            services.AddApiVersioning(options =>
+            {
+                options.DefaultApiVersion = new ApiVersion(1, 0);
+                options.AssumeDefaultVersionWhenUnspecified = true;
+                options.ReportApiVersions = true;
+                options.ApiVersionReader = new UrlSegmentApiVersionReader();
+            });
+
+            services.AddVersionedApiExplorer(options =>
+            {
+                options.GroupNameFormat = "'v'VVV";
+                options.SubstituteApiVersionInUrl = true;
+            });
+
             return services;
         }
     }

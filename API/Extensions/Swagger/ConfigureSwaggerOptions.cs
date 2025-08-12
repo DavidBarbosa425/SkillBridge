@@ -15,16 +15,8 @@ namespace API.Extensions.Swagger
         }
         public void Configure(SwaggerGenOptions options)
         {
-            Console.WriteLine("=== SWAGGER DEBUG ===");
-            Console.WriteLine($"Total de versões: {_provider.ApiVersionDescriptions.Count()}");
-
             foreach (var description in _provider.ApiVersionDescriptions)
             {
-                Console.WriteLine($"Versão: {description.GroupName}");
-                Console.WriteLine($"API Version: {description.ApiVersion}");
-                Console.WriteLine($"Is Deprecated: {description.IsDeprecated}");
-                Console.WriteLine("---");
-
                 options.SwaggerDoc(description.GroupName, new OpenApiInfo
                 {
                     Title = "SkillBridge API",

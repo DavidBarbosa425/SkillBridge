@@ -2,9 +2,6 @@ using API.Extensions;
 using API.Extensions.Swagger;
 using Application.Extensions;
 using Infrastructure.Extensions;
-using Microsoft.Extensions.Options;
-using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,8 +15,8 @@ builder.Services.AddApiServices();
 builder.Services.AddIdentityConfiguration();
 builder.Services.AddJwtBearer(builder.Configuration);
 builder.Services.AddCustomConfigurations(builder.Configuration);
+builder.Services.AddConfigurationApiVersioning();
 
-builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerDocumentation();
 
 
