@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [Authorize(Roles = Roles.User)]
-    [Route("api/v{version:apiVersion}/[controller]")]
-    [ApiVersion("1.0")]
     [ApiController]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    [Authorize(Roles = Roles.User)]
     public class CompaniesController : ControllerBase
     {
         private readonly ICompanyService _companyService;
