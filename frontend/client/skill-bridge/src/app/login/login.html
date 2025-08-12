@@ -1,2 +1,43 @@
-<p>login works!</p>
-<input type="text" pInputText [(ngModel)]="value" />
+<div class="login-page">
+  <div class="login-card-wrapper">
+    <p-card class="login-card">
+      <div class="brand">
+        <img src="public/../logo.png" alt="logo" class="logo" />
+        <h2>Bem-vindo de volta</h2>
+        <p>Faça login para continuar</p>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="login-form">
+        <div class="p-fluid">
+          <label for="email">E-mail</label>
+          <input id="email" type="text" pInputText formControlName="email" placeholder="seu@exemplo.com" />
+          <small class="p-error" *ngIf="email.invalid && (email.dirty || email.touched)">
+            {{ getEmailError() }}
+          </small>
+
+          <label for="password">Senha</label>
+          <p-password id="password" formControlName="password" [feedback]="false" placeholder="••••••••"></p-password>
+          <small class="p-error" *ngIf="password.invalid && (password.dirty || password.touched)">
+            {{ getPasswordError() }}
+          </small>
+
+          <div class="options">
+            <p-checkbox formControlName="remember" binary="true"></p-checkbox>
+            <label class="remember-label">Lembrar-me</label>
+            <a class="forgot" (click)="forgot()">Esqueceu a senha?</a>
+          </div>
+
+          <button pButton type="submit" label="Entrar" [disabled]="form.invalid"></button>
+
+          <div class="divider">ou</div>
+
+          <button pButton type="button" class="social google" icon="pi pi-google" label="Entrar com Google" (click)="social('google')"></button>
+        </div>
+      </form>
+
+      <p-footer>
+        <div class="signup">Não tem conta? <a (click)="signup()">Cadastre-se</a></div>
+      </p-footer>
+    </p-card>
+  </div>
+</div>
