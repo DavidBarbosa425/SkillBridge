@@ -16,9 +16,9 @@ builder.Services.AddIdentityConfiguration();
 builder.Services.AddJwtBearer(builder.Configuration);
 builder.Services.AddCustomConfigurations(builder.Configuration);
 builder.Services.AddConfigurationApiVersioning();
+builder.Services.AddProjectCors();
 
 builder.Services.AddSwaggerDocumentation();
-
 
 // Application Configuration
 builder.Services.AddApplicationServices();
@@ -27,22 +27,15 @@ builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices();
 builder.Services.AddMassTransitWithRabbitMq(builder.Configuration);
 
-builder.Services.AddOpenApi();
-
-builder.Services.AddProjectCors();
-
 var app = builder.Build();
 
 await app.SeedRolesAsync();
 
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
-
     app.UseSwaggerDocumentation();
 
     app.UseCors("DevelopmentCorsPolicy");
-
 }
 else
 {
