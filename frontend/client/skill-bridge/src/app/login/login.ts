@@ -1,11 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { CheckboxModule } from 'primeng/checkbox';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
+import { LoginService } from './services/login-service';
+import { LoginModel } from './models/login-model';
 
 @Component({
   selector: 'app-login',
@@ -25,12 +27,21 @@ export class Login {
   
   form: FormGroup;
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private loginService: LoginService) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       remember: [false]
     });
+  }
+
+  login(){
+    const loginModel = new LoginModel();
+    loginModel.email = this.form.value.email;
+    loginModel.password = this.form.value.password;
+    this.loginService.login(loginModel).subscribe(res => console.log(res))
   }
 
   get email() { return this.form.get('email')!; }
