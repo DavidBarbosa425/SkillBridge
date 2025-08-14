@@ -1,9 +1,6 @@
-﻿using Domain.Common;
-using Domain.Entities;
+﻿using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Configurations;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -15,16 +12,13 @@ namespace Infrastructure.Services
     public class JwtService : IJwtService
     {
         private readonly JwtSettings _jwtOptions;
-        private readonly IIdentityUserService _identityUserService;
 
         public JwtService(
-            IOptions<JwtSettings> jwtOptions,
-            IIdentityUserService identityUserService)
+            IOptions<JwtSettings> jwtOptions)
         {
             _jwtOptions = jwtOptions.Value;
-            _identityUserService = identityUserService;
         }
-        public string GenerateToken(User user, IList<string> roles)
+        public TokenResult GenerateToken(User user, IList<string> roles)
         {
             var claims = new List<Claim>
             {
@@ -41,6 +35,9 @@ namespace Infrastructure.Services
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SecretKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
+            var expiresIn = DateTime.UtcNow.AddDays(1);
+            var expiresInSeconds = (int)(expiresIn - DateTime.UtcNow).TotalSeconds;
+
             var token = new JwtSecurityToken(
                 issuer: _jwtOptions.Issuer,
                 audience: _jwtOptions.Audience,
@@ -49,7 +46,13 @@ namespace Infrastructure.Services
                 signingCredentials: creds
             );
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return new TokenResult
+            {
+                Token = tokenString,
+                ExpiresIn = expiresInSeconds
+            };
         }
     }
 }

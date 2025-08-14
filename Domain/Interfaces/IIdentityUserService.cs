@@ -16,5 +16,6 @@ namespace Domain.Interfaces
         Task<Result> AssignRoleAsync(string id, string role);
         Task<Result<IList<string>>> GetRolesByEmailAsync(string email);
         Task<Result<IList<string>>> GetRolesByIdAsync(string id);
+        Task<Result<string>> GenerateRefreshTokenAsync(string id);
     }
 }

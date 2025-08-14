@@ -112,6 +112,22 @@ namespace Infrastructure.Identity
 
             return Result<string>.Ok(token);
         }
+
+        public async Task<Result<string>> GenerateRefreshTokenAsync(string id)
+        {
+            var applicationUser = await _userManager.FindByIdAsync(id);
+
+            if (applicationUser == null)
+                return Result<string>.Failure("Usuário não encontrado.");
+
+            var refreshToken = await _userManager.GenerateUserTokenAsync(
+                applicationUser,
+                TokenOptions.DefaultProvider,
+                "RefreshToken"
+            );
+
+            return Result<string>.Ok(refreshToken);
+        }
         public async Task<Result> ResetPasswordAsync(string email, string token, string newPassword)
         {
             var user = await _userManager.FindByEmailAsync(email);

@@ -3,6 +3,7 @@ using Application.Interfaces;
 using Application.Interfaces.Mappers;
 using Domain.Common;
 using Domain.Constants;
+using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Interfaces;
 
@@ -96,28 +97,41 @@ namespace Application.Services
 
         }
 
-        public async Task<Result<string>> LoginAsync(LoginDto dto)
+        public async Task<Result<LoginResultDto>> LoginAsync(LoginRequestDto dto)
         {
             await _validatorService.ValidateAsync(dto);
 
             var checkResult = await _identityUserService.CheckPasswordAsync(dto.Email, dto.Password);
 
             if (!checkResult.Success)
-                return Result<string>.Failure(checkResult.Message);
+                return Result<LoginResultDto>.Failure(checkResult.Message);
 
             var userResult = await _userRepository.FindByEmailAsync(checkResult.Data.Email);
 
             if (!userResult.Success)
-                return Result<string>.Failure(userResult.Message);
+                return Result<LoginResultDto>.Failure(userResult.Message);
 
             var rolesResult = await _identityUserService.GetRolesByIdAsync(userResult.Data.IdentityId);
 
             if (!rolesResult.Success)
-                return Result<string>.Failure(rolesResult.Message);
+                return Result<LoginResultDto>.Failure(rolesResult.Message);
 
-            var token = _jwtService.GenerateToken(userResult.Data, rolesResult.Data);
+            var tokenResult = _jwtService.GenerateToken(userResult.Data, rolesResult.Data);
 
-            return Result<string>.Ok(token);
+            var refreshTokenResult = await _identityUserService.GenerateRefreshTokenAsync(userResult.Data.IdentityId);
+
+            if (!refreshTokenResult.Success)
+                return Result<LoginResultDto>.Failure(refreshTokenResult.Message);
+
+            var loginResultDto = new LoginResultDto()
+            {
+                User = _mapper.User.ToUserDto(userResult.Data),
+                Token = tokenResult.Token,
+                RefreshToken = refreshTokenResult.Data,
+                ExpiresIn = tokenResult.ExpiresIn
+            };
+
+            return Result<LoginResultDto>.Ok(loginResultDto);
 
         }
 

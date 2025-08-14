@@ -4,6 +4,6 @@ namespace Domain.Interfaces
 {
     public interface IJwtService
     {
-        string GenerateToken(User user,IList<string> roles);
+        TokenResult GenerateToken(User user,IList<string> roles);
     }
 }

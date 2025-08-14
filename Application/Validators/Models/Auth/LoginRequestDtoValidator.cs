@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace Application.Validators.Models.Auth
 {
-    public class LoginDtoValidator : AbstractValidator<LoginDto>
+    public class LoginRequestDtoValidator : AbstractValidator<LoginRequestDto>
     {
-        public LoginDtoValidator()
+        public LoginRequestDtoValidator()
         {
             RuleFor(x => x.Email)
                 .NotEmpty().WithMessage("O e-mail é obrigatório.")
