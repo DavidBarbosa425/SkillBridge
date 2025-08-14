@@ -1,10 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { LoginRequest } from '../models/auth/login-request.model';
-import { LoginResultDto } from '../models/auth/login-response.model';
-import { catchError, tap, throwError } from 'rxjs';
+import { LoginResult } from '../models/auth/login-response.model';
+import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
 import { ApiResult } from '../models/base/api-result.model';
 import { StorageService } from './storage.service';
+import { User } from '../models/auth/user.model';
+import { TokenResult } from '../models/auth/token.model';
 
 @Injectable({
   providedIn: 'root',
@@ -15,9 +17,15 @@ export class AuthService {
   private http = inject(HttpClient);
   private storageService = inject(StorageService);
 
-  login(loginRequest: LoginRequest) {
+  private currentUserSubject = new BehaviorSubject<User | null>(null);
+  private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
+
+  currentUser$ = this.currentUserSubject.asObservable();
+  isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
+
+  login(loginRequest: LoginRequest): Observable<ApiResult<LoginResult>> {
     return this.http
-      .post<ApiResult<LoginResultDto>>(`${this.url}/login`, loginRequest)
+      .post<ApiResult<LoginResult>>(`${this.url}/login`, loginRequest)
       .pipe(
         tap((response) => {
           if (response.success && response.data) {
@@ -32,88 +40,91 @@ export class AuthService {
       );
   }
 
-  //   refreshToken(): Observable<ApiResponse<TokenModel>> {
-  //   const refreshToken = this.storageService.getRefreshToken();
+  refreshToken(): Observable<ApiResult<TokenResult>> {
+    const refreshToken = this.storageService.getRefreshToken();
 
-  //   return this.http.post<ApiResponse<TokenModel>>(
-  //     `${this.url}/refresh-token`,
-  //     { refreshToken }
-  //   ).pipe(
-  //     tap(response => {
-  //       if (response.success && response.data) {
-  //         this.storageService.setToken('response.data.token');
-  //         this.storageService.setRefreshToken('response.data.refreshToken');
-  //       }
-  //     }),
-  //     catchError(error => {
-  //       this.handleLogout();
-  //       return throwError(() => error);
-  //     })
-  //   );
-  // }
+    if (!refreshToken) {
+      this.handleLogout();
+      return throwError(() => new Error('No refresh token available'));
+    }
 
-  // isAuthenticated(): boolean {
-  //   const token = this.storageService.getToken();
-  //   return !!token && !this.isTokenExpired(token);
-  // }
+    return this.http
+      .post<
+        ApiResult<TokenResult>
+      >(`${this.url}/refresh-token`, { refreshToken })
+      .pipe(
+        tap((response) => {
+          if (response.success && response.data) {
+            this.storageService.setToken(response.data.token);
+            this.storageService.setRefreshToken(response.data.refreshToken);
+          }
+        }),
+        catchError((error) => {
+          this.handleLogout();
+          return throwError(() => error);
+        })
+      );
+  }
 
-  // ✅ Obter usuário atual
-  // getCurrentUser(): UserModel | null {
-  //   return this.currentUserSubject.value;
-  // }
+  logout(): void {
+    this.handleLogout();
+  }
 
-  // ✅ Obter token atual
-  // getToken(): string | null {
-  //   return this.storageService.getToken();
-  // }
+  isAuthenticated(): boolean {
+    const token = this.storageService.getToken();
+    return !!token && !this.isTokenExpired(token);
+  }
+
+  getCurrentUser(): User | null {
+    return this.currentUserSubject.value;
+  }
+
+  getToken(): string | null {
+    return this.storageService.getToken();
+  }
 
   // ===== MÉTODOS PRIVADOS =====
 
-  private handleAuthSuccess(authData: LoginResultDto): void {
+  private handleAuthSuccess(authData: LoginResult): void {
     this.storageService.setToken(authData.token);
     this.storageService.setRefreshToken(authData.refreshToken);
-
     this.storageService.setUser(authData.user);
 
-    // Atualizar subjects
-    // this.currentUserSubject.next(authData.user);
-    // this.isAuthenticatedSubject.next(true);
+    this.currentUserSubject.next(authData.user);
+    this.isAuthenticatedSubject.next(true);
 
     // Notificação de sucesso
     // this.notificationService.showSuccess(`Bem-vindo, ${authData.user.firstName}!`);
   }
 
-  // private handleLogout(): void {
-  //   // Limpar storage
-  //   this.storageService.clearAuthData();
+  private handleLogout(): void {
+    this.storageService.clearAuthData();
+    this.currentUserSubject.next(null);
+    this.isAuthenticatedSubject.next(false);
 
-  //   // Atualizar subjects
-  //   // this.currentUserSubject.next(null);
-  //   // this.isAuthenticatedSubject.next(false);
+    // Notificação
+    // this.notificationService.showInfo('Você foi desconectado');
+  }
 
-  //   // Notificação
-  //   // this.notificationService.showInfo('Você foi desconectado');
-  // }
+  private isTokenExpired(token: string): boolean {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const currentTime = Math.floor(Date.now() / 1000);
+      return payload.exp < currentTime;
+    } catch {
+      return true;
+    }
+  }
 
-  // private checkStoredAuth(): void {
-  //   const token = this.storageService.getToken();
-  //   const user = this.storageService.getUser();
+  private checkStoredAuth(): void {
+    const token = this.storageService.getToken();
+    const user = this.storageService.getUser();
 
-  //   if (token && user && !this.isTokenExpired(token)) {
-  //     // this.currentUserSubject.next(user);
-  //     // this.isAuthenticatedSubject.next(true);
-  //   } else {
-  //     this.handleLogout();
-  //   }
-  // }
-
-  // private isTokenExpired(token: string): boolean {
-  //   try {
-  //     const payload = JSON.parse(atob(token.split('.')[1]));
-  //     const currentTime = Math.floor(Date.now() / 1000);
-  //     return payload.exp < currentTime;
-  //   } catch {
-  //     return true;
-  //   }
-  // }
+    if (token && user && !this.isTokenExpired(token)) {
+      this.currentUserSubject.next(user);
+      this.isAuthenticatedSubject.next(true);
+    } else {
+      this.handleLogout();
+    }
+  }
 }
