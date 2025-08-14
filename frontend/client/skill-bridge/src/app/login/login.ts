@@ -11,8 +11,6 @@ import { CardModule } from 'primeng/card';
 import { CheckboxModule } from 'primeng/checkbox';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
-import { LoginService } from './services/login-service';
-import { LoginModel } from './models/login-model';
 import { LoginRequest } from '../core/models/auth/login-request.model';
 import { AuthService } from '../core/services/auth.service';
 
@@ -45,13 +43,12 @@ export class Login {
   }
 
   login() {
-    debugger;
     const loginRequest: LoginRequest = {
       email: this.form.value.email,
       password: this.form.value.password,
-      rememberMe: this.form.value.rememberMe || false,
+      rememberMe: this.form.value.remember,
     };
-    this.loginService.login(loginRequest).subscribe((res) => console.log(res));
+    this.loginService.login(loginRequest).subscribe();
   }
 
   get email() {

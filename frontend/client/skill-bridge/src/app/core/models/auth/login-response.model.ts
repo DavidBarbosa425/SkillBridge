@@ -1,8 +1,8 @@
-import { UserModel } from "./user.model";
+import { User } from './user.model';
 
-export interface LoginResponse {
+export interface LoginResultDto {
   token: string;
   refreshToken: string;
-  user: UserModel;
+  user: User;
   expiresIn: number;
 }

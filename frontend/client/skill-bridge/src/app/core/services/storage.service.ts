@@ -1,11 +1,10 @@
-import { Injectable } from "@angular/core";
-import { UserModel } from "../models/auth/user.model";
+import { Injectable } from '@angular/core';
+import { User } from '../models/auth/user.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class StorageService {
-  
   setToken(token: string): void {
     localStorage.setItem('APP_CONFIG.tokenKey', token);
   }
@@ -22,11 +21,11 @@ export class StorageService {
     return localStorage.getItem('APP_CONFIG.refreshTokenKey');
   }
 
-  setUser(user: UserModel): void {
+  setUser(user: User): void {
     localStorage.setItem('APP_CONFIG.userKey', JSON.stringify(user));
   }
 
-  getUser(): UserModel | null {
+  getUser(): User | null {
     const userStr = localStorage.getItem('APP_CONFIG.userKey');
     return userStr ? JSON.parse(userStr) : null;
   }
