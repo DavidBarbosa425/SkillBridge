@@ -8,6 +8,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { LoginService } from './services/login-service';
 import { LoginModel } from './models/login-model';
+import { LoginRequest } from '../core/models/auth/login-request.model';
+import { AuthService } from '../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -29,7 +31,7 @@ export class Login {
 
   constructor(
     private fb: FormBuilder,
-    private loginService: LoginService) {
+    private loginService: AuthService) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
@@ -38,10 +40,13 @@ export class Login {
   }
 
   login(){
-    const loginModel = new LoginModel();
-    loginModel.email = this.form.value.email;
-    loginModel.password = this.form.value.password;
-    this.loginService.login(loginModel).subscribe(res => console.log(res))
+    debugger
+          const loginRequest: LoginRequest = {
+        email: this.form.value.email,
+        password: this.form.value.password,
+        rememberMe: this.form.value.rememberMe || false
+      };
+    this.loginService.login(loginRequest).subscribe(res => console.log(res))
   }
 
   get email() { return this.form.get('email')!; }
