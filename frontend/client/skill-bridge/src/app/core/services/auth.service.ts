@@ -46,7 +46,7 @@ export class AuthService {
   }
 
   isAuthenticated(): boolean {
-    const token = this.storageService.getToken();
+    const token = this.storageService.getAccessToken();
     return !!token && !this.isTokenExpired(token);
   }
 
@@ -55,20 +55,18 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    return this.storageService.getToken();
+    return this.storageService.getAccessToken();
   }
 
   private handleAuthSuccess(authData: LoginResult): void {
-    this.storageService.setToken(authData.token);
-    this.storageService.setRefreshToken(authData.refreshToken);
-    this.storageService.setUser(authData.user);
+    this.storageService.saveUser(authData.user);
 
     this.currentUserSubject.next(authData.user);
     this.isAuthenticatedSubject.next(true);
   }
 
   private handleLogout(): void {
-    this.storageService.clearAuthData();
+    this.storageService.clearSession();
     this.currentUserSubject.next(null);
     this.isAuthenticatedSubject.next(false);
   }
@@ -84,7 +82,7 @@ export class AuthService {
   }
 
   private checkStoredAuth(): void {
-    const token = this.storageService.getToken();
+    const token = this.storageService.getAccessToken();
     const user = this.storageService.getUser();
 
     if (token && user && !this.isTokenExpired(token)) {
