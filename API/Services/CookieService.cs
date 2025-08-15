@@ -1,5 +1,4 @@
 ﻿using API.Interfaces;
-using Microsoft.AspNetCore.Http;
 
 namespace API.Services
 {
@@ -22,7 +21,7 @@ namespace API.Services
                 Secure = true,
                 SameSite = SameSiteMode.Strict,
                 Expires = DateTime.UtcNow.AddHours(1),
-                Path = "/"
+                Path = "/",
             });
 
             response.Cookies.Append("refresh_token", refreshToken, new CookieOptions
@@ -31,7 +30,7 @@ namespace API.Services
                 Secure = true,
                 SameSite = SameSiteMode.Strict,
                 Expires = DateTime.UtcNow.AddDays(7),
-                Path = "/"
+                Path = "/",
             });
         }
     }

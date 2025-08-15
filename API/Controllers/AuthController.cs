@@ -4,12 +4,15 @@ using API.Models;
 using Application.DTOs;
 using Application.Interfaces;
 using Domain.Common;
+using Domain.Constants;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;

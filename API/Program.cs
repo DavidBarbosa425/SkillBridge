@@ -44,6 +44,8 @@ else
 
 app.UseHttpsRedirection();
 
+app.UseHybridAuthenticationMiddleware();
+
 app.UseAuthentication();
 app.UseAuthorization();
 

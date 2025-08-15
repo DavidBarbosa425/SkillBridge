@@ -6,7 +6,17 @@ namespace API.Extensions
     {
         public static IApplicationBuilder UseCustomExceptionMiddleware(this IApplicationBuilder app)
         {
-            return app.UseMiddleware<ExceptionMiddleware>();
+            app.UseMiddleware<ExceptionMiddleware>();
+
+            return app;
         }
+
+        public static IApplicationBuilder UseHybridAuthenticationMiddleware(this IApplicationBuilder app)
+        {
+            app.UseMiddleware<HybridAuthMiddleware>();
+
+            return app;
+        }
+
     }
 }

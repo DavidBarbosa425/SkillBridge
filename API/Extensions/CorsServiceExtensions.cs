@@ -10,14 +10,16 @@
                 {
                     policy.WithOrigins("http://localhost:4200")
                           .AllowAnyMethod()
-                          .AllowAnyHeader();
+                          .AllowAnyHeader()
+                          .AllowCredentials();
                 });
 
                 options.AddPolicy("ProductionCorsPolicy", policy =>
                 {
                     policy.WithOrigins("https://skillbridge.com.br")
                           .AllowAnyMethod()
-                          .AllowAnyHeader();
+                          .AllowAnyHeader()
+                          .AllowCredentials();
                 });
             });
 
