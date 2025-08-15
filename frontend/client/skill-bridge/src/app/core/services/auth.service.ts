@@ -6,7 +6,6 @@ import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
 import { ApiResult } from '../models/base/api-result.model';
 import { StorageService } from './storage.service';
 import { User } from '../models/auth/user.model';
-import { TokenResult } from '../models/auth/token.model';
 
 @Injectable({
   providedIn: 'root',
@@ -23,6 +22,10 @@ export class AuthService {
   currentUser$ = this.currentUserSubject.asObservable();
   isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
+  constructor() {
+    this.checkStoredAuth();
+  }
+
   login(loginRequest: LoginRequest): Observable<ApiResult<LoginResult>> {
     return this.http
       .post<ApiResult<LoginResult>>(`${this.url}/login`, loginRequest)
@@ -33,34 +36,6 @@ export class AuthService {
           }
         }),
         catchError((error) => {
-          alert('Erro ao fazer login');
-          // this.notificationService.showError('Erro ao fazer login');
-          return throwError(() => error);
-        })
-      );
-  }
-
-  refreshToken(): Observable<ApiResult<TokenResult>> {
-    const refreshToken = this.storageService.getRefreshToken();
-
-    if (!refreshToken) {
-      this.handleLogout();
-      return throwError(() => new Error('No refresh token available'));
-    }
-
-    return this.http
-      .post<
-        ApiResult<TokenResult>
-      >(`${this.url}/refresh-token`, { refreshToken })
-      .pipe(
-        tap((response) => {
-          if (response.success && response.data) {
-            this.storageService.setToken(response.data.token);
-            this.storageService.setRefreshToken(response.data.refreshToken);
-          }
-        }),
-        catchError((error) => {
-          this.handleLogout();
           return throwError(() => error);
         })
       );
@@ -83,8 +58,6 @@ export class AuthService {
     return this.storageService.getToken();
   }
 
-  // ===== MÉTODOS PRIVADOS =====
-
   private handleAuthSuccess(authData: LoginResult): void {
     this.storageService.setToken(authData.token);
     this.storageService.setRefreshToken(authData.refreshToken);
@@ -92,18 +65,12 @@ export class AuthService {
 
     this.currentUserSubject.next(authData.user);
     this.isAuthenticatedSubject.next(true);
-
-    // Notificação de sucesso
-    // this.notificationService.showSuccess(`Bem-vindo, ${authData.user.firstName}!`);
   }
 
   private handleLogout(): void {
     this.storageService.clearAuthData();
     this.currentUserSubject.next(null);
     this.isAuthenticatedSubject.next(false);
-
-    // Notificação
-    // this.notificationService.showInfo('Você foi desconectado');
   }
 
   private isTokenExpired(token: string): boolean {

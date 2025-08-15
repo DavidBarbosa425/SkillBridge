@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -13,6 +13,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { LoginRequest } from '../core/models/auth/login-request.model';
 import { AuthService } from '../core/services/auth.service';
+import { catchError, finalize, tap, throwError } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -30,6 +32,9 @@ import { AuthService } from '../core/services/auth.service';
 })
 export class Login {
   form: FormGroup;
+  loading = false;
+
+  private router = inject(Router);
 
   constructor(
     private fb: FormBuilder,
@@ -43,12 +48,29 @@ export class Login {
   }
 
   login() {
-    const loginRequest: LoginRequest = {
-      email: this.form.value.email,
-      password: this.form.value.password,
-      rememberMe: this.form.value.remember,
-    };
-    this.loginService.login(loginRequest).subscribe();
+    debugger;
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    const loginRequest: LoginRequest = this.form.value;
+
+    this.loading = true;
+
+    this.loginService
+      .login(loginRequest)
+      .pipe(
+        tap(() => this.router.navigate(['dashboard'])),
+        catchError((err) => {
+          //  this.notificationService.showError('Erro ao fazer login');
+          return throwError(() => err);
+        }),
+        finalize(() => (this.loading = false))
+      )
+      .subscribe();
+
+    this.loading = false;
   }
 
   get email() {
