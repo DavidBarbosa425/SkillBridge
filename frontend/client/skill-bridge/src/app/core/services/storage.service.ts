@@ -5,25 +5,8 @@ import { User } from '../models/auth/user.model';
   providedIn: 'root',
 })
 export class StorageService {
-  private readonly TOKEN_KEY = 'auth_token';
-  private readonly REFRESH_TOKEN_KEY = 'refresh_token';
   private readonly USER_KEY = 'user_data';
-
-  saveAccessToken(token: string): void {
-    sessionStorage.setItem(this.TOKEN_KEY, token);
-  }
-
-  getAccessToken(): string | null {
-    return sessionStorage.getItem(this.TOKEN_KEY);
-  }
-
-  saveRefreshToken(refreshToken: string): void {
-    sessionStorage.setItem(this.REFRESH_TOKEN_KEY, refreshToken);
-  }
-
-  getRefreshToken(): string | null {
-    return sessionStorage.getItem(this.REFRESH_TOKEN_KEY);
-  }
+  private readonly EXPIRES_IN_KEY = 'expires_in';
 
   saveUser(user: User): void {
     try {
@@ -43,33 +26,31 @@ export class StorageService {
     }
   }
 
-  clearSession(): void {
-    sessionStorage.removeItem(this.TOKEN_KEY);
-    sessionStorage.removeItem(this.REFRESH_TOKEN_KEY);
-    sessionStorage.removeItem(this.USER_KEY);
+  saveExpiresIn(expiresIn: number): void {
+    sessionStorage.setItem(this.EXPIRES_IN_KEY, expiresIn.toString());
   }
 
-  hasToken(): boolean {
-    return !!this.getAccessToken();
+  getExpiresIn(): number | null {
+    const expiresIn = sessionStorage.getItem(this.EXPIRES_IN_KEY);
+    return expiresIn ? parseInt(expiresIn) : null;
+  }
+
+  isTokenExpired(): boolean {
+    const expiresIn = this.getExpiresIn();
+    if (!expiresIn) return true;
+
+    const expirationTime = Math.floor(Date.now() / 1000) + expiresIn;
+    const currentTime = Math.floor(Date.now() / 1000);
+
+    return currentTime >= expirationTime;
+  }
+
+  clearSession(): void {
+    sessionStorage.removeItem(this.USER_KEY);
+    sessionStorage.removeItem(this.EXPIRES_IN_KEY);
   }
 
   hasUser(): boolean {
     return !!this.getUser();
-  }
-
-  isAuthenticated(): boolean {
-    return this.hasToken() && this.hasUser();
-  }
-
-  getSessionInfo(): {
-    hasToken: boolean;
-    hasUser: boolean;
-    isAuthenticated: boolean;
-  } {
-    return {
-      hasToken: this.hasToken(),
-      hasUser: this.hasUser(),
-      isAuthenticated: this.isAuthenticated(),
-    };
   }
 }

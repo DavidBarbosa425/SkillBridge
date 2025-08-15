@@ -22,10 +22,6 @@ export class AuthService {
   currentUser$ = this.currentUserSubject.asObservable();
   isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
-  constructor() {
-    this.checkStoredAuth();
-  }
-
   login(loginRequest: LoginRequest): Observable<ApiResult<LoginResult>> {
     return this.http
       .post<ApiResult<LoginResult>>(`${this.url}/login`, loginRequest)
@@ -45,21 +41,13 @@ export class AuthService {
     this.handleLogout();
   }
 
-  isAuthenticated(): boolean {
-    const token = this.storageService.getAccessToken();
-    return !!token && !this.isTokenExpired(token);
-  }
-
   getCurrentUser(): User | null {
     return this.currentUserSubject.value;
   }
 
-  getToken(): string | null {
-    return this.storageService.getAccessToken();
-  }
-
   private handleAuthSuccess(authData: LoginResult): void {
     this.storageService.saveUser(authData.user);
+    this.storageService.saveExpiresIn(authData.expiresIn);
 
     this.currentUserSubject.next(authData.user);
     this.isAuthenticatedSubject.next(true);
@@ -69,27 +57,5 @@ export class AuthService {
     this.storageService.clearSession();
     this.currentUserSubject.next(null);
     this.isAuthenticatedSubject.next(false);
-  }
-
-  private isTokenExpired(token: string): boolean {
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const currentTime = Math.floor(Date.now() / 1000);
-      return payload.exp < currentTime;
-    } catch {
-      return true;
-    }
-  }
-
-  private checkStoredAuth(): void {
-    const token = this.storageService.getAccessToken();
-    const user = this.storageService.getUser();
-
-    if (token && user && !this.isTokenExpired(token)) {
-      this.currentUserSubject.next(user);
-      this.isAuthenticatedSubject.next(true);
-    } else {
-      this.handleLogout();
-    }
   }
 }

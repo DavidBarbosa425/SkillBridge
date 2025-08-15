@@ -48,7 +48,6 @@ export class Login {
   }
 
   login() {
-    debugger;
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;

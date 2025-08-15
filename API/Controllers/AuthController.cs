@@ -52,25 +52,16 @@ namespace API.Controllers
         {
             var result = await _authService.LoginAsync(dto);
 
-
             if (!result.Success)
-            {
-                return Ok(new
-                {
-                    result.Success,
-                    result.Message
-                });
-            }
+                return Ok(result);
 
             _cookieService.SetAuthCookies(result.Data.Token, result.Data.RefreshToken);
 
-            return Ok(new
+            return Ok(Result<LoginResultDto>.Ok(new LoginResultDto
             {
-                result.Success,
-                result.Data.User,
-                result.Message,
-                result.Data.ExpiresIn
-            });
+                User = result.Data.User,
+                ExpiresIn = result.Data.ExpiresIn
+            }));
         }
 
         [HttpPost("forgot-password")]
