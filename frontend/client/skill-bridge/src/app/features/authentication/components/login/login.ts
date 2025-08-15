@@ -11,10 +11,10 @@ import { CardModule } from 'primeng/card';
 import { CheckboxModule } from 'primeng/checkbox';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
-import { LoginRequest } from '../core/models/auth/login-request.model';
-import { AuthService } from '../core/services/auth.service';
 import { catchError, finalize, tap, throwError } from 'rxjs';
 import { Router } from '@angular/router';
+import { AuthService } from '../../../../core/services/auth.service';
+import { LoginRequest } from '../../../../core/models/auth/login-request.model';
 
 @Component({
   selector: 'app-login',
@@ -35,11 +35,9 @@ export class Login {
   loading = false;
 
   private router = inject(Router);
+  private loginService = inject(AuthService);
 
-  constructor(
-    private fb: FormBuilder,
-    private loginService: AuthService
-  ) {
+  constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],

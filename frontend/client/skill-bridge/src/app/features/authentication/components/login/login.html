@@ -10,21 +10,28 @@
       <form [formGroup]="form" (ngSubmit)="login()" class="login-form">
         <div class="p-fluid">
           <label for="email">E-mail</label>
-          <input id="email" type="text" pInputText formControlName="email" placeholder="seu@exemplo.com" />
+          <input
+            id="email"
+            type="text"
+            pInputText
+            formControlName="email"
+            placeholder="seu@exemplo.com"
+          />
 
           @if(email.invalid && (email.dirty || email.touched)){
-            <small class="p-error">
-              {{ getEmailError() }}
-            </small>
+          <small class="p-error"> {{ getEmailError() }} </small>
           }
 
           <label for="password">Senha</label>
-          <p-password id="password" formControlName="password" [feedback]="false" placeholder="••••••••"></p-password>
-          
+          <p-password
+            id="password"
+            formControlName="password"
+            [feedback]="false"
+            placeholder="••••••••"
+          ></p-password>
+
           @if(password.invalid && (password.dirty || password.touched)){
-            <small class="p-error">
-              {{ getPasswordError() }}
-            </small>
+          <small class="p-error"> {{ getPasswordError() }} </small>
           }
 
           <div class="options">
@@ -33,16 +40,30 @@
             <a class="forgot" (click)="forgot()">Esqueceu a senha?</a>
           </div>
 
-          <button pButton type="submit" label="Entrar" [disabled]="form.invalid"></button>
+          <button
+            pButton
+            type="submit"
+            label="Entrar"
+            [disabled]="form.invalid"
+          ></button>
 
           <div class="divider">ou</div>
 
-          <button pButton type="button" class="social google" icon="pi pi-google" label="Entrar com Google" (click)="social('google')"></button>
+          <button
+            pButton
+            type="button"
+            class="social google"
+            icon="pi pi-google"
+            label="Entrar com Google"
+            (click)="social('google')"
+          ></button>
         </div>
       </form>
 
       <p-footer>
-        <div class="signup">Não tem conta? <a (click)="signup()">Cadastre-se</a></div>
+        <div class="signup">
+          Não tem conta? <a (click)="signup()">Cadastre-se</a>
+        </div>
       </p-footer>
     </p-card>
   </div>
