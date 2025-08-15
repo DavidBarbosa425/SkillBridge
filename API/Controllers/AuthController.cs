@@ -1,7 +1,9 @@
-﻿using API.Interfaces.Mappers;
+﻿using API.Interfaces;
+using API.Interfaces.Mappers;
 using API.Models;
 using Application.DTOs;
 using Application.Interfaces;
+using Domain.Common;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -12,13 +14,16 @@ namespace API.Controllers
     {
         private readonly IAuthService _authService;
         private readonly IApiMapper _apiMapper;
+        private readonly ICookieService _cookieService;
 
         public AuthController(
             IAuthService authService,
-            IApiMapper apiMapper)
+            IApiMapper apiMapper,
+            ICookieService cookieService)
         {
             _authService = authService;
             _apiMapper = apiMapper;
+            _cookieService = cookieService;
         }
 
         [HttpPost]
@@ -44,7 +49,25 @@ namespace API.Controllers
         {
             var result = await _authService.LoginAsync(dto);
 
-            return Ok(result);
+
+            if (!result.Success)
+            {
+                return Ok(new
+                {
+                    result.Success,
+                    result.Message
+                });
+            }
+
+            _cookieService.SetAuthCookies(result.Data.Token, result.Data.RefreshToken);
+
+            return Ok(new
+            {
+                result.Success,
+                result.Data.User,
+                result.Message,
+                result.Data.ExpiresIn
+            });
         }
 
         [HttpPost("forgot-password")]

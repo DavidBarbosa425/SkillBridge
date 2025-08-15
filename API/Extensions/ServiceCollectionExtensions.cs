@@ -1,6 +1,8 @@
 ﻿
+using API.Interfaces;
 using API.Interfaces.Mappers;
 using API.Mappers;
+using API.Services;
 using Infrastructure.Configurations;
 using Infrastructure.Data;
 using Infrastructure.Identity.Models;
@@ -64,6 +66,8 @@ namespace API.Extensions
         {
             services.AddScoped<IApiMapper, ApiMapper>();
             services.AddScoped<IApiUserMapper, ApiUserMapper>();
+            services.AddScoped<ICookieService, CookieService>();
+            services.AddHttpContextAccessor();
 
             return services;
         }
