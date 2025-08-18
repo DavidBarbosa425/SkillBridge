@@ -6,14 +6,10 @@ using API.Services;
 using Infrastructure.Configurations;
 using Infrastructure.Data;
 using Infrastructure.Identity.Models;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
-using System.Text;
 
 namespace API.Extensions
 {
@@ -28,34 +24,6 @@ namespace API.Extensions
 
             return services;
         }
-
-        public static IServiceCollection AddJwtBearer(this IServiceCollection services, IConfiguration configuration)
-        {
-            var jwt = configuration.GetSection("Jwt").Get<JwtSettings>();
-
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = jwt!.Issuer,
-                    ValidAudience = jwt.Audience,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.SecretKey)),
-                    RoleClaimType = ClaimTypes.Role
-                };
-            });
-
-            return services;
-        }
-
         public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<ApplicationDbContext>(opt =>

@@ -13,7 +13,7 @@ builder.Services.AddLogging();
 builder.Services.AddDatabase(builder.Configuration);
 builder.Services.AddApiServices();
 builder.Services.AddIdentityConfiguration();
-builder.Services.AddJwtBearer(builder.Configuration);
+//builder.Services.AddJwtBearer(builder.Configuration);
 builder.Services.AddCustomConfigurations(builder.Configuration);
 builder.Services.AddConfigurationApiVersioning();
 builder.Services.AddProjectCors();
@@ -33,9 +33,9 @@ await app.SeedRolesAsync();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwaggerDocumentation();
-
     app.UseCors("DevelopmentCorsPolicy");
+
+    app.UseSwaggerDocumentation();
 }
 else
 {
@@ -45,8 +45,6 @@ else
 app.UseHttpsRedirection();
 
 app.UseHybridAuthenticationMiddleware();
-
-app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseCustomExceptionMiddleware();

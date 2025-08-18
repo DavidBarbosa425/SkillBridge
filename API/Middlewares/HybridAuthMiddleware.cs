@@ -75,8 +75,6 @@ namespace API.Middlewares
 
                 return cookieToken;
             }
-
-            // 3. Verificar se o usuário já está autenticado
             _logger.LogInformation("�� Usuário atual: {IsAuthenticated}", context.User?.Identity?.IsAuthenticated ?? false);
 
             return null;
