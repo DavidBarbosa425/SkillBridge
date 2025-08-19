@@ -1,7 +1,10 @@
-﻿using API.Interfaces;
+﻿using API.Extensions;
+using API.Interfaces;
 using API.Interfaces.Mappers;
 using API.Models;
+using Application.DTOs;
 using Application.Interfaces;
+using Domain.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -57,20 +60,15 @@ namespace API.Controllers
             var result = await _authService.LoginAsync(dto);
 
             if (!result.Success)
-                return Ok(result);
+                return this.ToActionResult(result);
 
             _cookieService.SetAuthCookies(result.Data.Token, result.Data.RefreshToken);
 
-            return Ok(new
+            return this.ToActionResult(Result<LoginResultDto>.Ok(new LoginResultDto
             {
-                data = new
-                {
-                    result.Data.User,
-                    result.Data.ExpiresIn
-                },
-                result.Message,
-                result.Success
-            });
+                User = result.Data.User,
+                ExpiresIn = result.Data.ExpiresIn
+            }));
         }
 
         [AllowAnonymous]

@@ -2,6 +2,7 @@
 using Application.Interfaces;
 using Application.Interfaces.Mappers;
 using Domain.Common;
+using Domain.Common.Enums;
 using Domain.Constants;
 using Domain.Entities;
 using Domain.Interfaces;
@@ -104,7 +105,7 @@ namespace Application.Services
             var checkResult = await _identityUserService.CheckPasswordAsync(dto.Email, dto.Password);
 
             if (!checkResult.Success)
-                return Result<LoginResultDto>.Failure(checkResult.Message);
+                return Result<LoginResultDto>.Failure(checkResult.Message, checkResult.Error ?? ErrorType.Unauthorized);
 
             var userResult = await _userRepository.FindByEmailAsync(checkResult.Data.Email);
 

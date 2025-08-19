@@ -27,6 +27,7 @@ export class AuthService {
       .post<ApiResult<LoginResult>>(`${this.url}/login`, loginRequest)
       .pipe(
         tap((response) => {
+          console.log('response', response);
           if (response.success && response.data) {
             this.handleAuthSuccess(response.data);
           }

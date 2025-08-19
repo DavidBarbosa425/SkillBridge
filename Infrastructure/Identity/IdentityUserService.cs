@@ -1,4 +1,5 @@
 ﻿using Domain.Common;
+using Domain.Common.Enums;
 using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Identity.Models;
@@ -30,7 +31,7 @@ namespace Infrastructure.Identity
             if (!creationResult.Succeeded)
             {
                 var errors = creationResult.Errors.Select(e => e.Description);
-                return Result<User>.Failure(errors.ToList());
+                return Result<User>.Validation(errors.ToList());
             }
 
             var createdUser = _infrastructureMapper.User.ToUser(applicationUser);
@@ -89,10 +90,10 @@ namespace Infrastructure.Identity
             var applicationUser = await _userManager.FindByEmailAsync(email);
 
             if (applicationUser == null || !await _userManager.CheckPasswordAsync(applicationUser, password))
-                return Result<User>.Failure("E-mail ou senha inválidos");
+                return Result<User>.Failure("E-mail ou senha inválidos", ErrorType.Unauthorized);
 
             if (!await _userManager.IsEmailConfirmedAsync(applicationUser))
-                return Result<User>.Failure("Confirme seu e-mail antes de fazer login.");
+                return Result<User>.Failure("Confirme seu e-mail antes de fazer login.", ErrorType.Forbidden);
 
             var user = _infrastructureMapper.User.ToUser(applicationUser);
 

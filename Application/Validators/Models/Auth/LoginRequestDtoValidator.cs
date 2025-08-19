@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace Application.Validators.Models.Auth
 {
-    public class LoginRequestDtoValidator : AbstractValidator<LoginRequestDto>
+    public class LoginRequestDtoValidator : AbstractValidator<LoginDto>
     {
         public LoginRequestDtoValidator()
         {
