@@ -1,4 +1,4 @@
-﻿using API.Extensions;
+﻿using API.Base;
 using API.Interfaces.Mappers;
 using API.Models;
 using Application.Interfaces;
@@ -8,19 +8,16 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class ItServiceProvidersController : ControllerBase
+    public class ItServiceProvidersController : BaseController
     {
         private readonly IItServiceProviderService _itServiceProviderService;
-        private readonly IApiMapper _apiMapper;
 
         public ItServiceProvidersController(
             IItServiceProviderService itServiceProviderService,
             IApiMapper apiMapper)
+             : base(apiMapper)
         {
             _itServiceProviderService = itServiceProviderService;
-            _apiMapper = apiMapper;
         }
 
         [HttpPost("register")]
@@ -31,7 +28,7 @@ namespace API.Controllers
 
             var result = await _itServiceProviderService.RegisterAsync(dto);
 
-            return this.ToActionResult(result);
+            return ReturnResult(result);
         }
     }
 }

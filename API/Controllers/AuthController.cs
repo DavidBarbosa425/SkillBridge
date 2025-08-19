@@ -1,4 +1,4 @@
-﻿using API.Extensions;
+﻿using API.Base;
 using API.Interfaces;
 using API.Interfaces.Mappers;
 using API.Models;
@@ -8,22 +8,18 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-
-    public class AuthController : ControllerBase
+    public class AuthController : BaseController
     {
         private readonly IAuthService _authService;
-        private readonly IApiMapper _apiMapper;
         private readonly ICookieService _cookieService;
 
         public AuthController(
             IAuthService authService,
             IApiMapper apiMapper,
             ICookieService cookieService)
+             : base(apiMapper)
         {
             _authService = authService;
-            _apiMapper = apiMapper;
             _cookieService = cookieService;
         }
 
@@ -35,7 +31,7 @@ namespace API.Controllers
 
             var result = await _authService.RegisterAsync(dto);
 
-            return this.ToActionResult(result);
+            return ReturnResult(result);
         }
 
         [AllowAnonymous]
@@ -46,7 +42,7 @@ namespace API.Controllers
 
             var result = await _authService.ConfirmEmailAsync(confirmEmailDto);
 
-            return this.ToActionResult(result);
+            return ReturnResult(result);
         }
 
         [AllowAnonymous]
@@ -58,13 +54,15 @@ namespace API.Controllers
             var result = await _authService.LoginAsync(dto);
 
             if (!result.Success)
-                return this.ToActionResult(result);
+                return ReturnResult(result);
 
             _cookieService.SetAuthCookies(result.Data.Token, result.Data.RefreshToken);
 
-            var response = _apiMapper.User.ToLoginResponse(result);
-
-            return this.ToActionResult(response);
+            return ReturnResult(result, auth => new
+            {
+                auth.User,
+                auth.ExpiresIn
+            });
         }
 
         [AllowAnonymous]
@@ -75,7 +73,7 @@ namespace API.Controllers
 
             var result = await _authService.ForgotPasswordAsync(dto);
 
-            return this.ToActionResult(result);
+            return ReturnResult(result);
         }
 
         [AllowAnonymous]
@@ -86,7 +84,7 @@ namespace API.Controllers
 
             var result = await _authService.ResetPasswordAsync(dto);
 
-            return this.ToActionResult(result);
+            return ReturnResult(result);
         }
     }
 }

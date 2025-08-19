@@ -34,6 +34,8 @@ namespace API.Extensions
         {
             services.AddScoped<IApiMapper, ApiMapper>();
             services.AddScoped<IApiUserMapper, ApiUserMapper>();
+            services.AddScoped<IApiCompanyMapper, ApiCompanyMapper>();
+            services.AddScoped<IApiItServiceProviderMapper, ApiItServiceProviderMapper>();
             services.AddScoped<ICookieService, CookieService>();
             services.AddHttpContextAccessor();
 

@@ -1,4 +1,4 @@
-﻿using API.Extensions;
+﻿using API.Base;
 using API.Interfaces.Mappers;
 using API.Models;
 using Application.Interfaces;
@@ -8,27 +8,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    [Authorize(Roles = Roles.User)]
-    public class CompaniesController : ControllerBase
+    public class CompaniesController : BaseController
     {
         private readonly ICompanyService _companyService;
-        private readonly IApiMapper _apiMapper;
 
         public CompaniesController(
             ICompanyService companyService,
             IApiMapper apiMapper)
+             : base(apiMapper)
         {
             _companyService = companyService;
-            _apiMapper = apiMapper;
         }
-
-        //[HttpGet("claims")]
-        //public IActionResult GetClaims()
-        //{
-        //    return Ok(User.Claims.Select(c => new { c.Type, c.Value }));
-        //}
 
         [HttpPost("register")]
         [Authorize(Roles = Roles.User)]
@@ -38,7 +28,7 @@ namespace API.Controllers
 
             var result = await _companyService.RegisterAsync(dto);
 
-            return this.ToActionResult(result);
+            return ReturnResult(result);
         }
     }
 }
