@@ -1,5 +1,6 @@
 ﻿using API.Models;
 using Application.DTOs;
+using Domain.Common;
 
 namespace API.Interfaces.Mappers
 {
@@ -10,5 +11,7 @@ namespace API.Interfaces.Mappers
         LoginDto ToLoginDto(LoginRequest request);
         ForgotPasswordDto ToForgotPasswordDto(ForgotPasswordRequest request);
         ResetPasswordDto ToResetPasswordDto(ResetPasswordRequest request);
+        Result<LoginResponse> ToLoginResponse(Result<LoginResultDto> dto);
+
     }
 }

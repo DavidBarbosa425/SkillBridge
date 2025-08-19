@@ -1,4 +1,6 @@
-﻿using Application.DTOs;
+﻿using API.Extensions;
+using API.Interfaces.Mappers;
+using API.Models;
 using Application.Interfaces;
 using Domain.Constants;
 using Microsoft.AspNetCore.Authorization;
@@ -12,10 +14,14 @@ namespace API.Controllers
     public class CompaniesController : ControllerBase
     {
         private readonly ICompanyService _companyService;
+        private readonly IApiMapper _apiMapper;
 
-        public CompaniesController(ICompanyService companyService)
+        public CompaniesController(
+            ICompanyService companyService,
+            IApiMapper apiMapper)
         {
             _companyService = companyService;
+            _apiMapper = apiMapper;
         }
 
         //[HttpGet("claims")]
@@ -25,11 +31,13 @@ namespace API.Controllers
         //}
 
         [HttpPost]
-        public async Task<IActionResult> Register([FromBody] RegisterCompanyDto dto)
+        public async Task<IActionResult> Register([FromBody] RegisterCompanyRequest request)
         {
+            var dto = _apiMapper.Company.ToRegisterCompanyDto(request);
+
             var result = await _companyService.RegisterAsync(dto);
 
-            return Ok(result);
+            return this.ToActionResult(result);
         }
     }
 }

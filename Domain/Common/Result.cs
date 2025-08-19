@@ -6,6 +6,7 @@ namespace Domain.Common
     {
         public bool Success { get; set; }
         public string Message { get; set; } = string.Empty;
+        public object Data { get; private set; } = default!;
         public List<string> Errors { get; set; } = new();
         public ErrorType? Error { get; set; }
 
@@ -27,7 +28,7 @@ namespace Domain.Common
 
     public class Result<T> : Result
     {
-        public T Data { get; private set; } = default!;
+        public new T Data { get; private set; } = default!;
 
         private Result() { }
 

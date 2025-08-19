@@ -3,5 +3,6 @@
     public interface IApiMapper
     {
         IApiUserMapper User { get; }
+        IApiCompanyMapper Company { get; }
     }
 }

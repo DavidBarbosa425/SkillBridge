@@ -1,6 +1,7 @@
 ﻿using API.Interfaces.Mappers;
 using API.Models;
 using Application.DTOs;
+using Domain.Common;
 
 namespace API.Mappers
 {
@@ -52,6 +53,17 @@ namespace API.Mappers
                 Token = request.Token,
                 NewPassword = request.NewPassword
             };
+        }
+
+        public Result<LoginResponse> ToLoginResponse(Result<LoginResultDto> resultDto)
+        {
+            var response = new LoginResponse
+            {
+                ExpiresIn = resultDto.Data.ExpiresIn,
+                User = resultDto.Data.User
+            };
+
+            return Result<LoginResponse>.Ok(response);
         }
     }
 }

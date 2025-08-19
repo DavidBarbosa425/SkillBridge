@@ -2,9 +2,7 @@
 using API.Interfaces;
 using API.Interfaces.Mappers;
 using API.Models;
-using Application.DTOs;
 using Application.Interfaces;
-using Domain.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -37,7 +35,7 @@ namespace API.Controllers
 
             var result = await _authService.RegisterAsync(dto);
 
-            return Ok(result);
+            return this.ToActionResult(result);
         }
 
         [AllowAnonymous]
@@ -48,7 +46,7 @@ namespace API.Controllers
 
             var result = await _authService.ConfirmEmailAsync(confirmEmailDto);
 
-            return Ok(result);
+            return this.ToActionResult(result);
         }
 
         [AllowAnonymous]
@@ -64,11 +62,9 @@ namespace API.Controllers
 
             _cookieService.SetAuthCookies(result.Data.Token, result.Data.RefreshToken);
 
-            return this.ToActionResult(Result<LoginResultDto>.Ok(new LoginResultDto
-            {
-                User = result.Data.User,
-                ExpiresIn = result.Data.ExpiresIn
-            }));
+            var response = _apiMapper.User.ToLoginResponse(result);
+
+            return this.ToActionResult(response);
         }
 
         [AllowAnonymous]
@@ -79,7 +75,7 @@ namespace API.Controllers
 
             var result = await _authService.ForgotPasswordAsync(dto);
 
-            return Ok(result);
+            return this.ToActionResult(result);
         }
 
         [AllowAnonymous]
@@ -90,7 +86,7 @@ namespace API.Controllers
 
             var result = await _authService.ResetPasswordAsync(dto);
 
-            return Ok(result);
+            return this.ToActionResult(result);
         }
     }
 }
