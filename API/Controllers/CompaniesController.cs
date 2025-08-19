@@ -30,7 +30,8 @@ namespace API.Controllers
         //    return Ok(User.Claims.Select(c => new { c.Type, c.Value }));
         //}
 
-        [HttpPost]
+        [HttpPost("register")]
+        [Authorize(Roles = Roles.User)]
         public async Task<IActionResult> Register([FromBody] RegisterCompanyRequest request)
         {
             var dto = _apiMapper.Company.ToRegisterCompanyDto(request);

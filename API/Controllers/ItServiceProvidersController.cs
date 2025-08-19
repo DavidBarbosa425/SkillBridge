@@ -1,4 +1,6 @@
-﻿using Application.DTOs;
+﻿using API.Extensions;
+using API.Interfaces.Mappers;
+using API.Models;
 using Application.Interfaces;
 using Domain.Constants;
 using Microsoft.AspNetCore.Authorization;
@@ -8,22 +10,28 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = Roles.User)]
     public class ItServiceProvidersController : ControllerBase
     {
         private readonly IItServiceProviderService _itServiceProviderService;
+        private readonly IApiMapper _apiMapper;
 
-        public ItServiceProvidersController(IItServiceProviderService itServiceProviderService)
+        public ItServiceProvidersController(
+            IItServiceProviderService itServiceProviderService,
+            IApiMapper apiMapper)
         {
             _itServiceProviderService = itServiceProviderService;
+            _apiMapper = apiMapper;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Register([FromBody] RegisterItServiceProviderDto dto)
+        [HttpPost("register")]
+        [Authorize(Roles = Roles.User)]
+        public async Task<IActionResult> Register([FromBody] RegisterItServiceProviderRequest request)
         {
+            var dto = _apiMapper.ItServiceProvider.ToRegisterItServiceProviderDto(request);
+
             var result = await _itServiceProviderService.RegisterAsync(dto);
 
-            return Ok(result);
+            return this.ToActionResult(result);
         }
     }
 }

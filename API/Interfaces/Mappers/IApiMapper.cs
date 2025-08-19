@@ -4,5 +4,6 @@
     {
         IApiUserMapper User { get; }
         IApiCompanyMapper Company { get; }
+        IApiItServiceProviderMapper ItServiceProvider { get; }
     }
 }
