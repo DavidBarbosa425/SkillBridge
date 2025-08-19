@@ -14,8 +14,9 @@ namespace API.Controllers
 
         public ItServiceProvidersController(
             IItServiceProviderService itServiceProviderService,
-            IApiMapper apiMapper)
-             : base(apiMapper)
+            IApiMapper apiMapper,
+            ILogger<BaseController> logger)
+             : base(apiMapper, logger)
         {
             _itServiceProviderService = itServiceProviderService;
         }

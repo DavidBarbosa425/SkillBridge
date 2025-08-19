@@ -14,10 +14,11 @@ namespace API.Controllers
         private readonly ICookieService _cookieService;
 
         public AuthController(
-            IAuthService authService,
             IApiMapper apiMapper,
+            ILogger<BaseController> logger,
+            IAuthService authService,
             ICookieService cookieService)
-             : base(apiMapper)
+             : base(apiMapper, logger)
         {
             _authService = authService;
             _cookieService = cookieService;

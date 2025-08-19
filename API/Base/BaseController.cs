@@ -13,10 +13,26 @@ namespace API.Base
     public class BaseController : ControllerBase
     {
         protected readonly IApiMapper _apiMapper;
+        protected readonly ILogger<BaseController> _logger;
 
-        protected BaseController(IApiMapper apiMapper)
+        protected BaseController(
+            IApiMapper apiMapper, 
+            ILogger<BaseController> logger)
         {
             _apiMapper = apiMapper;
+            _logger = logger;
+        }
+
+        protected void LogInfo(string message) => _logger.LogInformation(message);
+
+        protected void LogWarning(string message) => _logger.LogWarning(message);
+
+        protected void LogError(Exception ex, string context = "")
+        {
+            if (!string.IsNullOrEmpty(context))
+                _logger.LogError(ex, $"Erro em {context}");
+            else
+                _logger.LogError(ex, "Erro");
         }
         protected IActionResult ReturnResult(Result result) 
             => this.ToActionResult(result);

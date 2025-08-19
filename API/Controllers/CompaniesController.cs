@@ -14,8 +14,9 @@ namespace API.Controllers
 
         public CompaniesController(
             ICompanyService companyService,
-            IApiMapper apiMapper)
-             : base(apiMapper)
+            IApiMapper apiMapper,
+            ILogger<BaseController> logger)
+             : base(apiMapper, logger)
         {
             _companyService = companyService;
         }
