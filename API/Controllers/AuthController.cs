@@ -1,10 +1,7 @@
 ﻿using API.Interfaces;
 using API.Interfaces.Mappers;
 using API.Models;
-using Application.DTOs;
 using Application.Interfaces;
-using Domain.Common;
-using Domain.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,14 +26,18 @@ namespace API.Controllers
             _cookieService = cookieService;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Register([FromBody] RegisterUserDto dto)
+        [AllowAnonymous]
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterUserRequest request)
         {
+            var dto = _apiMapper.User.ToRegisterUserDto(request);
+
             var result = await _authService.RegisterAsync(dto);
 
             return Ok(result);
         }
 
+        [AllowAnonymous]
         [HttpGet("confirm-email")]
         public async Task<IActionResult> ConfirmEmail([FromQuery] ConfirmEmailRequest request)
         {
@@ -47,9 +48,12 @@ namespace API.Controllers
             return Ok(result);
         }
 
+        [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequestDto dto)
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
+            var dto = _apiMapper.User.ToLoginDto(request);
+
             var result = await _authService.LoginAsync(dto);
 
             if (!result.Success)
@@ -57,24 +61,35 @@ namespace API.Controllers
 
             _cookieService.SetAuthCookies(result.Data.Token, result.Data.RefreshToken);
 
-            return Ok(Result<LoginResultDto>.Ok(new LoginResultDto
+            return Ok(new
             {
-                User = result.Data.User,
-                ExpiresIn = result.Data.ExpiresIn
-            }));
+                data = new
+                {
+                    result.Data.User,
+                    result.Data.ExpiresIn
+                },
+                result.Message,
+                result.Success
+            });
         }
 
+        [AllowAnonymous]
         [HttpPost("forgot-password")]
-        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto dto)
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
         {
+            var dto = _apiMapper.User.ToForgotPasswordDto(request);
+
             var result = await _authService.ForgotPasswordAsync(dto);
 
             return Ok(result);
         }
 
+        [AllowAnonymous]
         [HttpPost("reset-password")]
-        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dto)
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
         {
+            var dto = _apiMapper.User.ToResetPasswordDto(request);
+
             var result = await _authService.ResetPasswordAsync(dto);
 
             return Ok(result);

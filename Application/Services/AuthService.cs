@@ -97,7 +97,7 @@ namespace Application.Services
 
         }
 
-        public async Task<Result<LoginResultDto>> LoginAsync(LoginRequestDto dto)
+        public async Task<Result<LoginResultDto>> LoginAsync(LoginDto dto)
         {
             await _validatorService.ValidateAsync(dto);
 

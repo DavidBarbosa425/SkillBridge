@@ -6,12 +6,51 @@ namespace API.Mappers
 {
     public class ApiUserMapper : IApiUserMapper
     {
-        public ConfirmEmailDto ToConfirmEmailDto(ConfirmEmailRequest dto)
+        public ConfirmEmailDto ToConfirmEmailDto(ConfirmEmailRequest request)
         {
             return new ConfirmEmailDto
             {
-              IdentityId = dto.Id,
-              Token = dto.Token
+              IdentityId = request.Id,
+              Token = request.Token
+            };
+        }
+
+        public RegisterUserDto ToRegisterUserDto(RegisterUserRequest request)
+        {
+            return new RegisterUserDto
+            {
+                Email = request.Email,
+                FullName = request.FullName,
+                Name = request.Name,
+                Password = request.Password,
+                PreferredName = request.PreferredName
+            };
+        }
+
+        public LoginDto ToLoginDto(LoginRequest request)
+        {
+            return new LoginDto
+            {
+                Email = request.Email,
+                Password = request.Password
+            };
+        }
+
+        public ForgotPasswordDto ToForgotPasswordDto(ForgotPasswordRequest request)
+        {
+            return new ForgotPasswordDto
+            {
+                Email = request.Email
+            };
+        }
+
+        public ResetPasswordDto ToResetPasswordDto(ResetPasswordRequest request)
+        {
+            return new ResetPasswordDto
+            {
+                Email = request.Email,
+                Token = request.Token,
+                NewPassword = request.NewPassword
             };
         }
     }

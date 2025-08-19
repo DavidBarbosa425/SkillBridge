@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Application.DTOs
+namespace API.Models
 {
-    public class ForgotPasswordDto
+    public class ForgotPasswordRequest
     {
+        [Required]
         public string Email { get; set; } = string.Empty;
     }
 }

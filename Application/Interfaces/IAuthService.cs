@@ -7,7 +7,7 @@ namespace Application.Interfaces
     {
         Task<Result> RegisterAsync(RegisterUserDto dto);
         Task<Result> ConfirmEmailAsync(ConfirmEmailDto confirmEmailDto);
-        Task<Result<LoginResultDto>> LoginAsync(LoginRequestDto dto);
+        Task<Result<LoginResultDto>> LoginAsync(LoginDto dto);
         Task<Result> ForgotPasswordAsync(ForgotPasswordDto dto);
         Task<Result> ResetPasswordAsync(ResetPasswordDto dto);
     }
