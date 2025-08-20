@@ -4,7 +4,6 @@ using Application.Interfaces.Mappers;
 using Domain.Common;
 using Domain.Common.Enums;
 using Domain.Constants;
-using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Interfaces;
 

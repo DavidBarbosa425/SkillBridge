@@ -6,12 +6,13 @@ import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
 import { ApiResult } from '../models/base/api-result';
 import { StorageService } from './storage';
 import { User } from '../models/auth/user';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  url = 'https://localhost:44319/api/auth';
+  apiUrl = `${environment.apiUrl}/auth`;
 
   private http = inject(HttpClient);
   private storageService = inject(StorageService);
@@ -24,10 +25,9 @@ export class AuthService {
 
   login(loginRequest: LoginRequest): Observable<ApiResult<LoginResult>> {
     return this.http
-      .post<ApiResult<LoginResult>>(`${this.url}/login`, loginRequest)
+      .post<ApiResult<LoginResult>>(`${this.apiUrl}/login`, loginRequest)
       .pipe(
         tap((response) => {
-          console.log('response', response);
           if (response.success && response.data) {
             this.handleAuthSuccess(response.data);
           }
