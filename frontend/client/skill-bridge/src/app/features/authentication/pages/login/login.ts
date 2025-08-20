@@ -15,6 +15,7 @@ import { catchError, finalize, tap, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth';
 import { LoginRequest } from '../../../../core/models/auth/login-request';
+import { NotificationService } from '../../../../core/services/notification';
 
 @Component({
   selector: 'app-login',
@@ -36,6 +37,7 @@ export class Login {
 
   private router = inject(Router);
   private loginService = inject(AuthService);
+  private notificationService = inject(NotificationService);
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
@@ -60,7 +62,7 @@ export class Login {
       .pipe(
         tap(() => this.router.navigate(['dashboard'])),
         catchError((err) => {
-          //  this.notificationService.showError('Erro ao fazer login');
+          this.notificationService.showError('Erro ao fazer login');
           return throwError(() => err);
         }),
         finalize(() => (this.loading = false))
