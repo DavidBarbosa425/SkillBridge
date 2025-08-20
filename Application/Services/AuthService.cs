@@ -89,7 +89,12 @@ namespace Application.Services
 
             var decodedToken = Uri.UnescapeDataString(dto.Token);
 
-            var confirmationResult = await _identityUserService.ConfirmEmailAsync(dto.IdentityId, decodedToken);
+            var userResult = await _userRepository.FindByIdAsync(dto.userId);
+
+            if (!userResult.Success)
+                return Result.Failure(userResult.Message);
+
+            var confirmationResult = await _identityUserService.ConfirmEmailAsync(userResult.Data.IdentityId, decodedToken);
 
             if (!confirmationResult.Success) 
                 return Result.Failure(confirmationResult.Message);

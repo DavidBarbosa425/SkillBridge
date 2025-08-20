@@ -48,6 +48,7 @@ internal class ApplicationUserMapper : IApplicationUserMapper
         {
             Name = user.Name,
             Email = user.Email,
+            UserId = user.Id,
             IdentityId = user.IdentityId
         };
     }
@@ -58,6 +59,7 @@ internal class ApplicationUserMapper : IApplicationUserMapper
         {
             Name = user.Name,
             Email = user.Email,
+            UserId = user.Id,
             IdentityId = user.IdentityId
         };
     }

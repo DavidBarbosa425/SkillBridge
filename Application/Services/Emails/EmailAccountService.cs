@@ -38,7 +38,7 @@ namespace Application.Services.Emails
             if (!token.Success)
                 return Result.Failure(token.Message);
 
-            var confirmationLink = _urlService.GenerateApiUrlEmailConfirmation(user.IdentityId, token.Data);
+            var confirmationLink = _urlService.GenerateApiUrlEmailConfirmation(user.UserId, token.Data);
 
             if (string.IsNullOrEmpty(confirmationLink))
                 return Result.Failure("Falha ao gerar link de confirmação de e-mail.");
@@ -70,7 +70,7 @@ namespace Application.Services.Emails
             if (!token.Success)
                 return Result.Failure(token.Message);
 
-            var resetPasswordLink = _urlService.GenerateUrlEmailPasswordReset(user.IdentityId, token.Data!);
+            var resetPasswordLink = _urlService.GenerateUrlEmailPasswordReset(user.UserId, token.Data!);
 
             if (string.IsNullOrEmpty(resetPasswordLink))
                 return Result.Failure("Falha ao gerar link de reset de senha.");

@@ -13,10 +13,9 @@ builder.Services.AddLogging();
 builder.Services.AddDatabase(builder.Configuration);
 builder.Services.AddApiServices();
 builder.Services.AddIdentityConfiguration();
-//builder.Services.AddJwtBearer(builder.Configuration);
 builder.Services.AddCustomConfigurations(builder.Configuration);
 builder.Services.AddConfigurationApiVersioning();
-builder.Services.AddProjectCors();
+builder.Services.AddProjectCors(builder.Configuration);
 
 builder.Services.AddSwaggerDocumentation();
 

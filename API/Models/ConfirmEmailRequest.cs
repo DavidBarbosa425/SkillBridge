@@ -5,7 +5,7 @@ namespace API.Models
     public class ConfirmEmailRequest
     {
         [Required]
-        public string Id { get; set; } = string.Empty;
+        public Guid UserId { get; set; }
         [Required]
         public string Token { get; set; } = string.Empty;
     }

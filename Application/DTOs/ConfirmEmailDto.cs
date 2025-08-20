@@ -2,7 +2,7 @@
 {
     public class ConfirmEmailDto
     {
-        public string IdentityId { get; set; } = string.Empty;
+        public Guid userId { get; set; }
         public string Token { get; set; } = string.Empty;
     }
 }
