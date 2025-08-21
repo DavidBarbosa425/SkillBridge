@@ -14,12 +14,12 @@ import { catchError, finalize, tap, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'page-register-user',
+  selector: 'page-user-register',
   imports: [ReactiveFormsModule, ButtonModule, InputTextModule, PasswordModule],
-  templateUrl: './register-user.html',
-  styleUrls: ['./register-user.less'],
+  templateUrl: './user-register.html',
+  styleUrls: ['./user-register.less'],
 })
-export class RegisterUser implements OnInit {
+export class UserRegister implements OnInit {
   registerForm!: FormGroup;
   loading = false;
   showPassword = false;
@@ -52,7 +52,7 @@ export class RegisterUser implements OnInit {
 
     this.loading = true;
 
-    const userData: RegisterUserRequest = this.registerForm.value;
+    const userData: UserRegisterRequest = this.registerForm.value;
 
     this.userService
       .register(userData)

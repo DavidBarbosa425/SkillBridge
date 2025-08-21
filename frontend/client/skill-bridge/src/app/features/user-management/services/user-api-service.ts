@@ -12,7 +12,7 @@ export class UserApiService {
 
   private http = inject(HttpClient);
 
-  register(userRegister: RegisterUserRequest): Observable<ApiResult<any>> {
+  register(userRegister: UserRegisterRequest): Observable<ApiResult<any>> {
     return this.http
       .post<ApiResult<any>>(`${this.apiUrl}/register`, userRegister)
       .pipe(
