@@ -1,3 +1,42 @@
+.button-group {
+  margin-top: 1.5rem;
+
+  .p-button {
+    width: 100% !important;
+    border-radius: 12px;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border: none;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: linear-gradient(135deg, #5a67d8, #6b46c1);
+      transform: translateY(-1px);
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+
+      &:hover {
+        transform: none;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+      }
+    }
+  }
+}
 .login-page {
   min-height: 100vh;
   display: flex;
@@ -200,40 +239,7 @@
 }
 
 button[pButton] {
-  width: 100%;
-  margin-top: 1.5rem;
-  border-radius: 12px;
-  padding: 0.8rem 1.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  border: none;
-  transition: all 0.3s ease;
-
-  &:hover {
-    background: linear-gradient(135deg, #5a67d8, #6b46c1);
-    transform: translateY(-1px);
-    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
-  }
-
-  &:active {
-    transform: translateY(0);
-  }
-
-  &:focus {
-    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-  }
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-
-    &:hover {
-      transform: none;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-    }
-  }
+  // Remover este seletor genérico para evitar conflito
 }
 
 .divider {
@@ -262,21 +268,33 @@ button[pButton] {
   }
 }
 
-.social {
+.social-group {
   width: 100%;
 
   .p-button {
+    width: 100% !important;
     border-radius: 12px;
     border: 2px solid #e9ecef;
-    background: #ffffff;
-    color: #7f8c8d;
+    background: #ffffff !important;
+    color: #7f8c8d !important;
     transition: all 0.3s ease;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
 
     &:hover {
       border-color: #667eea;
-      color: #667eea;
-      background: rgba(102, 126, 234, 0.05);
+      color: #667eea !important;
+      background: rgba(102, 126, 234, 0.05) !important;
       transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
     }
   }
 }

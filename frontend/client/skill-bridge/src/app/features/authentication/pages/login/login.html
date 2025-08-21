@@ -1,6 +1,6 @@
 <div class="login-page">
   <div class="login-card-wrapper">
-    <p-card class="login-card">
+    <div class="login-card">
       <div class="brand">
         <img src="public/../logo.png" alt="logo" class="logo" />
         <h2>Bem-vindo de volta</h2>
@@ -8,74 +8,90 @@
       </div>
 
       <form [formGroup]="form" (ngSubmit)="login()" class="login-form">
-        <div class="p-fluid">
-          <label for="email">E-mail</label>
+        <!-- E-mail -->
+        <div class="field-group">
+          <label for="email" class="field-label">
+            E-mail <span class="required">*</span>
+          </label>
           <input
             id="email"
-            type="text"
+            type="email"
             pInputText
             formControlName="email"
             placeholder="seu@exemplo.com"
+            class="w-full"
+            [class.p-invalid]="isFieldInvalid('email')"
           />
+          <small *ngIf="isFieldInvalid('email')" class="p-error">
+            {{ getEmailError() }}
+          </small>
+        </div>
 
-          @if(email.invalid && (email.dirty || email.touched)){
-          <small class="p-error"> {{ getEmailError() }} </small>
-          }
+        <!-- Senha -->
+        <div class="field-group">
+          <label for="password" class="field-label">
+            Senha <span class="required">*</span>
+          </label>
+          <p-password
+            id="password"
+            formControlName="password"
+            placeholder="Digite sua senha"
+            [toggleMask]="true"
+            styleClass="w-full"
+            inputStyleClass="w-full"
+            [class.p-invalid]="isFieldInvalid('password')"
+            [feedback]="false"
+          ></p-password>
+          <small *ngIf="isFieldInvalid('password')" class="p-error">
+            {{ getPasswordError() }}
+          </small>
+        </div>
 
-          <div class="field-group">
-            <label for="password" class="field-label">
-              Senha <span class="required">*</span>
-            </label>
-            <p-password
-              id="password"
-              formControlName="password"
-              placeholder="Digite sua senha"
-              [toggleMask]="true"
-              styleClass="w-full"
-              inputStyleClass="w-full"
-              [class.p-invalid]="isFieldInvalid('password')"
-              [feedback]="false"
-            ></p-password>
-            <small *ngIf="isFieldInvalid('password')" class="p-error">
-              {{ getFieldError('password') }}
-            </small>
+        <!-- Opções -->
+        <div class="options">
+          <div class="remember-option">
+            <p-checkbox
+              formControlName="remember"
+              binary="true"
+              inputId="remember"
+            ></p-checkbox>
+            <label for="remember" class="remember-label">Lembrar-me</label>
           </div>
+          <a class="forgot" (click)="forgot()">Esqueceu a senha?</a>
+        </div>
 
-          @if(password.invalid && (password.dirty || password.touched)){
-          <small class="p-error"> {{ getPasswordError() }} </small>
-          }
-
-          <div class="options">
-            <p-checkbox formControlName="remember" binary="true"></p-checkbox>
-            <label class="remember-label">Lembrar-me</label>
-            <a class="forgot" (click)="forgot()">Esqueceu a senha?</a>
-          </div>
-
-          <button
-            pButton
+        <!-- Botão de Login -->
+        <div class="button-group">
+          <p-button
             type="submit"
             label="Entrar"
+            icon="pi pi-sign-in"
+            [loading]="loading"
             [disabled]="form.invalid"
-          ></button>
+            styleClass="w-full p-button-raised"
+          ></p-button>
+        </div>
 
-          <div class="divider">ou</div>
+        <!-- Divisor -->
+        <div class="divider">ou</div>
 
-          <button
-            pButton
+        <!-- Login Social -->
+        <div class="social-group">
+          <p-button
             type="button"
-            class="social google"
-            icon="pi pi-google"
             label="Entrar com Google"
+            icon="pi pi-google"
+            styleClass="w-full social"
             (click)="social('google')"
-          ></button>
+          ></p-button>
         </div>
       </form>
 
-      <p-footer>
-        <div class="signup">
-          Não tem conta? <a (click)="signup()">Cadastre-se</a>
-        </div>
-      </p-footer>
-    </p-card>
+      <!-- Link de Cadastro -->
+      <div class="signup">
+        <span>Não tem conta? </span>
+        <a (click)="signup()" class="link">Cadastre-se</a>
+      </div>
+    </div>
   </div>
 </div>

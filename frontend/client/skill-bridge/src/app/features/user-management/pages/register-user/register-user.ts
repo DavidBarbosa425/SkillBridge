@@ -1,38 +1,34 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
-
-interface UserRegisterModel {
-  name: string;
-  fullName: string;
-  preferredName: string;
-  email: string;
-  password: string;
-}
+import { NotificationService } from '../../../../core/services/notification';
+import { UserApiService } from '../../services/user-api-service';
+import { catchError, finalize, tap, throwError } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-user-register',
+  selector: 'page-register-user',
   imports: [ReactiveFormsModule, ButtonModule, InputTextModule, PasswordModule],
-  templateUrl: './user-register.html',
-  styleUrls: ['./user-register.less'],
+  templateUrl: './register-user.html',
+  styleUrls: ['./register-user.less'],
 })
-export class UserRegisterComponent implements OnInit {
+export class RegisterUser implements OnInit {
   registerForm!: FormGroup;
   loading = false;
   showPassword = false;
 
-  constructor(
-    private fb: FormBuilder,
-    private messageService: MessageService
-  ) {}
+  userService = inject(UserApiService);
+  notificationService = inject(NotificationService);
+  private router = inject(Router);
+
+  constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.initializeForm();
@@ -49,29 +45,32 @@ export class UserRegisterComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.registerForm.valid) {
-      this.loading = true;
-      const userData: UserRegisterModel = this.registerForm.value;
-
-      // Simular chamada da API
-      setTimeout(() => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Sucesso',
-          detail: 'Usuário cadastrado com sucesso!',
-        });
-        this.loading = false;
-        this.registerForm.reset();
-      }, 2000);
-    } else {
+    if (this.registerForm.invalid) {
       this.markFormGroupTouched();
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Erro',
-        detail:
-          'Por favor, preencha todos os campos obrigatórios corretamente.',
-      });
+      return;
     }
+
+    this.loading = true;
+
+    const userData: RegisterUserRequest = this.registerForm.value;
+
+    this.userService
+      .register(userData)
+      .pipe(
+        tap((response) => {
+          this.notificationService.showSuccess(response.message);
+          this.router.navigate(['/']);
+        }),
+        catchError((err) => {
+          const apiMessage = err.error?.message;
+          if (apiMessage) {
+            this.notificationService.showError(apiMessage);
+          }
+          return throwError(() => err);
+        }),
+        finalize(() => (this.loading = false))
+      )
+      .subscribe();
   }
 
   private markFormGroupTouched(): void {

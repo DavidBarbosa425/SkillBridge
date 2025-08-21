@@ -60,7 +60,9 @@ export class Login {
     this.loginService
       .login(loginRequest)
       .pipe(
-        tap(() => this.router.navigate(['dashboard'])),
+        tap(() => {
+          this.router.navigate(['dashboard']);
+        }),
         catchError((err) => {
           const apiMessage = err.error?.message;
           if (apiMessage) {
