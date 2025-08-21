@@ -9,9 +9,10 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { NotificationService } from '../../../../core/services/notification';
-import { UserApiService } from '../../services/user-api-service';
+
 import { catchError, finalize, tap, throwError } from 'rxjs';
 import { Router } from '@angular/router';
+import { UserApiService, UserRegisterRequest } from '../..';
 
 @Component({
   selector: 'page-user-register',
