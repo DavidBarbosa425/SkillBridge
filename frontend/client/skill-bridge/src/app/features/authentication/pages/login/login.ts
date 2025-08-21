@@ -62,7 +62,10 @@ export class Login {
       .pipe(
         tap(() => this.router.navigate(['dashboard'])),
         catchError((err) => {
-          this.notificationService.showError('Erro ao fazer login');
+          const apiMessage = err.error?.message;
+          if (apiMessage) {
+            this.notificationService.showError(apiMessage);
+          }
           return throwError(() => err);
         }),
         finalize(() => (this.loading = false))
@@ -107,5 +110,33 @@ export class Login {
 
   social(provider: string) {
     console.log('login social', provider);
+  }
+
+  isFieldInvalid(fieldName: string): boolean {
+    const field = this.form.get(fieldName);
+    return !!(field && field.invalid && (field.dirty || field.touched));
+  }
+
+  getFieldError(fieldName: string): string {
+    const field = this.form.get(fieldName);
+    if (field && field.errors && (field.dirty || field.touched)) {
+      if (field.errors['required'])
+        return `${this.getFieldLabel(fieldName)} é obrigatório`;
+      if (field.errors['minlength'])
+        return `${this.getFieldLabel(fieldName)} deve ter pelo menos ${field.errors['minlength'].requiredLength} caracteres`;
+      if (field.errors['email']) return 'E-mail deve ter um formato válido';
+    }
+    return '';
+  }
+
+  private getFieldLabel(fieldName: string): string {
+    const labels: { [key: string]: string } = {
+      name: 'Nome',
+      fullName: 'Nome Completo',
+      preferredName: 'Nome Preferido',
+      email: 'E-mail',
+      password: 'Senha',
+    };
+    return labels[fieldName] || fieldName;
   }
 }

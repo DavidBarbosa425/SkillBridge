@@ -1,0 +1,126 @@
+<div class="register-container">
+  <div class="register-card">
+    <div class="register-header">
+      <h2>Criar Conta</h2>
+      <p>Preencha os dados para criar sua conta</p>
+    </div>
+
+    <form
+      [formGroup]="registerForm"
+      (ngSubmit)="onSubmit()"
+      class="register-form"
+    >
+      <!-- Nome -->
+      <div class="field-group">
+        <label for="name" class="field-label">
+          Nome <span class="required">*</span>
+        </label>
+        <input
+          id="name"
+          type="text"
+          pInputText
+          formControlName="name"
+          placeholder="Digite seu nome"
+          class="w-full"
+          [class.p-invalid]="isFieldInvalid('name')"
+        />
+        <small *ngIf="isFieldInvalid('name')" class="p-error">
+          {{ getFieldError('name') }}
+        </small>
+      </div>
+
+      <!-- Nome Completo -->
+      <div class="field-group">
+        <label for="fullName" class="field-label">
+          Nome Completo <span class="required">*</span>
+        </label>
+        <input
+          id="fullName"
+          type="text"
+          pInputText
+          formControlName="fullName"
+          placeholder="Digite seu nome completo"
+          class="w-full"
+          [class.p-invalid]="isFieldInvalid('fullName')"
+        />
+        <small *ngIf="isFieldInvalid('fullName')" class="p-error">
+          {{ getFieldError('fullName') }}
+        </small>
+      </div>
+
+      <!-- Nome Preferido -->
+      <div class="field-group">
+        <label for="preferredName" class="field-label">
+          Nome Preferido <span class="required">*</span>
+        </label>
+        <input
+          id="preferredName"
+          type="text"
+          pInputText
+          formControlName="preferredName"
+          placeholder="Como prefere ser chamado"
+          class="w-full"
+          [class.p-invalid]="isFieldInvalid('preferredName')"
+        />
+        <small *ngIf="isFieldInvalid('preferredName')" class="p-error">
+          {{ getFieldError('preferredName') }}
+        </small>
+      </div>
+
+      <!-- Email -->
+      <div class="field-group">
+        <label for="email" class="field-label">
+          E-mail <span class="required">*</span>
+        </label>
+        <input
+          id="email"
+          type="email"
+          pInputText
+          formControlName="email"
+          placeholder="Digite seu e-mail"
+          class="w-full"
+          [class.p-invalid]="isFieldInvalid('email')"
+        />
+        <small *ngIf="isFieldInvalid('email')" class="p-error">
+          {{ getFieldError('email') }}
+        </small>
+      </div>
+
+      <!-- Senha -->
+      <div class="field-group">
+        <label for="password" class="field-label">
+          Senha <span class="required">*</span>
+        </label>
+        <p-password
+          id="password"
+          formControlName="password"
+          placeholder="Digite sua senha"
+          [toggleMask]="true"
+          styleClass="w-full"
+          inputStyleClass="w-full"
+          [class.p-invalid]="isFieldInvalid('password')"
+          [feedback]="false"
+        ></p-password>
+        <small *ngIf="isFieldInvalid('password')" class="p-error">
+          {{ getFieldError('password') }}
+        </small>
+      </div>
+
+      <!-- Botões -->
+      <div class="button-group">
+        <p-button
+          type="submit"
+          label="Criar Conta"
+          icon="pi pi-user-plus"
+          [loading]="loading"
+          styleClass="w-full p-button-raised"
+        ></p-button>
+      </div>
+
+      <div class="login-link">
+        <span>Já tem uma conta? </span>
+        <a href="/login" class="link">Fazer login</a>
+      </div>
+    </form>
+  </div>
+</div>
