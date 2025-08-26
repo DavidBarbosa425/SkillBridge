@@ -28,8 +28,8 @@ import { NotificationService } from '../../../../core/services/notification';
     CardModule,
     CheckboxModule,
   ],
-  templateUrl: './login.html',
-  styleUrl: './login.less',
+  templateUrl: './login-page.html',
+  styleUrl: './login-page.less',
 })
 export class Login {
   form: FormGroup;

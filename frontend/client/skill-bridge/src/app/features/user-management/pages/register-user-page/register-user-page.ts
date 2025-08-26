@@ -17,10 +17,10 @@ import { UserApiService, UserRegisterRequest } from '../..';
 @Component({
   selector: 'page-user-register',
   imports: [ReactiveFormsModule, ButtonModule, InputTextModule, PasswordModule],
-  templateUrl: './user-register.html',
-  styleUrls: ['./user-register.less'],
+  templateUrl: './register-user-page.html',
+  styleUrls: ['./register-user-page.less'],
 })
-export class UserRegister implements OnInit {
+export class RegisterUserPage implements OnInit {
   registerForm!: FormGroup;
   loading = false;
   showPassword = false;
