@@ -8,11 +8,10 @@ import {
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
-import { NotificationService } from '../../../../core/services/notification';
-
 import { catchError, finalize, tap, throwError } from 'rxjs';
 import { Router } from '@angular/router';
-import { UserApiService, UserRegisterRequest } from '../..';
+import { UserApiService, RegisterUserRequest } from '../..';
+import { NotificationService } from '../../../../core/services/notification';
 
 @Component({
   selector: 'page-user-register',
@@ -53,7 +52,7 @@ export class RegisterUserPage implements OnInit {
 
     this.loading = true;
 
-    const userData: UserRegisterRequest = this.registerForm.value;
+    const userData: RegisterUserRequest = this.registerForm.value;
 
     this.userService
       .register(userData)

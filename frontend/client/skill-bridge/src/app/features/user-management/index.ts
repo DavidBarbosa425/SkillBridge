@@ -1,3 +1,3 @@
-export * from './services/user-api-service';
-export * from './pages/register-user-page/register-user-page';
-export * from './models/register-user-request';
+export * from './services';
+export * from './pages';
+export * from './models';
