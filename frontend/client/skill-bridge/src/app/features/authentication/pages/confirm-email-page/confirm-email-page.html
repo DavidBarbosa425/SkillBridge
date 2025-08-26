@@ -1,0 +1,25 @@
+<!-- pages/confirm-email/confirm-email-page.component.html -->
+<div class="confirm-container">
+  <p-card *ngIf="!loading" class="confirm-card" header="Confirmação de E-mail">
+    <ng-container *ngIf="confirmed; else errorTpl">
+      <p class="success-text">✅ Seu e-mail foi confirmado com sucesso!</p>
+      <p>Agora você já pode acessar a plataforma.</p>
+      <button
+        pButton
+        label="Ir para Login"
+        icon="pi pi-sign-in"
+        routerLink="/login"
+      ></button>
+    </ng-container>
+
+    <ng-template #errorTpl>
+      <p class="error-text">❌ Não foi possível confirmar seu e-mail.</p>
+      <button pButton label="Tentar Novamente" icon="pi pi-refresh"></button>
+    </ng-template>
+  </p-card>
+
+  <div *ngIf="loading" class="loading-container">
+    <p-progressSpinner></p-progressSpinner>
+    <p>Confirmando seu e-mail...</p>
+  </div>
+</div>
