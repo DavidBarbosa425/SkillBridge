@@ -36,8 +36,8 @@ namespace API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("confirm-email")]
-        public async Task<IActionResult> ConfirmEmail([FromQuery] ConfirmEmailRequest request)
+        [HttpPost("confirm-email")]
+        public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailRequest request)
         {
             var confirmEmailDto = _apiMapper.User.ToConfirmEmailDto(request);
 

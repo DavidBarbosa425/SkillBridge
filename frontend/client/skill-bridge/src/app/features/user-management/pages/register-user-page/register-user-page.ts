@@ -12,10 +12,17 @@ import { catchError, finalize, tap, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { UserApiService, RegisterUserRequest } from '../..';
 import { NotificationService } from '../../../../core/services/notification';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'page-user-register',
-  imports: [ReactiveFormsModule, ButtonModule, InputTextModule, PasswordModule],
+  imports: [
+    ReactiveFormsModule,
+    ButtonModule,
+    InputTextModule,
+    PasswordModule,
+    CommonModule,
+  ],
   templateUrl: './register-user-page.html',
   styleUrls: ['./register-user-page.less'],
 })

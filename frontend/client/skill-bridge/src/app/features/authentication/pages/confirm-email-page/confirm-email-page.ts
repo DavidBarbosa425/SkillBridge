@@ -1,10 +1,13 @@
 // pages/confirm-email/confirm-email-page.component.ts
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { AuthService } from '../../services/auth-service';
+import { ConfirmEmailRequest } from '../../models';
+import { finalize, tap } from 'rxjs';
 
 @Component({
   selector: 'app-confirm-email-page',
@@ -24,16 +27,21 @@ export class ConfirmEmailPage implements OnInit {
   loading = true;
   confirmed = false;
 
-  constructor(private route: ActivatedRoute) {}
+  private route = inject(ActivatedRoute);
+  private authService = inject(AuthService);
 
   ngOnInit(): void {
-    this.userId = this.route.snapshot.paramMap.get('userId');
-    this.token = this.route.snapshot.paramMap.get('token');
+    const confirmEmailRequest: ConfirmEmailRequest = {
+      userId: this.route.snapshot.paramMap.get('userId') ?? '',
+      token: this.route.snapshot.paramMap.get('token') ?? '',
+    };
 
-    // simula chamada de API
-    setTimeout(() => {
-      this.loading = false;
-      this.confirmed = true; // supondo sucesso
-    }, 2000);
+    this.authService
+      .confirmEmail(confirmEmailRequest)
+      .pipe(
+        tap((response) => (this.confirmed = response.success)),
+        finalize(() => (this.loading = false))
+      )
+      .subscribe();
   }
 }
