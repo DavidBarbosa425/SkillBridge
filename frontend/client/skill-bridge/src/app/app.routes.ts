@@ -7,7 +7,7 @@ import { RegisterUserPage } from './features/user-management';
 export const routes: Routes = [
   { path: '', component: Login },
   { path: 'dashboard', component: Dashboard },
-  { path: 'user-register', component: RegisterUserPage },
+  { path: 'register-user-page', component: RegisterUserPage },
   {
     path: 'confirm-email/:userId/:token',
     component: ConfirmEmailPage,

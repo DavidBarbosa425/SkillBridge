@@ -1,4 +1,4 @@
-import { User } from './user';
+import { User } from '../../user-management';
 
 export interface LoginResult {
   user: User;

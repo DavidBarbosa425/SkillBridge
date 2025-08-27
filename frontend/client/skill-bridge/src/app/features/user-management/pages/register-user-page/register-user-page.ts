@@ -118,4 +118,8 @@ export class RegisterUserPage implements OnInit {
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }
+
+  signin() {
+    this.router.navigate(['/']);
+  }
 }

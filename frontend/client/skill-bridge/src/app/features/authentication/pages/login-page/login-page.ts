@@ -13,9 +13,9 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { catchError, finalize, tap, throwError } from 'rxjs';
 import { Router } from '@angular/router';
-import { AuthService } from '../../../../core/services/auth';
-import { LoginRequest } from '../../../../core/models/auth/login-request';
 import { NotificationService } from '../../../../core/services/notification';
+import { AuthService } from '../../services/auth-service';
+import { LoginRequest } from '../../models';
 
 @Component({
   selector: 'app-login',
@@ -107,7 +107,7 @@ export class Login {
   }
 
   signup() {
-    console.log('navegar para cadastro');
+    this.router.navigate(['register-user-page']);
   }
 
   social(provider: string) {
