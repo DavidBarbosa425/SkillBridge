@@ -1,6 +1,11 @@
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments';
-import { ConfirmEmailRequest, LoginRequest, LoginResult } from '../models';
+import {
+  ConfirmEmailRequest,
+  LoginRequest,
+  LoginResult,
+  ResetPasswordRequest,
+} from '../models';
 import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
 import { ApiResult } from '../../../core';
 import { HttpClient } from '@angular/common/http';
@@ -28,6 +33,25 @@ export class AuthService {
       .post<
         ApiResult<boolean>
       >(`${this.apiUrl}/confirm-email`, confirmEmailRequest)
+      .pipe(
+        tap((response) => {
+          if (response.success) {
+            // this.handleAuthSuccess(response.data);
+          }
+        }),
+        catchError((error) => {
+          return throwError(() => error);
+        })
+      );
+  }
+
+  resetPassword(
+    resetPasswordRequest: ResetPasswordRequest
+  ): Observable<ApiResult<boolean>> {
+    return this.http
+      .post<
+        ApiResult<boolean>
+      >(`${this.apiUrl}/reset-password`, resetPasswordRequest)
       .pipe(
         tap((response) => {
           if (response.success) {

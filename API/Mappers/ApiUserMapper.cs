@@ -49,7 +49,7 @@ namespace API.Mappers
         {
             return new ResetPasswordDto
             {
-                Email = request.Email,
+                userId = request.userId,
                 Token = request.Token,
                 NewPassword = request.NewPassword
             };

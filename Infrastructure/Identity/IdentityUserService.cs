@@ -129,9 +129,9 @@ namespace Infrastructure.Identity
 
             return Result<string>.Ok(refreshToken);
         }
-        public async Task<Result> ResetPasswordAsync(string email, string token, string newPassword)
+        public async Task<Result> ResetPasswordAsync(string userId, string token, string newPassword)
         {
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.FindByIdAsync(userId);
 
             if (user == null)
                 return Result.Failure("Usuário não encontrado.");

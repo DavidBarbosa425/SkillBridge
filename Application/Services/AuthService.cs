@@ -161,7 +161,7 @@ namespace Application.Services
         {
             await _validatorService.ValidateAsync(dto);
 
-            var resetPasswordResult = await _identityUserService.ResetPasswordAsync(dto.Email, dto.Token, dto.NewPassword);
+            var resetPasswordResult = await _identityUserService.ResetPasswordAsync(dto.userId, dto.Token, dto.NewPassword);
 
             if (!resetPasswordResult.Success)
                 return Result.Failure(resetPasswordResult.Message);

@@ -12,9 +12,8 @@ namespace Application.Validators.Models.Auth
     {
         public ResetPasswordDtoValidator()
         {
-            RuleFor(x => x.Email)
-                .NotEmpty().WithMessage("O e-mail é obrigatório.")
-                .EmailAddress().WithMessage("E-mail inválido.");
+            RuleFor(x => x.userId)
+                .NotEmpty().WithMessage("Identificação do usuário é obrigatório.");
 
             RuleFor(x => x.Token)
                 .NotEmpty().WithMessage("Token de verificação é obrigatório");
