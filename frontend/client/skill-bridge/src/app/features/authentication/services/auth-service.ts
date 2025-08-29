@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments';
 import {
   ConfirmEmailRequest,
+  ForgotPasswordRequest,
   LoginRequest,
   LoginResult,
   ResetPasswordRequest,
@@ -33,6 +34,25 @@ export class AuthService {
       .post<
         ApiResult<boolean>
       >(`${this.apiUrl}/confirm-email`, confirmEmailRequest)
+      .pipe(
+        tap((response) => {
+          if (response.success) {
+            // this.handleAuthSuccess(response.data);
+          }
+        }),
+        catchError((error) => {
+          return throwError(() => error);
+        })
+      );
+  }
+
+  forgotPassword(
+    forgotPasswordRequest: ForgotPasswordRequest
+  ): Observable<ApiResult<boolean>> {
+    return this.http
+      .post<
+        ApiResult<boolean>
+      >(`${this.apiUrl}/forgot-password`, forgotPasswordRequest)
       .pipe(
         tap((response) => {
           if (response.success) {

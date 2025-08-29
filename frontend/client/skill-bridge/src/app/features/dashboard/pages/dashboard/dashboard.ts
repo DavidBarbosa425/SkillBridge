@@ -7,7 +7,7 @@ import { DashboardService } from '../../services/dashboard';
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.less',
 })
-export class Dashboard implements OnInit {
+export class DashboardPage implements OnInit {
   aqui() {
     let abc = {};
     this.dashboardService.register(abc).subscribe();

@@ -31,7 +31,7 @@ import { LoginRequest } from '../../models';
   templateUrl: './login-page.html',
   styleUrl: './login-page.less',
 })
-export class Login {
+export class LoginPage {
   form: FormGroup;
   loading = false;
 
