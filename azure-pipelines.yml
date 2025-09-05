@@ -8,6 +8,7 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
+# Backend Build
 - task: UseDotNet@2
   inputs:
     packageType: 'sdk'
@@ -18,3 +19,19 @@ steps:
 
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: 'Build .NET'
+
+# Frontend Build
+- task: NodeTool@0
+  inputs:
+    versionSource: 'spec'
+    versionSpec: '22.16.0'
+
+- script: |
+    cd frontend/client/skill-bridge
+    npm install
+  displayName: 'Install NPM packages'
+
+- script: |
+    cd frontend/client/skill-bridge
+    npm run build
+  displayName: 'Build Angular'
