@@ -42,7 +42,7 @@ steps:
 
 - script: |
     cd frontend/client/skill-bridge
-    npm run build -- --extract-licenses=false --build-optimizer=false
+    npm run build -- --extract-licenses=false
   displayName: 'Build Angular'
 
 # SonarCloud Analysis
