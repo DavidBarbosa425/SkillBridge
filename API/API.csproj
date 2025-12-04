@@ -29,4 +29,12 @@
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\DAVID\Desktop\Projects\SkillBridge\API\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="C:\Users\DAVID\Desktop\Projects\SkillBridge\API\.editorconfig" />
+  </ItemGroup>
+
 </Project>
