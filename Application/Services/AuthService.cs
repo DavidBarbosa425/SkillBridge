@@ -4,8 +4,11 @@ using Application.Interfaces.Mappers;
 using Domain.Common;
 using Domain.Common.Enums;
 using Domain.Constants;
+using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Interfaces;
+using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.DataContracts;
 
 namespace Application.Services
 {
@@ -18,6 +21,7 @@ namespace Application.Services
         private readonly IUserRepository _userRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMessageBrokerService _messageBrokerService;
+        private readonly TelemetryClient _telemetryClient;
 
         public AuthService(
             IApplicationMapper mapper,
@@ -26,7 +30,8 @@ namespace Application.Services
             IJwtService jwtService,
             IUserRepository userRepository,
             IUnitOfWork unitOfWork,
-            IMessageBrokerService messageBrokerService
+            IMessageBrokerService messageBrokerService,
+            TelemetryClient telemetryClient
             )
         {
             _mapper = mapper;
@@ -36,6 +41,7 @@ namespace Application.Services
             _userRepository = userRepository;
             _unitOfWork = unitOfWork;
             _messageBrokerService = messageBrokerService;
+            _telemetryClient = telemetryClient;
         }
 
         public async Task<Result> RegisterAsync(RegisterUserDto dto)
@@ -135,6 +141,15 @@ namespace Application.Services
                 RefreshToken = refreshTokenResult.Data,
                 ExpiresIn = tokenResult.ExpiresIn
             };
+
+            _telemetryClient.TrackEvent("UsuarioLogou");
+
+            _telemetryClient.TrackEvent("UsuarioLogou", new Dictionary<string, string>
+            {
+                { "UserId", userResult.Data.Id.ToString() },
+                { "Email", userResult.Data.Email },
+                { "Plano", "Premium" }
+});
 
             return Result<LoginResultDto>.Ok(loginResultDto);
 
